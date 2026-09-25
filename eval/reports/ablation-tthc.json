@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-09-25T07:34:34+00:00",
+  "split": "test",
+  "n_in_scope": 138,
+  "llm_kept_pct": 68.0,
+  "composer_sentences": 100,
+  "modes": {
+    "template_only": {
+      "hallucination": 0.0,
+      "numeric_fidelity": 100.0,
+      "answer_accuracy": 85.22,
+      "latency_p50_s": 0.047,
+      "latency_p95_s": 0.057,
+      "answered": 101
+    },
+    "llm_unverified": {
+      "hallucination": 14.0,
+      "numeric_fidelity": 98.82,
+      "answer_accuracy": 84.35,
+      "latency_p50_s": 0.907,
+      "latency_p95_s": 1.626,
+      "answered": 100
+    },
+    "llm_verified": {
+      "hallucination": 0.0,
+      "numeric_fidelity": 100.0,
+      "answer_accuracy": 86.09,
+      "latency_p50_s": 0.908,
+      "latency_p95_s": 1.629,
+      "answered": 102
+    }
+  }
+}

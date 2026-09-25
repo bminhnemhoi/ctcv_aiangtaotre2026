@@ -1,0 +1,60 @@
+# gitleaks configuration for CTCV — extends the default ruleset (gitleaks ≥ 8.21 syntax).
+# Used by `make audit` (gitleaks detect --no-git) and the pre-commit hook (gitleaks protect).
+# Regexes are RE2 (Go): no lookbehind/lookahead.
+title = "CTCV gitleaks config"
+
+[extend]
+useDefault = true
+
+# ---- D25: personal data of team members must never enter the repo's docs ----------------
+[[rules]]
+id = "ctcv-vn-phone-in-docs"
+description = "Số điện thoại Việt Nam trong tài liệu (D25) — thông tin đội chỉ ở docs/dossier/private/"
+regex = '''(?:^|[^0-9+\w])((?:\+84|0)(?:3|5|7|8|9)[0-9]{8})(?:[^0-9]|$)'''
+secretGroup = 1
+path = '''^docs/'''
+keywords = ["+84", "09", "03", "05", "07", "08"]
+
+  [[rules.allowlists]]
+  paths = ['''^docs/prompt-log/''', '''^docs/template/''', '''^docs/dossier/out/''']
+  regexes = ['''0(?:00000000|123456789|912345678)''']
+
+[[rules]]
+id = "ctcv-email-in-docs"
+description = "Địa chỉ e-mail cá nhân trong tài liệu (D25)"
+regex = '''[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'''
+path = '''^docs/'''
+keywords = ["@"]
+
+  [[rules.allowlists]]
+  paths = ['''^docs/prompt-log/''', '''^docs/template/''', '''^docs/dossier/out/''']
+  regexes = [
+    '''@example\.(?:com|org|vn)''',
+    '''noreply@''',
+    '''@anthropic\.com''',
+    '''@(?:tainangviet|tienphong|vietnamnet|dantri|huggingface|github)\.''',
+  ]
+
+# ---- global allow-list ---------------------------------------------------------------------
+[[allowlists]]
+description = "Generated, vendored and data directories that never carry real secrets"
+paths = [
+  '''(^|/)\.venv/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)\.git/''',
+  '''(^|/)uv\.lock$''',
+  '''(^|/)pnpm-lock\.yaml$''',
+  '''^docs/template/''',
+  '''^data/(raw|clean|ui|sft|dpo)/''',
+  '''^training/runs/''',
+  '''^eval/sets/''',
+  '''^docs/dossier/out/''',
+  '''(^|/)coverage(\.xml)?$''',
+  '''(^|/)htmlcov/''',
+  '''(^|/)playwright-report/''',
+]
+
+[[allowlists]]
+description = "Placeholder values in the example env file"
+paths = ['''^\.env\.example$''']
+regexes = ['''CHANGE_ME''']

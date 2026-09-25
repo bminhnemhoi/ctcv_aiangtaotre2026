@@ -1,0 +1,56 @@
+# Pre-commit hooks for CTCV. Install once with `make install` (runs `pre-commit install`).
+# Python hooks come from astral-sh; prettier and gitleaks are LOCAL system hooks so no
+# Go/Node toolchain is downloaded by pre-commit itself.
+minimum_pre_commit_version: "3.5.0"
+# No default_language_version pin: pre-commit runs from the project venv (`uv run pre-commit`),
+# and a `python3.12` executable is not on PATH on Windows when Python is uv-managed.
+exclude: |
+  (?x)^(
+    docs/prompt-log/.*|
+    docs/template/.*|
+    uv\.lock|
+    pnpm-lock\.yaml|
+    .*\.min\.(js|css)
+  )$
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^deploy/.*compose.*\.ya?ml$
+      - id: check-json
+        exclude: (^|/)(tsconfig[^/]*\.json|\.vscode/.*\.json|\.claude/.*\.json)$
+      - id: check-added-large-files
+        args: [--maxkb=5000]
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+        exclude: \.ps1$
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.8
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (apps/*)
+        description: Formats web sources with the workspace's prettier when installed.
+        entry: bash -c 'if [ -x node_modules/.bin/prettier ]; then pnpm exec prettier --write --ignore-unknown "$@"; else echo "prettier chưa cài (chạy pnpm install) — bỏ qua"; fi' --
+        language: system
+        files: ^apps/
+        types_or: [javascript, jsx, ts, tsx, json, yaml, css, html, markdown]
+        require_serial: true
+      - id: gitleaks
+        name: gitleaks (secret scan on staged files)
+        description: Blocks commits containing secrets. Needs gitleaks on PATH (see README).
+        entry: gitleaks protect --staged --redact --verbose
+        language: system
+        pass_filenames: false

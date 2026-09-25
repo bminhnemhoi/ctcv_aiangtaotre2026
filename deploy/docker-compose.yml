@@ -1,0 +1,298 @@
+# CTCV — Docker Compose base (brief §2 ports, D14 Dockerfiles, D29 profiles).
+#
+# Usage (from the repo root; the Makefile does exactly this):
+#   docker compose -f deploy/docker-compose.yml --profile cpu up -d          # dev/CI/VPS: no model server
+#   docker compose -f deploy/docker-compose.yml --profile gpu up -d          # rented GPU box: + vLLM
+#   docker compose -f deploy/docker-compose.yml --profile llama up -d        # optional local llama.cpp
+#   ... -f deploy/docker-compose.dev.yml   → hot reload, published ports, no caddy/uptime-kuma
+#   ... -f deploy/docker-compose.prod.yml  → prometheus/grafana, limits, log rotation
+#
+# Profiles (D29): `cpu` = every app service, NO `models` — set VLLM_BASE_URL in .env to the
+# rented GPU host (SSH tunnel / Tailscale) or to a llama.cpp server; `gpu` = same + `models`
+# (upstream vLLM image, never built) serving the single Qwen3.5-9B (D9 v2). `llama` adds a
+# llama.cpp server for planner_small (Qwen3.5-2B GGUF) — the official CPU path.
+#
+# Environment: container env comes from `deploy/defaults.env` (committed, dev-safe) overridden
+# by the repo-root `.env` (never committed). Compose *interpolation* (`${VAR:-default}` below)
+# reads the shell or `deploy/.env`, so every interpolated value has a sensible default and
+# secrets are never interpolated. Image tags are overridable (`*_IMAGE`) so Dependabot/ADR
+# bumps stay one-line changes.
+
+name: ${COMPOSE_PROJECT_NAME:-ctcv}
+
+x-env-files: &env_files
+  - path: ./defaults.env
+    required: true
+  - path: ../.env
+    required: false
+
+x-healthcheck-defaults: &healthcheck_defaults
+  interval: 30s
+  timeout: 5s
+  retries: 3
+  start_period: 30s
+
+x-python-service: &python_service
+  env_file: *env_files
+  networks: [ctcv]
+  profiles: ["cpu", "gpu"]
+  environment:
+    CTCV_REPO_ROOT: /app
+    PYTHONUNBUFFERED: "1"
+    # ctcv_agent picks `planner_small` when the active profile is cpu-only (D29).
+    COMPOSE_PROFILES: ${COMPOSE_PROFILES:-cpu}
+
+services:
+  # ------------------------------------------------------------------ data stores
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres:16-alpine}
+    env_file: *env_files
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [ctcv]
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER:-ctcv}\" -d \"$${POSTGRES_DB:-ctcv}\""]
+      interval: 10s
+      start_period: 15s
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:7-alpine}
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redisdata:/data
+    networks: [ctcv]
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      start_period: 5s
+
+  qdrant:
+    image: ${QDRANT_IMAGE:-qdrant/qdrant:v1.13.6}
+    volumes:
+      - qdrant_storage:/qdrant/storage
+      - qdrant_snapshots:/qdrant/snapshots
+    networks: [ctcv]
+    healthcheck:
+      <<: *healthcheck_defaults
+      # The qdrant image ships neither curl nor wget: a bash TCP probe on the REST port.
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
+
+  minio:
+    image: ${MINIO_IMAGE:-minio/minio:RELEASE.2025-04-22T22-12-26Z}
+    command: ["server", "/data", "--console-address", ":9001"]
+    env_file: *env_files
+    environment:
+      # MINIO_ROOT_* are derived from the MINIO_ACCESS_KEY/SECRET_KEY the services use.
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-ctcv-dev}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-ctcv-dev-secret}
+    volumes:
+      - minio_data:/data
+    networks: [ctcv]
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/live"]
+      interval: 15s
+
+  # ------------------------------------------------------------------ app services (built)
+  api:
+    <<: *python_service
+    image: ${REGISTRY:-ghcr.io/ctcv}/ctcv-api:${TAG:-dev}
+    build:
+      context: ..
+      dockerfile: deploy/docker/api.Dockerfile
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      qdrant: { condition: service_healthy }
+      minio: { condition: service_healthy }
+    volumes:
+      # SQLite file for the E01 skeleton (defaults.env DATABASE_URL); unused once E02 moves
+      # DATABASE_URL to postgresql+psycopg://… (D15).
+      - api_data:/var/lib/ctcv
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "python", "/app/healthcheck.py", "8000"]
+
+  agent:
+    <<: *python_service
+    image: ${REGISTRY:-ghcr.io/ctcv}/ctcv-agent:${TAG:-dev}
+    build:
+      context: ..
+      dockerfile: deploy/docker/agent.Dockerfile
+    depends_on:
+      redis: { condition: service_healthy }
+      qdrant: { condition: service_healthy }
+    volumes:
+      - hf_cache:/var/cache/ctcv/hf
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "python", "/app/healthcheck.py", "8010"]
+
+  speech:
+    <<: *python_service
+    image: ${REGISTRY:-ghcr.io/ctcv}/ctcv-speech:${TAG:-dev}
+    build:
+      context: ..
+      dockerfile: deploy/docker/speech.Dockerfile
+    depends_on:
+      redis: { condition: service_healthy }
+    volumes:
+      - tts_cache:/var/cache/ctcv/tts
+      - hf_cache:/var/cache/ctcv/hf
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "python", "/app/healthcheck.py", "8020"]
+      start_period: 120s
+
+  vision:
+    <<: *python_service
+    image: ${REGISTRY:-ghcr.io/ctcv}/ctcv-vision:${TAG:-dev}
+    build:
+      context: ..
+      dockerfile: deploy/docker/vision.Dockerfile
+    depends_on:
+      minio: { condition: service_healthy }
+    volumes:
+      - hf_cache:/var/cache/ctcv/hf
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "python", "/app/healthcheck.py", "8030"]
+      start_period: 60s
+
+  web:
+    image: ${REGISTRY:-ghcr.io/ctcv}/ctcv-web:${TAG:-dev}
+    build:
+      context: ..
+      dockerfile: deploy/docker/web.Dockerfile
+    depends_on:
+      - api
+    networks: [ctcv]
+    profiles: ["cpu", "gpu"]
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      start_period: 5s
+
+  # ------------------------------------------------------------------ model servers
+  # gpu profile — upstream vLLM image, never built (brief §17.10). One served model (D9 v2):
+  # Qwen3.5-9B AWQ answers as planner (LoRA adapter after E07), quarantine, judge and VLM.
+  # All flags come from deploy/models/vllm.env (copy vllm.env.example) and are expanded by
+  # the container shell ($$ keeps compose from interpolating them). See deploy/models/README.md.
+  models:
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:v0.10.1.1}
+    profiles: ["gpu"]
+    env_file:
+      - path: ./models/vllm.env
+        required: false
+    environment:
+      HF_HOME: /root/.cache/huggingface
+    entrypoint: ["/bin/bash", "-lc"]
+    command:
+      - >-
+        exec python3 -m vllm.entrypoints.openai.api_server
+        --host 0.0.0.0 --port 8040
+        --model "$${VLLM_MODEL:-Qwen/Qwen3.5-9B}"
+        --served-model-name "$${VLLM_SERVED_NAME:-Qwen/Qwen3.5-9B}"
+        --quantization "$${VLLM_QUANTIZATION:-awq}"
+        --dtype "$${VLLM_DTYPE:-half}"
+        --max-model-len "$${VLLM_MAX_MODEL_LEN:-4096}"
+        --gpu-memory-utilization "$${VLLM_GPU_MEMORY_UTILIZATION:-0.90}"
+        --max-num-seqs "$${VLLM_MAX_NUM_SEQS:-32}"
+        --limit-mm-per-prompt "$${VLLM_LIMIT_MM_PER_PROMPT:-image=1}"
+        --enable-prefix-caching
+        $${VLLM_EXTRA_ARGS:-}
+      # Multi-LoRA (D9 v2, after E07 ships the coach adapter) — put these in VLLM_EXTRA_ARGS:
+      #   --enable-lora --max-lora-rank 16 --lora-modules coach=/models/adapters/coach
+      # Clients then request model "coach" for the planner and "Qwen/Qwen3.5-9B" for the base.
+    volumes:
+      - hf_cache_vllm:/root/.cache/huggingface
+      - ./models/adapters:/models/adapters:ro
+    ipc: host
+    networks: [ctcv]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${VLLM_GPU_COUNT:-1}
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8040/health', timeout=4).status == 200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 600s
+
+  # llama profile — llama.cpp server for planner_small (Qwen3.5-2B GGUF, D29 CPU path).
+  # Point VLLM_BASE_URL at http://models-cpu:8040/v1 when this profile is on. GGUF files
+  # live in deploy/models/cache (gitignored); set LLAMA_MODEL_FILE to the file name.
+  models-cpu:
+    image: ${LLAMA_IMAGE:-ghcr.io/ggml-org/llama.cpp:server}
+    profiles: ["llama"]
+    env_file:
+      - path: ./models/vllm.env
+        required: false
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        exec /app/llama-server --host 0.0.0.0 --port 8040
+        -m "/models/$${LLAMA_MODEL_FILE:-qwen3.5-2b-q4_k_m.gguf}"
+        --alias "$${LLAMA_SERVED_NAME:-Qwen/Qwen3.5-2B}"
+        -c "$${LLAMA_CTX:-4096}" -t "$${LLAMA_THREADS:-4}" --parallel "$${LLAMA_PARALLEL:-2}"
+    volumes:
+      - ./models/cache:/models:ro
+    networks: [ctcv]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8040/health >/dev/null 2>&1 || curl -fs http://127.0.0.1:8040/health >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+
+  # ------------------------------------------------------------------ edge & status
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2-alpine}
+    env_file: *env_files
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+      - "${CADDY_HTTPS_PORT:-443}:443"
+      - "${CADDY_HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+      - uptime-kuma
+    networks: [ctcv]
+    healthcheck:
+      <<: *healthcheck_defaults
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 80 || exit 1"]
+      start_period: 10s
+
+  uptime-kuma:
+    image: ${UPTIME_KUMA_IMAGE:-louislam/uptime-kuma:1}
+    volumes:
+      - uptime_kuma_data:/app/data
+    networks: [ctcv]
+    # The image ships its own HEALTHCHECK (extra/healthcheck).
+
+networks:
+  ctcv:
+    name: ${COMPOSE_PROJECT_NAME:-ctcv}_net
+
+volumes:
+  pgdata:
+  redisdata:
+  api_data:
+  qdrant_storage:
+  qdrant_snapshots:
+  minio_data:
+  tts_cache:
+  hf_cache:
+  hf_cache_vllm:
+  caddy_data:
+  caddy_config:
+  uptime_kuma_data:

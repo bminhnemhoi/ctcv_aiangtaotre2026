@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/guardrails.schema.json",
+  "title": "CTCV guardrail data (config/guardrails.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "max_sentences",
+    "escalate_confidence",
+    "redaction_token",
+    "pii_patterns",
+    "never_ask",
+    "sensitive_keywords",
+    "sensitive_request_patterns",
+    "real_action_patterns",
+    "banned_terms",
+    "action_verbs",
+    "colors",
+    "intent_confirmation_markers",
+    "fact_indicator_patterns"
+  ],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "max_sentences": { "type": "integer", "minimum": 1, "maximum": 2 },
+    "escalate_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "redaction_token": { "type": "string", "minLength": 1 },
+    "pii_patterns": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "regex"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "description": { "type": "string" },
+          "regex": { "type": "string", "minLength": 1 },
+          "replacement": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "never_ask": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "otp" } },
+        { "contains": { "const": "mat_khau" } }
+      ],
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+    },
+    "sensitive_keywords": { "$ref": "#/$defs/string_list" },
+    "sensitive_request_patterns": { "$ref": "#/$defs/regex_list" },
+    "real_action_patterns": { "$ref": "#/$defs/regex_list" },
+    "banned_terms": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["term", "replacement"],
+        "properties": {
+          "term": { "type": "string", "minLength": 1 },
+          "replacement": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "action_verbs": { "$ref": "#/$defs/string_list" },
+    "colors": { "$ref": "#/$defs/string_list" },
+    "intent_confirmation_markers": { "$ref": "#/$defs/string_list" },
+    "fact_indicator_patterns": { "$ref": "#/$defs/regex_list" }
+  },
+  "$defs": {
+    "string_list": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "regex_list": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

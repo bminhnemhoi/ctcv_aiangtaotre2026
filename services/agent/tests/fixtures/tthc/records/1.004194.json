@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "procedure_id": "1.004194",
+  "ma_thu_tuc": "1.004194",
+  "ten": "Đăng ký tạm trú",
+  "linh_vuc": "Đăng ký, quản lý cư trú",
+  "co_quan_thuc_hien": "Công an Xã",
+  "cap_thuc_hien": "xa",
+  "muc_do_dvc": "Dịch vụ công trực tuyến một phần",
+  "doi_tuong": null,
+  "cach_thuc": [
+    {
+      "kenh": "truc_tiep",
+      "kenh_text": "Trực tiếp",
+      "thoi_han": "03 Ngày làm việc",
+      "phi_le_phi": null,
+      "phi_vnd": [],
+      "mo_ta": "Nộp hồ sơ trực tiếp tại Công an cấp xã. Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật)."
+    },
+    {
+      "kenh": "truc_tuyen",
+      "kenh_text": "Trực tuyến",
+      "thoi_han": "03 Ngày làm việc",
+      "phi_le_phi": null,
+      "phi_vnd": [],
+      "mo_ta": "Nộp hồ sơ trực tuyến qua các cổng cung cấp dịch vụ công trực tuyến như: Trực tuyến tại Cổng dịch vụ công qua Cổng dịch vụ công quốc gia, hoặc qua Cổng dịch vụ công Bộ Công an, Cổng dịch vụ công quản lý cư trú; Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật)."
+    }
+  ],
+  "trinh_tu": [
+    "Bước 1: Cá nhân, tổ chức chuẩn bị hồ sơ theo quy định của pháp luật.",
+    "Bước 2: Cá nhân, tổ chức nộp hồ sơ tại Công an cấp xã.",
+    "Bước 3: Khi tiếp nhận hồ sơ đăng ký tạm trú, cơ quan đăng ký cư trú kiểm tra tính pháp lý và nội dung hồ sơ:",
+    "+ Trường hợp hồ sơ đã đầy đủ, hợp lệ thì tiếp nhận hồ sơ và cấp Phiếu tiếp nhận hồ sơ và hẹn trả kết quả (mẫu CT04 ban hành kèm theo Thông tư số 56/2021/TT-BCA) cho người đăng ký;",
+    "+ Trường hợp hồ sơ đủ điều kiện nhưng chưa đủ hồ sơ thì hướng dẫn bổ sung, hoàn thiện và cấp Phiếu hướng dẫn bổ sung, hoàn thiện hồ sơ (mẫu CT05 ban hành kèm theo Thông tư số 56/2021/TT-BCA) cho người đăng ký;",
+    "+ Trường hợp hồ sơ không đủ điều kiện thì từ chối và cấp Phiếu từ chối tiếp nhận, giải quyết hồ sơ (mẫu CT06 ban hành kèm theo Thông tư số 56/2021/TT-BCA) cho người đăng ký.",
+    "Bước 4: Cá nhân, tổ chức nộp lệ phí đăng ký cư trú theo quy định.",
+    "Bước 5: Căn cứ theo ngày hẹn trên Phiếu tiếp nhận hồ sơ và hẹn trả kết quả để nhận thông báo kết quả giải quyết thủ tục đăng ký cư trú (nếu có)."
+  ],
+  "thanh_phan_ho_so": [
+    {
+      "doc_key": "d01",
+      "truong_hop": "Hồ sơ đăng ký tạm trú gồm",
+      "ten_giay_to": "Tờ khai thay đổi thông tin cư trú (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA); đối với người đăng ký tạm trú là người chưa thành niên thì trong tờ khai phải ghi rõ ý kiến đồng ý của cha, mẹ hoặc người giám hộ, trừ trường hợp đã có ý kiến đồng ý bằng văn bản;",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CT01"
+    },
+    {
+      "doc_key": "d02",
+      "truong_hop": "Hồ sơ đăng ký tạm trú gồm",
+      "ten_giay_to": "Giấy tờ, tài liệu chứng minh chỗ ở hợp pháp.",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": null
+    },
+    {
+      "doc_key": "d03",
+      "truong_hop": "Đăng ký tạm trú tại nơi đơn vị đóng quân trong Công an nhân dân, hồ sơ gồm",
+      "ten_giay_to": "Tờ khai thay đổi thông tin cư trú (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA);",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CT01"
+    },
+    {
+      "doc_key": "d04",
+      "truong_hop": "Đăng ký tạm trú tại nơi đơn vị đóng quân trong Công an nhân dân, hồ sơ gồm",
+      "ten_giay_to": "Giấy giới thiệu của Thủ trưởng đơn vị quản lý trực tiếp ghi rõ nội dung để làm thủ tục đăng ký tạm trú và đơn vị có chỗ ở cho cán bộ chiến sĩ (ký tên, đóng dấu).",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": null
+    },
+    {
+      "doc_key": "d05",
+      "truong_hop": "Đăng ký tạm trú theo danh sách, hồ sơ gồm",
+      "ten_giay_to": "Tờ khai thay đổi thông tin cư trú (của từng người) (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA);",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CT01"
+    },
+    {
+      "doc_key": "d06",
+      "truong_hop": "Đăng ký tạm trú theo danh sách, hồ sơ gồm",
+      "ten_giay_to": "Văn bản đề nghị đăng ký tạm trú trong đó ghi rõ thông tin về chỗ ở hợp pháp kèm danh sách người tạm trú. Danh sách bao gồm những thông tin cơ bản của từng người: họ, chữ đệm và tên; ngày, tháng, năm sinh; giới tính; số định danh cá nhân và thời hạn tạm trú.",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": null
+    }
+  ],
+  "yeu_cau_dieu_kien": "Không",
+  "can_cu_phap_ly": [
+    {
+      "so_hieu": "68/2020/QH14",
+      "ten": "Luật 68/2020/QH14"
+    },
+    {
+      "so_hieu": "55/2021/TT-BCA",
+      "ten": "Thông tư 55/2021/TT-BCA"
+    },
+    {
+      "so_hieu": "56/2021/TT-BCA",
+      "ten": "Thông tư 56/2021/TT-BCA"
+    },
+    {
+      "so_hieu": "57/2021/TT-BCA",
+      "ten": "Thông tư 57/2021/TT-BCA"
+    },
+    {
+      "so_hieu": "85/2019/TT-BTC",
+      "ten": "Thông tư 85/2019/TT-BTC"
+    }
+  ],
+  "bieu_mau": [],
+  "ket_qua": "Cập nhật thông tin trong Cơ sở dữ liệu quốc gia về dân cư; Cập nhật thông tin trong Cơ sở dữ liệu về cư trú; Thông báo về kết quả giải quyết, hủy bỏ đăng ký cư trú; Phiếu từ chối tiếp nhận, giải quyết hồ sơ",
+  "sections_raw": {
+    "Mã thủ tục": "1.004194",
+    "Lĩnh vực": "Đăng ký, quản lý cư trú",
+    "Cơ quan thực hiện": "Công an Xã",
+    "Mức độ cung cấp dịch vụ công trực tuyến": "Dịch vụ công trực tuyến một phần",
+    "Cách thức thực hiện": "Trực tiếp Trực tuyến",
+    "Thời hạn giải quyết": "Trực tiếp 03 Ngày làm việc - Nộp hồ sơ trực tiếp tại Công an cấp xã. Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật). Trực tuyến 03 Ngày làm việc - Nộp hồ sơ trực tuyến qua các cổng cung cấp dịch vụ công trực tuyến như: Trực tuyến tại Cổng dịch vụ công qua Cổng dịch vụ công quốc gia, hoặc qua Cổng dịch vụ công Bộ Công an, Cổng dịch vụ công quản lý cư trú; Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật).",
+    "Phí": "1",
+    "Lệ Phí": "Không",
+    "Yêu cầu - điều kiện": "Không",
+    "Kết quả thực hiện": "Cập nhật thông tin trong Cơ sở dữ liệu quốc gia về dân cư Cập nhật thông tin trong Cơ sở dữ liệu về cư trú Thông báo về kết quả giải quyết, hủy bỏ đăng ký cư trú Phiếu từ chối tiếp nhận, giải quyết hồ sơ"
+  },
+  "meta": {
+    "source_url": "https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26356",
+    "source_portal": "Cổng Dịch vụ công - Bộ Công an",
+    "agency": "Bộ Công an",
+    "matt": "26356",
+    "linh_vuc_code": "QL_CU_TRU",
+    "fetched_at": "2026-09-24T18:38:57Z",
+    "sha256_raw": "c17e9f0ec34e94959517192d53a41a6e35d40c9591cc563397d11007c827ade3",
+    "sha256_content": "a9ba89f20eab213a60138313b789c8968897bc167c3f952d4281df3466ff0486",
+    "updated_at": null,
+    "effective_date": null,
+    "license_note": "Ghi rõ nguồn \"Cổng Dịch vụ công - Bộ Công an\" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp",
+    "parser_version": "tthc-bca/1"
+  }
+}

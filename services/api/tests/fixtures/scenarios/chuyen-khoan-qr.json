@@ -1,0 +1,36 @@
+{
+  "id": "chuyen-khoan-qr",
+  "skill_group": "thanh-toan-thue-so",
+  "level": 1,
+  "version": "1.0.0",
+  "app_label": "Ứng dụng mô phỏng ngân hàng",
+  "goal": "Chuyển 200.000đ cho con bằng quét mã QR",
+  "intent_confirmation": "Bác muốn chuyển tiền cho con hay trả tiền hàng?",
+  "start_screen": "home",
+  "screens": [
+    {
+      "id": "home",
+      "title": "Trang chính",
+      "elements": [
+        {"id": "btn_qr", "kind": "button", "label": "Quét QR", "color": "xanh", "sensitive": false},
+        {"id": "btn_promo", "kind": "banner", "label": "Ưu đãi", "color": "vang", "sensitive": false}
+      ],
+      "valid_actions": [{"tap": "btn_qr", "next": "done"}],
+      "common_mistakes": [{"tap": "btn_promo", "hint": "Đó là quảng cáo, bác bấm nút xanh có chữ Quét QR nhé"}],
+      "coach_line": "Bác bấm nút xanh có chữ Quét QR nhé.",
+      "terminal": false
+    },
+    {
+      "id": "done",
+      "title": "Chuyển tiền thành công",
+      "elements": [{"id": "txt_done", "kind": "text", "label": "Đã chuyển 200.000đ", "color": "xanh", "sensitive": false}],
+      "valid_actions": [],
+      "common_mistakes": [],
+      "coach_line": "Bác đã chuyển xong rồi, giỏi quá.",
+      "terminal": true
+    }
+  ],
+  "success": {"screen": "done", "conditions": {"amount": 200000}},
+  "never_ask": ["otp", "mat_khau", "so_the"],
+  "fake_data": {"balance": 1250000, "recipient": "Nguyen Van A"}
+}

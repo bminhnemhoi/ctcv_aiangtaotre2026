@@ -1,0 +1,19 @@
+{
+  "name": "ctcv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cầm Tay Chỉ Việc — workspace JS/TS (PWA và công cụ web)",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.18.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "lint": "pnpm -r --if-present lint",
+    "format": "pnpm -r --if-present format",
+    "test": "pnpm -r --if-present test",
+    "e2e": "pnpm -r --if-present e2e",
+    "build": "pnpm -r --if-present build"
+  }
+}

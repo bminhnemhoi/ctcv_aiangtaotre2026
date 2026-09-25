@@ -1,0 +1,72 @@
+CTCV - Cam Tay Chi Viec (Cầm Tay Chỉ Việc)
+Copyright 2026 The CTCV Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product was developed with the assistance of Claude Code (Anthropic).
+The development history is indexed in docs/prompt-log/INDEX.md (one SHA-256
+hash per session). Full transcripts are kept by the team and provided to the
+organisers on request.
+
+-------------------------------------------------------------------------------
+Third-party models (NOT included in this repository; downloaded by the user
+through Ollama at install time)
+-------------------------------------------------------------------------------
+
+Qwen3.5-2B (Qwen/Qwen3.5-2B, Alibaba Cloud, served as "qwen3.5:2b", Q8_0)
+  License: Apache License 2.0
+  https://huggingface.co/Qwen/Qwen3.5-2B
+
+BAAI/bge-m3 (Beijing Academy of Artificial Intelligence, served as "bge-m3")
+  License: MIT
+  https://huggingface.co/BAAI/bge-m3
+
+Ollama (local model runtime, installed separately by the user)
+  License: MIT
+  https://github.com/ollama/ollama
+
+-------------------------------------------------------------------------------
+Third-party software used at runtime (installed by uv / pnpm, not vendored)
+-------------------------------------------------------------------------------
+
+Python
+  FastAPI ................ MIT
+  Starlette .............. BSD-3-Clause
+  Uvicorn ................ BSD-3-Clause
+  Pydantic, pydantic-settings ... MIT
+  SQLAlchemy, Alembic .... MIT
+  PyJWT .................. MIT
+  python-multipart ....... Apache-2.0
+  sse-starlette .......... BSD-3-Clause
+  prometheus-client ...... Apache-2.0 AND BSD-2-Clause
+  HTTPX .................. BSD-3-Clause
+  PyYAML ................. MIT
+  jsonschema ............. MIT
+  certifi ................ MPL-2.0
+
+JavaScript / TypeScript
+  React, React DOM ....... MIT
+  workbox-window ......... MIT
+  Vite ................... MIT (build tool)
+  Tailwind CSS ........... MIT (build tool)
+
+Licenses above were read from the installed package metadata. The complete
+dependency list with licenses is maintained in config/allowed-deps.yaml and
+checked by `make audit`; libraries under AGPL, GPL or non-commercial licenses
+are not allowed at runtime.
+
+-------------------------------------------------------------------------------
+Third-party data
+-------------------------------------------------------------------------------
+
+Administrative procedure content (thủ tục hành chính)
+  © Cổng Dịch vụ công - Bộ Công an (https://dichvucong.bocongan.gov.vn/)
+  The content is fetched by the user's own run of the data pipeline
+  (robots.txt respected, >= 1.2 s between requests), used only for retrieval
+  and citation, and is NOT redistributed in this repository (data/raw and
+  data/clean are git-ignored; data/registry/datasets.yaml: redistribute: false).
+  When reusing this information, cite the source as:
+  "Cổng Dịch vụ công - Bộ Công an".
+
+Evaluation question sets in eval/sets/samples/ are generated from templates or
+written by the team; they are not real questions from citizens.

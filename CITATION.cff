@@ -1,0 +1,23 @@
+# This CITATION.cff file was written by hand following the Citation File Format 1.2.0.
+cff-version: 1.2.0
+message: "Nếu bạn dùng CTCV hoặc bộ kiểm thử của CTCV, vui lòng trích dẫn như sau. / If you use this software, please cite it as below."
+title: "CTCV – Cầm Tay Chỉ Việc: lớp kiểm chứng và bộ kiểm thử mở cho trợ lý thủ tục hành chính"
+abstract: >-
+  Verified assistant for Vietnamese administrative procedures: hybrid retrieval over 107
+  procedures from the Ministry of Public Security's public service portal, a tool-less local
+  LLM composer, a numeric/citation verifier with deterministic template fallback, and an open
+  evaluation suite. Built for Data for Life 2026, challenge DA940-01.
+type: software
+authors:
+  - name: "CTCV team"
+version: 0.1.0
+license: Apache-2.0
+repository-code: "https://github.com/bminhnemhoi/ctcv_aiangtaotre2026"
+url: "https://github.com/bminhnemhoi/ctcv_aiangtaotre2026"
+keywords:
+  - retrieval-augmented generation
+  - hallucination
+  - public services
+  - Vietnamese
+  - e-government
+  - Data for Life 2026

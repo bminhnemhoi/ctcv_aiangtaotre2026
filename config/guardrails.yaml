@@ -1,0 +1,117 @@
+# Guardrail data for ctcv_agent.guardrails and ctcv_core.logging (brief §7, §8).
+# Regexes are Python `re` syntax. `{redacted}` in a replacement is substituted with
+# `redaction_token`. Validated by config/schemas/guardrails.schema.json.
+version: 1
+
+max_sentences: 2
+escalate_confidence: 0.6
+redaction_token: "[ĐÃ CHE]"
+
+# Order matters: longer/more specific patterns first.
+pii_patterns:
+  - name: otp
+    description: OTP / mã xác nhận 4–8 chữ số đứng sau từ "OTP" hoặc "mã" (giữ lại từ dẫn).
+    regex: '((?i:otp|mã)(?:\s+[^\s\d]+){0,3}?\s*(?:là|:|=|-)?\s*)\d{4,8}(?!\d)'
+    replacement: '\g<1>{redacted}'
+  - name: card_number
+    description: Số thẻ 16 chữ số, có thể cách nhau bằng dấu cách hoặc gạch.
+    regex: '(?<!\d)(?:\d{4}[ -]?){3}\d{4}(?!\d)'
+    replacement: '{redacted}'
+  - name: cccd
+    description: Số căn cước công dân 12 chữ số.
+    regex: '(?<!\d)\d{12}(?!\d)'
+    replacement: '{redacted}'
+  - name: phone
+    description: Số điện thoại Việt Nam 10 chữ số bắt đầu bằng 0 (hoặc +84).
+    regex: '(?<![\d+])(?:\+84|0)\d{9}(?!\d)'
+    replacement: '{redacted}'
+  - name: email
+    description: Địa chỉ e-mail.
+    regex: '[\w.+-]+@[\w-]+(?:\.[\w-]+)+'
+    replacement: '{redacted}'
+
+# Words that must never be requested from a citizen (sandbox `never_ask` + agent refusal).
+never_ask:
+  - otp
+  - mat_khau
+  - so_the
+  - cccd
+  - ma_pin
+
+sensitive_keywords:
+  - otp
+  - mã xác thực
+  - mã xác nhận
+  - mật khẩu
+  - mã pin
+  - số thẻ
+  - cvv
+  - số căn cước
+  - cccd
+  - số tài khoản
+
+# Requests that ask the citizen to reveal a secret → refuses_sensitive_request().
+sensitive_request_patterns:
+  - '(?i)(?:đọc|cho|nhập|gửi|nói|cung\s*cấp|xin|chụp|gõ)\s+(?:\S+\s+){0,4}?(?:otp|mã\s+xác\s+(?:thực|nhận)|mật\s+khẩu|mã\s+pin|số\s+thẻ|cvv|số\s+căn\s+cước|cccd|số\s+tài\s+khoản)'
+  - '(?i)(?:otp|mật\s+khẩu|mã\s+pin|số\s+thẻ|cvv)\s+(?:của\s+)?(?:bác|cô|chú|ông|bà|anh|chị|mình)\s+là\s+(?:gì|bao\s+nhiêu)'
+
+# Requests to act on a real system on the user's behalf → refuses_real_action().
+real_action_patterns:
+  - '(?i)(?:làm|thao\s+tác|bấm|chuyển|nhập|gửi|nộp|đăng\s+nhập|đăng\s+ký|mua|thanh\s+toán)\s+(?:giúp|hộ|thay|giùm)\s*(?:tôi|cháu|bác|cô|chú|ông|bà|mình)?'
+  - '(?i)trên\s+(?:app|ứng\s+dụng|tài\s+khoản|máy)\s+thật'
+  - '(?i)chuyển\s+(?:tiền|khoản)\s+(?:giúp|hộ|thay|giùm)'
+  - '(?i)thay\s+(?:tôi|bác|cháu|cô|chú|ông|bà|mình)\s+(?:chuyển|gửi|nộp|bấm|đăng\s+nhập)'
+
+# Jargon the coach must not use, with the plain-language replacement (idea §15.3).
+banned_terms:
+  - { term: xác thực, replacement: kiểm tra }
+  - { term: token, replacement: mã }
+  - { term: đăng xuất, replacement: thoát ra }
+  - { term: giao diện, replacement: màn hình }
+  - { term: cấu hình, replacement: cài đặt }
+  - { term: đồng bộ, replacement: cập nhật }
+  - { term: phiên đăng nhập, replacement: lần đăng nhập }
+  - { term: icon, replacement: hình nhỏ }
+  - { term: menu, replacement: danh sách }
+  - { term: submit, replacement: gửi }
+  - { term: scroll, replacement: kéo màn hình }
+  - { term: swipe, replacement: vuốt }
+  - { term: tab, replacement: thẻ }
+  - { term: popup, replacement: bảng hiện lên }
+  - { term: browser, replacement: trình duyệt }
+  - { term: cache, replacement: bộ nhớ tạm }
+
+# Style checks for enforce_style(): a coach line ends with a concrete action.
+action_verbs:
+  - bấm
+  - chọn
+  - nhập
+  - gõ
+  - vuốt
+  - kéo
+  - chạm
+  - quét
+  - mở
+  - giữ
+  - đọc
+colors:
+  - xanh
+  - đỏ
+  - vàng
+  - xám
+  - trắng
+  - cam
+  - tím
+intent_confirmation_markers:
+  - "?"
+  - " hay "
+  - phải không
+  - đúng không
+  - có phải
+
+# Sentences that state facts and therefore need a citation (requires_citation()).
+fact_indicator_patterns:
+  - '(?i)\b(?:theo|quy\s+định|nghị\s+định|thông\s+tư|luật|điều\s+\d+|khoản\s+\d+)\b'
+  - '\b\d{1,2}/\d{1,2}/\d{4}\b'
+  - '(?i)\b(?:phí|lệ\s+phí|mức\s+thu|hạn\s+nộp|thời\s+hạn)\b'
+  - '(?i)\d[\d.,]*\s*(?:đ|đồng|vnd|%|ngày|tháng|năm)\b'

@@ -1,0 +1,46 @@
+# config/rag.yaml — hỏi đáp thủ tục hành chính có trích dẫn (RAG trên kho TTHC), hợp đồng C5 của
+# ADR-007 (đề DA940-01, Data for Life 2026). Schema: config/schemas/rag.schema.json (chặt).
+# Chỉ khóa cấp 1 compose_mode ghi đè được, bằng biến CTCV_RAG_COMPOSE_MODE, giá trị trong
+# [llm_verified, template_only] (template_only là phương án dự phòng khi máy yếu hoặc model lỗi).
+# Mọi khóa khác chỉ đổi bằng cách sửa file này (có test trong tests/config/test_rag_config.py).
+# serving_name của embed/compose phải khớp model trong config/models.yaml qua serving_aliases;
+# endpoint mặc định là máy cục bộ (Ollama), CTCV_OLLAMA_BASE_URL ghi đè khi chạy.
+# Trong intents, thứ tự khóa là độ ưu tiên; câu không khớp khóa nào → tong_quan.
+version: 1
+compose_mode: llm_verified
+kb: {records_dir: data/clean/tthc/records, index_dir: data/clean/tthc/index, skill: dich-vu-cong, source_portal: "Cổng Dịch vụ công - Bộ Công an"}
+# num_gpu_env: biến môi trường (số nguyên ≥ 0) gửi kèm options.num_gpu cho Ollama (embed + compose);
+# CTCV_OLLAMA_NUM_GPU=0 ép chạy chỉ-CPU để đo độ trễ trung thực. Mặc định không đặt: Ollama tự chọn
+# (máy dev có GPU RTX 4050 thì Ollama tự nạp model lên GPU). ollama_options (tùy chọn) cố định trong file.
+serving: {endpoint: "http://localhost:11434", endpoint_env: CTCV_OLLAMA_BASE_URL, timeout_s: 120, num_gpu_env: CTCV_OLLAMA_NUM_GPU}
+embed: {model_ref: embed, serving_name: bge-m3, batch_size: 16}
+compose: {model_ref: planner_small, serving_name: "qwen3.5:2b", api: ollama_chat, max_output_tokens: 160, temperature: 0, think: false, keep_alive: "30m", prompt: tthc_ask.v1}
+serving_aliases: [{model_id: "BAAI/bge-m3", names: ["bge-m3"]}, {model_id: "Qwen/Qwen3.5-2B", names: ["qwen3.5:2b"]}]
+# synonyms: "căn cước" và "chứng minh nhân dân" là hai nhóm riêng vì kho có thủ tục riêng cho CMND
+# ("Cấp xác nhận số chứng minh nhân dân 09 số"); gộp chung làm câu "làm căn cước cần mang chi" ra
+# nhầm thủ tục CMND (kiểm tra thật 25/9; số đo truy xuất trên tập eval không đổi khi tách).
+retrieval: {top_k: 5, context_chunks: 3, context_chars_per_chunk: 700, chunk_max_chars: 1200, rrf_k: 60, bm25_k1: 1.5, bm25_b: 0.75, accent_fold: true,
+  synonyms: [[căn cước, cccd, thẻ căn cước], [chứng minh nhân dân, cmnd], [hộ chiếu, passport], [giấy phép lái xe, bằng lái, gplx], [thường trú, hộ khẩu], [tạm trú, ở trọ], [tạm vắng, đi vắng], [lý lịch tư pháp, lý lịch], [đăng ký xe, biển số, cà vẹt]],
+  dialect_phrases: [[cần chi, cần gì], [mang chi, mang gì], [làm chi, làm gì], [làm răng, làm sao], [mần răng, làm sao], [ở mô, ở đâu], [chỗ mô, chỗ nào], [bi nhiêu, bao nhiêu], [bao nhiu, bao nhiêu], [hông, không], [mần, làm]]}
+# out_of_scope_phrases: việc của cơ quan khác (tư pháp, đất đai, thuế, bảo hiểm…) mà kho TTHC Bộ Công an
+# không có; câu hỏi nêu việc đó mà tên thủ tục tìm được không có → "chưa chắc" + escalate (P8 h-057).
+# Cụm đứng ngay sau document_markers ("bản sao có chứng thực", "giấy đăng ký kết hôn") là giấy tờ cần
+# mang, không phải việc được hỏi. Danh sách lập từ phạm vi cơ quan, KHÔNG từ tập test.
+gate: {min_dense_score: 0.45, high_dense_score: 0.70, title_overlap_min: 0.34, lexical_min_support: 0.5, confidence_weight_dense: 0.5,
+  generic_words: [thủ tục, làm, đăng ký, cấp, cấp lại, cấp đổi, đổi, gia hạn, xóa, khai báo, giấy, giấy tờ, hồ sơ, cho, của, người, công dân, cần, gì, bao nhiêu, ở đâu, thế nào, không, mất, tiền, bao lâu],
+  out_of_scope_phrases: [chứng thực, công chứng, kết hôn, ly hôn, khai tử, con nuôi, sổ đỏ, quyền sử dụng đất, giấy phép xây dựng, mã số thuế, bảo hiểm xã hội, bảo hiểm y tế, lương hưu, đăng ký kinh doanh],
+  document_markers: [có, đã, được, giấy, bản, lục]}
+# han_phai_lam: hạn NGƯỜI DÂN phải làm (đi trình báo, khai báo…) — đọc từ yêu cầu, điều kiện/trình tự,
+# không bao giờ từ thời hạn giải quyết của cơ quan (P8 h-008).
+intents:   # thứ tự khóa = độ ưu tiên; không khớp → tong_quan
+  phi_le_phi: [lệ phí, phí, bao nhiêu tiền, mất bao nhiêu, tốn bao nhiêu, hết bao nhiêu, mấy tiền]
+  han_phai_lam: [bao lâu phải, bao lâu thì phải, mấy ngày phải, mấy ngày thì phải, phải trình báo trong, phải báo trong, phải khai báo trong, phải đăng ký trong, phải nộp trong, phải đi trình báo, hạn trình báo, hạn khai báo, hạn chót, chậm nhất là]
+  thoi_han: [bao lâu, mấy ngày, thời hạn, khi nào có, bao giờ có, bao giờ xong, mấy hôm]
+  thanh_phan_ho_so: [giấy tờ, hồ sơ gồm, mang theo, mang gì, cần gì, chuẩn bị, cần những gì]
+  noi_nop: [nộp ở đâu, làm ở đâu, ở đâu, chỗ nào, cơ quan nào, đi đâu]
+  bieu_mau: [mẫu, tờ khai, biểu mẫu]
+  dieu_kien: [điều kiện, có được không]
+  can_cu_phap_ly: [luật nào, nghị định, thông tư, căn cứ, quy định nào]
+  trinh_tu: [các bước, làm sao, làm thế nào, như thế nào, trình tự, cách làm]
+intent_sections: {phi_le_phi: [phi_le_phi, thoi_han], han_phai_lam: [dieu_kien, trinh_tu], thoi_han: [thoi_han], thanh_phan_ho_so: [thanh_phan_ho_so], noi_nop: [tong_quan, thoi_han], bieu_mau: [bieu_mau, thanh_phan_ho_so], dieu_kien: [dieu_kien], can_cu_phap_ly: [can_cu_phap_ly], trinh_tu: [trinh_tu], tong_quan: [tong_quan, trinh_tu]}
+demo: {staff_username: canbo-demo}

@@ -1,0 +1,193 @@
+# CTCV — staging/production overlay (plan §8, idea §10). Adds Prometheus + Alertmanager +
+# Grafana (+ DCGM GPU exporter under the gpu profile), `restart: unless-stopped`, resource
+# limits and json-file log rotation on every service.
+#   docker compose --env-file .env -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml \
+#     --profile gpu up -d
+# deploy/scripts/deploy.sh runs this on $DEPLOY_HOST.
+#
+# ETH-12 / brief §17.10: if the dossier keeps the "máy chủ trong nước" (in-country server)
+# commitment, Cloudflare must stay **DNS-only** (grey cloud): the orange-cloud proxy
+# terminates TLS on Cloudflare's edge, so citizen traffic would leave the country. Caddy then
+# holds the certificates itself (automatic HTTPS below) and DDoS protection is the host
+# firewall + rate limiting in the API (E11). failover.sh already writes `proxied: false`.
+
+x-prod-service: &prod_service
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "5"
+
+x-limits-small: &limits_small
+  resources:
+    limits: { cpus: "1.0", memory: 512M }
+    reservations: { memory: 128M }
+
+x-limits-medium: &limits_medium
+  resources:
+    limits: { cpus: "2.0", memory: 2G }
+    reservations: { memory: 256M }
+
+x-limits-large: &limits_large
+  resources:
+    limits: { cpus: "4.0", memory: 6G }
+    reservations: { memory: 1G }
+
+services:
+  postgres:
+    <<: *prod_service
+    deploy: *limits_medium
+    shm_size: 256m
+
+  redis:
+    <<: *prod_service
+    deploy: *limits_small
+
+  qdrant:
+    <<: *prod_service
+    deploy: *limits_medium
+
+  minio:
+    <<: *prod_service
+    deploy: *limits_medium
+
+  api:
+    <<: *prod_service
+    deploy: *limits_medium
+    environment:
+      CTCV_ENV: ${CTCV_ENV:-prod}
+
+  agent:
+    <<: *prod_service
+    deploy: *limits_large
+    environment:
+      CTCV_ENV: ${CTCV_ENV:-prod}
+
+  speech:
+    <<: *prod_service
+    deploy: *limits_large
+    environment:
+      CTCV_ENV: ${CTCV_ENV:-prod}
+
+  vision:
+    <<: *prod_service
+    deploy: *limits_large
+    environment:
+      CTCV_ENV: ${CTCV_ENV:-prod}
+
+  web:
+    <<: *prod_service
+    deploy: *limits_small
+
+  caddy:
+    <<: *prod_service
+    deploy: *limits_small
+
+  uptime-kuma:
+    <<: *prod_service
+    deploy: *limits_small
+
+  models:
+    <<: *prod_service
+    # vLLM keeps the GPU; host RAM limit only. The nvidia device reservation is in the base file.
+    deploy:
+      resources:
+        limits: { memory: 24G }
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${VLLM_GPU_COUNT:-1}
+              capabilities: [gpu]
+
+  models-cpu:
+    <<: *prod_service
+    deploy: *limits_large
+
+  # ---------------------------------------------------------------- monitoring (plan §8)
+  prometheus:
+    <<: *prod_service
+    image: ${PROMETHEUS_IMAGE:-prom/prometheus:v3.5.0}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-15d}
+      - --web.enable-lifecycle
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - prometheus_data:/prometheus
+    networks: [ctcv]
+    deploy: *limits_medium
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9090/-/healthy >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Telegram routing for the four alert rules. The bot token is read from a file secret and
+  # the chat id is substituted into the template at start-up (Alertmanager has no env expansion).
+  alertmanager:
+    <<: *prod_service
+    image: ${ALERTMANAGER_IMAGE:-prom/alertmanager:v0.28.1}
+    env_file:
+      - path: ../.env
+        required: false
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        sed "s/__TELEGRAM_CHAT_ID__/$${TELEGRAM_CHAT_ID:-0}/" /etc/alertmanager/alertmanager.tmpl.yml
+        > /tmp/alertmanager.yml
+        && printf '%s' "$${TELEGRAM_BOT_TOKEN:-}" > /tmp/telegram_bot_token
+        && exec /bin/alertmanager --config.file=/tmp/alertmanager.yml --storage.path=/alertmanager
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.tmpl.yml:ro
+      - alertmanager_data:/alertmanager
+    networks: [ctcv]
+    deploy: *limits_small
+
+  grafana:
+    <<: *prod_service
+    image: ${GRAFANA_IMAGE:-grafana/grafana:12.1.0}
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      # GF_SECURITY_ADMIN_PASSWORD comes from the repo-root .env (never interpolated here).
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_SERVER_ROOT_URL: https://${STATUS_DOMAIN:-localhost}/grafana/
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    networks: [ctcv]
+    deploy: *limits_small
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # GPU utilisation / VRAM for the "VRAM > 92 %" alert (gpu profile only).
+  dcgm-exporter:
+    <<: *prod_service
+    image: ${DCGM_EXPORTER_IMAGE:-nvcr.io/nvidia/k8s/dcgm-exporter:3.3.9-3.6.1-ubuntu22.04}
+    profiles: ["gpu"]
+    cap_add: [SYS_ADMIN]
+    networks: [ctcv]
+    deploy:
+      resources:
+        limits: { memory: 512M }
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:

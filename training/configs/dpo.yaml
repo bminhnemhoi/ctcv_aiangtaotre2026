@@ -1,0 +1,36 @@
+# DPO sau SFT (plan §7 dòng 2; idea §6 bước 3; epic E07): 2.000 cặp "đúng phong cách" vs
+# "trả lời dài kiểu chatbot", beta 0,1, 1 epoch; dừng khi reward margin ≥ 0,5.
+version: 1
+kind: dpo
+name: planner-dpo
+epic: E07
+model_key: planner
+adapter_from: planner-sft # run SFT (training/runs/<date>-planner-sft) làm điểm xuất phát
+dataset: coach-dpo-v1 # data/dpo/pairs.jsonl
+eval_dataset: eval-dialogue-v1
+
+dpo:
+  pairs: 2000
+  beta: 0.1
+  epochs: 1
+  learning_rate: 5.0e-6 # plan §7 không nêu; giá trị thường dùng cho DPO trên LoRA
+  max_seq_len: 4096
+  max_prompt_len: 2048
+  precision: bf16
+  gradient_checkpointing: true
+  per_device_batch_size: 2
+  gradient_accumulation_steps: 8
+  seed: 42
+
+stop: # "Reward margin ≥ 0,5"
+  metric: reward_margin
+  mode: max
+  threshold: 0.5
+
+budget:
+  estimated_gpu_hours: 1
+  estimated_api_vnd: 0
+
+output:
+  run_name: planner-dpo
+  save_adapter_only: true

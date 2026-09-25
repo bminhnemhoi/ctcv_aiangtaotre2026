@@ -1,0 +1,737 @@
+# Single dependency allow-list (brief D26). `make audit` (scripts/check_deps.py) fails when a
+# package in uv.lock / pnpm-lock.yaml is missing here, when a runtime entry carries a banned
+# license, or when a banned package appears at all. Adding a library = add a row with its real
+# license, the reason and the epic (CLAUDE.md "thêm thư viện ngoài danh sách → hỏi trước, ghi ADR").
+# `runtime: true` = shipped inside a service image; false = dev/test/build tooling only.
+# Seeded 2026-09-18 from the E01 lockfile (licenses read from package metadata).
+version: 1
+
+banned_packages:
+  - ultralytics # AGPL-3.0 — incompatible with the repo's Apache-2.0 (D7)
+  - yolov5 # AGPL-3.0
+
+banned_license_patterns:
+  - 'AGPL'
+  - '\bGPL' # matches GPL-*, not LGPL-*
+  - 'CC-BY-NC'
+  - 'NonCommercial'
+  - 'SSPL'
+  - 'BUSL'
+
+python:
+  # ---- runtime (libs/core and services) ----
+  - { name: pydantic, license: MIT, runtime: true, reason: "Schemas for API, tools, scenarios", epic: E01 }
+  - { name: pydantic-core, license: MIT, runtime: true, reason: "pydantic engine", epic: E01 }
+  - { name: annotated-types, license: MIT, runtime: true, reason: "pydantic dependency", epic: E01 }
+  - { name: typing-extensions, license: PSF-2.0, runtime: true, reason: "pydantic dependency", epic: E01 }
+  - { name: typing-inspection, license: MIT, runtime: true, reason: "pydantic dependency", epic: E01 }
+  - { name: pyyaml, license: MIT, runtime: true, reason: "config/*.yaml loader", epic: E01 }
+  - { name: jsonschema, license: MIT, runtime: true, reason: "JSON Schema 2020-12 validation of config", epic: E01 }
+  - { name: jsonschema-specifications, license: MIT, runtime: true, reason: "jsonschema dependency", epic: E01 }
+  - { name: referencing, license: MIT, runtime: true, reason: "jsonschema dependency", epic: E01 }
+  - { name: rpds-py, license: MIT, runtime: true, reason: "jsonschema dependency", epic: E01 }
+  - { name: attrs, license: MIT, runtime: true, reason: "jsonschema dependency", epic: E01 }
+  - { name: httpx, license: BSD-3-Clause, runtime: true, reason: "HTTP client between services / vLLM", epic: E01 }
+  - { name: httpcore, license: BSD-3-Clause, runtime: true, reason: "httpx dependency", epic: E01 }
+  - { name: h11, license: MIT, runtime: true, reason: "httpx dependency", epic: E01 }
+  - { name: anyio, license: MIT, runtime: true, reason: "httpx dependency", epic: E01 }
+  - { name: idna, license: BSD-3-Clause, runtime: true, reason: "httpx dependency", epic: E01 }
+  - { name: certifi, license: MPL-2.0, runtime: true, reason: "CA bundle for httpx", epic: E01 }
+  # ---- dev / test tooling ----
+  - { name: ruff, license: MIT, runtime: false, reason: "lint + format", epic: E01 }
+  - { name: pytest, license: MIT, runtime: false, reason: "test runner", epic: E01 }
+  - { name: pytest-cov, license: MIT, runtime: false, reason: "coverage gate", epic: E01 }
+  - { name: pytest-asyncio, license: Apache-2.0, runtime: false, reason: "async tests", epic: E01 }
+  - { name: coverage, license: Apache-2.0, runtime: false, reason: "pytest-cov engine", epic: E01 }
+  - { name: pluggy, license: MIT, runtime: false, reason: "pytest dependency", epic: E01 }
+  - { name: iniconfig, license: MIT, runtime: false, reason: "pytest dependency", epic: E01 }
+  - { name: packaging, license: "Apache-2.0 OR BSD-2-Clause", runtime: false, reason: "pytest / pip-audit dependency", epic: E01 }
+  - { name: colorama, license: BSD-3-Clause, runtime: false, reason: "pytest colours on Windows", epic: E01 }
+  - { name: pygments, license: BSD-2-Clause, runtime: false, reason: "pytest / rich dependency", epic: E01 }
+  - { name: pre-commit, license: MIT, runtime: false, reason: "git hooks", epic: E01 }
+  - { name: cfgv, license: MIT, runtime: false, reason: "pre-commit dependency", epic: E01 }
+  - { name: identify, license: MIT, runtime: false, reason: "pre-commit dependency", epic: E01 }
+  - { name: nodeenv, license: BSD-3-Clause, runtime: false, reason: "pre-commit dependency", epic: E01 }
+  - { name: virtualenv, license: MIT, runtime: false, reason: "pre-commit dependency", epic: E01 }
+  - { name: platformdirs, license: MIT, runtime: false, reason: "virtualenv dependency", epic: E01 }
+  - { name: filelock, license: MIT, runtime: false, reason: "virtualenv dependency", epic: E01 }
+  - { name: distlib, license: PSF-2.0, runtime: false, reason: "virtualenv dependency", epic: E01 }
+  - { name: python-discovery, license: MIT, runtime: false, reason: "virtualenv dependency", epic: E01 }
+  - { name: pip-audit, license: Apache-2.0, runtime: false, reason: "vulnerability audit in make audit", epic: E01 }
+  - { name: pip, license: MIT, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: pip-api, license: Apache-2.0, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: pip-requirements-parser, license: MIT, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: pyparsing, license: MIT, runtime: false, reason: "pip-requirements-parser dependency", epic: E01 }
+  - { name: cachecontrol, license: Apache-2.0, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: msgpack, license: Apache-2.0, runtime: false, reason: "cachecontrol dependency", epic: E01 }
+  - { name: requests, license: Apache-2.0, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: urllib3, license: MIT, runtime: false, reason: "requests dependency", epic: E01 }
+  - { name: charset-normalizer, license: MIT, runtime: false, reason: "requests dependency", epic: E01 }
+  - { name: cyclonedx-python-lib, license: Apache-2.0, runtime: false, reason: "pip-audit SBOM output", epic: E01 }
+  - { name: py-serializable, license: Apache-2.0, runtime: false, reason: "cyclonedx dependency", epic: E01 }
+  - { name: packageurl-python, license: MIT, runtime: false, reason: "cyclonedx dependency", epic: E01 }
+  - { name: license-expression, license: Apache-2.0, runtime: false, reason: "cyclonedx dependency", epic: E01 }
+  - { name: boolean-py, license: BSD-2-Clause, runtime: false, reason: "license-expression dependency", epic: E01 }
+  - { name: sortedcontainers, license: Apache-2.0, runtime: false, reason: "cyclonedx dependency", epic: E01 }
+  - { name: defusedxml, license: PSF-2.0, runtime: false, reason: "cyclonedx dependency", epic: E01 }
+  - { name: rich, license: MIT, runtime: false, reason: "pip-audit output", epic: E01 }
+  - { name: markdown-it-py, license: MIT, runtime: false, reason: "rich dependency", epic: E01 }
+  - { name: mdurl, license: MIT, runtime: false, reason: "markdown-it-py dependency", epic: E01 }
+  - { name: tomli, license: MIT, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: tomli-w, license: MIT, runtime: false, reason: "pip-audit dependency", epic: E01 }
+  - { name: python-docx, license: MIT, runtime: false, reason: "dossier build (docs/dossier/build)", epic: DOSSIER }
+  - { name: lxml, license: BSD-3-Clause, runtime: false, reason: "python-docx dependency", epic: DOSSIER }
+  - { name: types-pyyaml, license: Apache-2.0, runtime: false, reason: "type stubs", epic: E01 }
+  - { name: types-jsonschema, license: Apache-2.0, runtime: false, reason: "type stubs", epic: E01 }
+  # ---- runtime added after seed (services/api, speech, vision) ----
+  - { name: alembic, license: "MIT", runtime: true, reason: "DB migrations (services/api)", epic: E01 }
+  - { name: annotated-doc, license: "MIT", runtime: true, reason: "fastapi dependency", epic: E01 }
+  - { name: click, license: "BSD-3-Clause", runtime: true, reason: "uvicorn dependency", epic: E01 }
+  - { name: fastapi, license: "MIT", runtime: true, reason: "HTTP API framework (services/*)", epic: E01 }
+  - { name: greenlet, license: "MIT AND PSF-2.0", runtime: true, reason: "sqlalchemy dependency", epic: E01 }
+  - { name: httptools, license: "MIT", runtime: true, reason: "uvicorn[standard] HTTP parser", epic: E01 }
+  - { name: mako, license: "MIT", runtime: true, reason: "alembic dependency", epic: E01 }
+  - { name: markupsafe, license: "BSD-3-Clause", runtime: true, reason: "mako dependency", epic: E01 }
+  - { name: prometheus-client, license: "Apache-2.0 AND BSD-2-Clause", runtime: true, reason: "/metrics for Prometheus", epic: E01 }
+  - { name: pydantic-settings, license: "MIT", runtime: true, reason: "service settings", epic: E01 }
+  - { name: pyjwt, license: "MIT", runtime: true, reason: "JWT auth (user_id from token)", epic: E01 }
+  - { name: python-dotenv, license: "BSD-3-Clause", runtime: true, reason: "uvicorn/pydantic-settings .env loading", epic: E01 }
+  - { name: python-multipart, license: "Apache-2.0", runtime: true, reason: "multipart upload (screenshots/audio)", epic: E01 }
+  - { name: sqlalchemy, license: "MIT", runtime: true, reason: "ORM (9-table schema)", epic: E01 }
+  - { name: sse-starlette, license: "BSD-3-Clause", runtime: true, reason: "SSE streaming for coach", epic: E01 }
+  - { name: starlette, license: "BSD-3-Clause", runtime: true, reason: "fastapi dependency", epic: E01 }
+  - { name: uvicorn, license: "BSD-3-Clause", runtime: true, reason: "ASGI server", epic: E01 }
+  - { name: uvloop, license: "MIT OR Apache-2.0", runtime: true, reason: "uvicorn[standard] event loop (Linux only); license from upstream, not installed on win32", epic: E01 }
+  - { name: watchfiles, license: "MIT", runtime: true, reason: "uvicorn[standard] reload", epic: E01 }
+  - { name: websockets, license: "BSD-3-Clause", runtime: true, reason: "uvicorn[standard] websockets", epic: E01 }
+
+node:
+  - { name: "@adobe/css-tools", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@alloc/quick-lru", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@apideck/better-ajv-errors", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@asamuzakjp/css-color", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@axe-core/playwright", license: "MPL-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/code-frame", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/compat-data", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/core", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/generator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-annotate-as-pure", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-compilation-targets", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-create-class-features-plugin", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-create-regexp-features-plugin", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-define-polyfill-provider", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-globals", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-member-expression-to-functions", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-module-imports", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-module-transforms", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-optimise-call-expression", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-plugin-utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-remap-async-to-generator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-replace-supers", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-skip-transparent-expression-wrappers", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-string-parser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-validator-identifier", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-validator-option", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helper-wrap-function", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/helpers", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/parser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-bugfix-firefox-class-in-computed-class-key", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-bugfix-safari-class-field-initializer-scope", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-bugfix-safari-rest-destructuring-rhs-array", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-bugfix-v8-static-class-fields-redefine-readonly", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-proposal-private-property-in-object", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-syntax-import-assertions", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-syntax-import-attributes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-syntax-unicode-sets-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-arrow-functions", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-async-generator-functions", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-async-to-generator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-block-scoped-functions", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-block-scoping", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-class-properties", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-class-static-block", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-classes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-computed-properties", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-destructuring", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-dotall-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-duplicate-keys", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-duplicate-named-capturing-groups-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-dynamic-import", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-explicit-resource-management", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-exponentiation-operator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-export-namespace-from", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-for-of", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-function-name", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-json-strings", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-literals", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-logical-assignment-operators", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-member-expression-literals", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-modules-amd", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-modules-commonjs", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-modules-systemjs", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-modules-umd", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-named-capturing-groups-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-new-target", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-nullish-coalescing-operator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-numeric-separator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-object-rest-spread", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-object-super", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-optional-catch-binding", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-optional-chaining", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-parameters", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-private-methods", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-private-property-in-object", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-property-literals", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-react-jsx-self", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-react-jsx-source", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-regenerator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-regexp-modifiers", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-reserved-words", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-shorthand-properties", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-spread", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-sticky-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-template-literals", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-typeof-symbol", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-unicode-escapes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-unicode-property-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-unicode-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/plugin-transform-unicode-sets-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/preset-env", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/preset-modules", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/runtime", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/template", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/traverse", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@babel/types", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@csstools/color-helpers", license: "MIT-0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@csstools/css-calc", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@csstools/css-color-parser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@csstools/css-parser-algorithms", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@csstools/css-tokenizer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@esbuild/aix-ppc64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/android-arm", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/android-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/android-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/darwin-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/darwin-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/freebsd-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/freebsd-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-arm", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-ia32", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-loong64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-mips64el", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-ppc64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-riscv64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-s390x", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/linux-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/netbsd-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/openbsd-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/sunos-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/win32-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/win32-ia32", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@esbuild/win32-x64", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint-community/eslint-utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint-community/regexpp", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/config-array", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/config-helpers", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/core", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/eslintrc", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/js", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/object-schema", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@eslint/plugin-kit", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@humanfs/core", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@humanfs/node", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@humanfs/types", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@humanwhocodes/module-importer", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@humanwhocodes/retry", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@isaacs/cliui", license: "BlueOak-1.0.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@jridgewell/gen-mapping", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@jridgewell/remapping", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@jridgewell/resolve-uri", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@jridgewell/source-map", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@jridgewell/sourcemap-codec", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@jridgewell/trace-mapping", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@napi-rs/lzma-linux-x64-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@nodelib/fs-scandir", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@nodelib/fs-stat", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@nodelib/fs-walk", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@playwright/test", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rolldown/pluginutils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/plugin-babel", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/plugin-node-resolve", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/plugin-replace", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/plugin-terser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/pluginutils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/rollup-android-arm-eabi", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-android-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-darwin-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-darwin-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-freebsd-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-freebsd-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-arm-gnueabihf", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-arm-musleabihf", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-arm64-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-arm64-musl", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-loong64-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-loong64-musl", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-ppc64-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-ppc64-musl", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-riscv64-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-riscv64-musl", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-s390x-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-x64-gnu", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-linux-x64-musl", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-openbsd-x64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-openharmony-arm64", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-win32-arm64-msvc", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-win32-ia32-msvc", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "@rollup/rollup-win32-x64-gnu", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@rollup/rollup-win32-x64-msvc", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@testing-library/dom", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@testing-library/jest-dom", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@testing-library/react", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@testing-library/user-event", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@trickfilm400/rollup-plugin-off-main-thread", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/aria-query", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/babel-core", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/babel-generator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/babel-template", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/babel-traverse", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/chai", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/deep-eql", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/estree", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/json-schema", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/node", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/prop-types", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/react", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/react-dom", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/resolve", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@types/trusted-types", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "@typescript-eslint/eslint-plugin", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/parser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/project-service", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/scope-manager", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/tsconfig-utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/type-utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/types", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/typescript-estree", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@typescript-eslint/visitor-keys", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitejs/plugin-react", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/expect", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/mocker", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/pretty-format", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/runner", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/snapshot", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/spy", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "@vitest/utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "acorn", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "acorn-jsx", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "agent-base", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ajv", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ansi-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ansi-styles", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "any-promise", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "anymatch", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "arg", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "argparse", license: "Python-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "aria-query", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "array-buffer-byte-length", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "array-includes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "array-prototype-flat", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "array-prototype-flatmap", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "arraybuffer-prototype-slice", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "assertion-error", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ast-types-flow", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "async", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "async-function", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "at-least-node", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "autoprefixer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "available-typed-arrays", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "axe-core", license: "MPL-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "axobject-query", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "babel-plugin-polyfill-corejs2", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "babel-plugin-polyfill-corejs3", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "babel-plugin-polyfill-regenerator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "balanced-match", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "baseline-browser-mapping", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "binary-extensions", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "brace-expansion", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "braces", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "browserslist", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "buffer-from", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "cac", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "call-bind", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "call-bind-apply-helpers", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "call-bound", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "callsites", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "camelcase-css", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "caniuse-lite", license: "CC-BY-4.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "chai", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "chalk", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "check-error", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "chokidar", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "color-convert", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "color-name", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "commander", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "common-tags", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "concat-map", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "convert-source-map", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "core-js-compat", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "cross-spawn", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "crypto-random-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "css-escape", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "cssesc", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "cssstyle", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "csstype", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "damerau-levenshtein", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "data-urls", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "data-view-buffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "data-view-byte-length", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "data-view-byte-offset", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "debug", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "decimal-js", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "deep-eql", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "deep-is", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "deepmerge", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "define-data-property", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "define-properties", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "dequal", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "didyoumean", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "dlv", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "dom-accessibility-api", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "dunder-proto", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ejs", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "electron-to-chromium", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "emoji-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "entities", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-abstract", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-abstract-get", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-define-property", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-errors", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-module-lexer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-object-atoms", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-set-tostringtag", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-shim-unscopables", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "es-to-primitive", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "esbuild", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "escalade", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "escape-string-regexp", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eslint", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eslint-config-prettier", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eslint-plugin-jsx-a11y", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eslint-plugin-react-hooks", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eslint-scope", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eslint-visitor-keys", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "espree", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "esquery", license: "BSD-3-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "esrecurse", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "estraverse", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "estree-walker", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "esutils", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "eta", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "expect-type", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fast-deep-equal", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fast-glob", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fast-json-stable-stringify", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fast-levenshtein", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fast-uri", license: "BSD-3-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fastq", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fdir", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "file-entry-cache", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "filelist", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fill-range", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "find-up", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "flat-cache", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "flatted", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "for-each", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "foreground-child", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fraction-js", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fs-extra", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "fsevents", license: "MIT", runtime: false, reason: "optional native binary for another OS; license from upstream (not installed on win32)", epic: E01 }
+  - { name: "function-bind", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "function-prototype-name", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "functions-have-names", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "generator-function", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "gensync", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "get-intrinsic", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "get-own-enumerable-property-symbols", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "get-proto", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "get-symbol-description", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "glob", license: "BlueOak-1.0.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "glob-parent", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "globals", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "globalthis", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "gopd", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "graceful-fs", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "has-bigints", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "has-flag", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "has-property-descriptors", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "has-proto", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "has-symbols", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "has-tostringtag", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "hasown", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "html-encoding-sniffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "http-proxy-agent", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "https-proxy-agent", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "iconv-lite", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "idb", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ignore", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "import-fresh", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "imurmurhash", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "indent-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "internal-slot", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-array-buffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-async-function", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-bigint", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-binary-path", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-boolean-object", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-callable", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-core-module", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-data-view", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-date-object", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-document-all", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-extglob", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-finalizationregistry", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-generator-function", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-glob", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-map", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-module", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-negative-zero", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-number", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-number-object", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-obj", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-potential-custom-element-name", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-regexp", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-set", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-shared-array-buffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-stream", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-symbol", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-typed-array", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-weakmap", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-weakref", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "is-weakset", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "isarray", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "isexe", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jackspeak", license: "BlueOak-1.0.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jake", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jiti", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "js-tokens", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "js-yaml", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jsdom", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jsesc", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "json-buffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "json-schema-traverse", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "json-stable-stringify-without-jsonify", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "json5", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jsonfile", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jsonpointer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "jsx-ast-utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "keyv", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "language-subtag-registry", license: "CC0-1.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "language-tags", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "leven", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "levn", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "lilconfig", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "lines-and-columns", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "locate-path", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "lodash-debounce", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "lodash-merge", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "loose-envify", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "loupe", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "lru-cache", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "lz-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "magic-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "math-intrinsics", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "merge2", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "micromatch", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "min-indent", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "minimatch", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "minipass", license: "BlueOak-1.0.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ms", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "mz", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "nanoid", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "natural-compare", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "node-releases", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "normalize-path", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "nwsapi", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "object-assign", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "object-fromentries", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "object-hash", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "object-inspect", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "object-keys", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "object-values", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "optionator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "own-keys", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "p-limit", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "p-locate", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "package-json-from-dist", license: "BlueOak-1.0.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "parent-module", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "parse5", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "path-exists", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "path-key", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "path-parse", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "path-scurry", license: "BlueOak-1.0.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "pathe", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "pathval", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "picocolors", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "picomatch", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "pirates", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "playwright", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "playwright-core", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "possible-typed-array-names", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss-import", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss-js", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss-load-config", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss-nested", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss-selector-parser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "postcss-value-parser", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "prelude-ls", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "prettier", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "pretty-bytes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "pretty-format", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "punycode", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "queue-microtask", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "react", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "react-dom", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "react-is", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "react-refresh", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "read-cache", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "readdirp", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "redent", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "reflect-getprototypeof", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "regenerate", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "regenerate-unicode-properties", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "regexp-prototype-flags", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "regexpu-core", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "regjsgen", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "regjsparser", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "require-from-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "resolve", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "resolve-from", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "reusify", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "rollup", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "rrweb-cssom", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "run-parallel", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "safe-array-concat", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "safe-push-apply", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "safe-regex-test", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "safer-buffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "saxes", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "scheduler", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "semver", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "serialize-javascript", license: "BSD-3-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "set-function-length", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "set-function-name", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "set-proto", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "shebang-command", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "shebang-regex", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "side-channel", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "side-channel-list", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "side-channel-map", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "side-channel-weakmap", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "siginfo", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "signal-exit", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "smob", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "source-map", license: "BSD-3-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "source-map-js", license: "BSD-3-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "source-map-support", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "stackback", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "std-env", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "stop-iteration-iterator", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "string-prototype-includes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "string-prototype-matchall", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "string-prototype-trim", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "string-prototype-trimend", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "string-prototype-trimstart", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "stringify-object", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "strip-comments", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "strip-indent", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "strip-json-comments", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "strip-literal", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "sucrase", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "supports-color", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "supports-preserve-symlinks-flag", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "symbol-tree", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tailwindcss", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "temp-dir", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tempy", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "terser", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "thenify", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "thenify-all", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tinybench", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tinyexec", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tinyglobby", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tinypool", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tinyrainbow", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tinyspy", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tldts", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tldts-core", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "to-regex-range", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tough-cookie", license: "BSD-3-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "tr46", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ts-api-utils", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "ts-interface-checker", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "type-check", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "type-fest", license: "(MIT OR CC0-1.0)", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "typed-array-buffer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "typed-array-byte-length", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "typed-array-byte-offset", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "typed-array-length", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "typescript", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "typescript-eslint", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "unbox-primitive", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "undici-types", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "unicode-canonical-property-names-ecmascript", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "unicode-match-property-ecmascript", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "unicode-match-property-value-ecmascript", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "unicode-property-aliases-ecmascript", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "unique-string", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "universalify", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "upath", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "update-browserslist-db", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "uri-js", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "util-deprecate", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "vite", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "vite-node", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "vite-plugin-pwa", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "vitest", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "w3c-xmlserializer", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "webidl-conversions", license: "BSD-2-Clause", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "whatwg-encoding", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "whatwg-mimetype", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "whatwg-url", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "which", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "which-boxed-primitive", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "which-builtin-type", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "which-collection", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "which-typed-array", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "why-is-node-running", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "word-wrap", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-background-sync", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-broadcast-update", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-build", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-cacheable-response", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-core", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "workbox-expiration", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-google-analytics", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-navigation-preload", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-precaching", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-range-requests", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-recipes", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-routing", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-strategies", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-streams", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-sw", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "workbox-window", license: "MIT", runtime: true, reason: "web bundle", epic: E01 }
+  - { name: "ws", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "xml-name-validator", license: "Apache-2.0", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "xmlchars", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "yallist", license: "ISC", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+  - { name: "yocto-queue", license: "MIT", runtime: false, reason: "web dev/build/test tooling", epic: E01 }
+

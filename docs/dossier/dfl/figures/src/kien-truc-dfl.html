@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hình 1 – Kiến trúc CTCV</title>
+    <link rel="stylesheet" href="../../video/slides/style.css" />
+  </head>
+  <body class="figure">
+    <h1>Kiến trúc CTCV: mọi thành phần chạy trên máy cục bộ</h1>
+    <div class="arch grow">
+      <div class="clients">
+        <div class="box xam">Người dân<small>màn “Hỏi thủ tục”, chữ to</small></div>
+        <div class="box xam">Cán bộ một cửa<small>màn đối chiếu hồ sơ</small></div>
+      </div>
+      <div class="arrow"></div>
+      <div class="local">
+        <span class="tag">Máy cục bộ: API, chỉ mục, mô hình (Ollama cục bộ, laptop)</span>
+        <div class="flow-sm">
+          <div class="box"><span><span class="num">1</span>Guardrail</span><small>che dữ liệu cá nhân</small></div>
+          <div class="arrow"></div>
+          <div class="box"><span><span class="num">2</span>Truy xuất lai</span><small>BM25 + bge-m3</small></div>
+          <div class="arrow"></div>
+          <div class="box"><span><span class="num">3</span>Cổng tin cậy</span><small>đúng thủ tục?</small></div>
+          <div class="arrow"></div>
+          <div class="box"><span><span class="num">4</span>Viết câu</span><small>Qwen3.5-2B, không tool</small></div>
+          <div class="arrow"></div>
+          <div class="box dam"><span><span class="num">5</span>Kiểm chứng</span><small>số phải có trong nguồn</small></div>
+
+          <div class="arrow down do k1"></div>
+          <div class="arrow down do k5"></div>
+          <div class="arrow down do k9"></div>
+          <div class="box do k1">OTP, mật khẩu: câu an toàn cố định</div>
+          <div class="box do k5"><span><span class="num">7</span>Ngoài kho</span><small>“chưa chắc”, mời người thật</small></div>
+          <div class="box vang k9"><span><span class="num">6</span>Không đạt</span><small>thay bằng câu mẫu từ dữ liệu</small></div>
+        </div>
+        <div class="stores">
+          <div class="box nhat">Bản ghi TTHC<small>JSON Schema, sha256</small></div>
+          <div class="box nhat">Chỉ mục lai<small>BM25 + vector</small></div>
+          <div class="box nhat">Ollama<small>bge-m3, Qwen3.5-2B</small></div>
+          <div class="box nhat">Đối chiếu hồ sơ<small>tất định, không mô hình</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Trả lời tối đa 2 câu, kèm trích dẫn (URL, ngày lấy); không lưu nguyên văn câu hỏi</span>
+      <span>CTCV · DA940-01</span>
+    </div>
+  </body>
+</html>

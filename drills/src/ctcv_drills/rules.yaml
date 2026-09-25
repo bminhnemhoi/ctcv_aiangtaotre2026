@@ -1,0 +1,89 @@
+# Authoring rules for scam drills (E01 brief §6 + D27). Loaded by ctcv_drills.rules.
+# Regexes use Python `re` syntax. Real-name matching ignores case and diacritics.
+version: 1
+
+utterance_max_words: 40
+pretext_max_words: 30
+max_string_chars: 200
+min_digit_run: 6
+
+# Field names that would carry a copy-able script; rejected at any depth of the JSON.
+forbidden_fields:
+  - script
+  - dialogue
+  - message
+  - messages
+  - transcript
+  - turns
+  - conversation
+  - lines
+
+url_pattern: '(?i)(?:https?://|www\.)\S+|\b[a-z0-9][a-z0-9-]*\.(?:vn|com|net|org|info|xyz|top|club|click|link|online|site|me|io|app|shop|biz|ly)\b'
+phone_pattern: '(?<![\d+])(?:\+84|0)(?:[\s.-]?\d){9}(?!\d)'
+
+# Real banks / agencies / carriers / platforms — drills use category labels only.
+real_names:
+  - Vietcombank
+  - VCB
+  - BIDV
+  - Agribank
+  - Techcombank
+  - MB
+  - MBBank
+  - MB Bank
+  - VPBank
+  - VietinBank
+  - Sacombank
+  - ACB
+  - TPBank
+  - HDBank
+  - SHB
+  - OCB
+  - Eximbank
+  - Công an TP
+  - Công an thành phố
+  - Công an tỉnh
+  - Bộ Công an
+  - Cục Cảnh sát
+  - Cục Thuế
+  - Tổng cục Thuế
+  - Chi cục Thuế
+  - Tòa án nhân dân tối cao
+  - Viện kiểm sát nhân dân tối cao
+  - Viettel
+  - VNPT
+  - Vinaphone
+  - MobiFone
+  - EVN
+  - VNPost
+  - Viettel Post
+  - Giao Hàng Nhanh
+  - Giao hàng tiết kiệm
+  - Shopee
+  - Lazada
+  - Tiki
+
+# A single turn must not read like a multi-step script.
+escalation_markers:
+  - bước 1
+  - bước 2
+  - bước 3
+  - sau đó gửi
+  - sau đó nhập
+  - sau đó chuyển
+  - tiếp theo hãy
+  - lượt 2
+  - tin nhắn thứ
+  - kịch bản
+escalation_patterns:
+  - '(?i)\b(?:bước|lượt|turn)\s*\d'
+  - '\n'
+  - '(?im)^\s*(?:kẻ lừa đảo|nạn nhân|người gọi|người nghe|scammer|victim)\s*:'
+
+# grade(): a correct answer scores 100 when answered within fast_seconds, decreasing
+# linearly to min_correct_score at slow_seconds; a wrong answer scores wrong_score.
+scoring:
+  fast_seconds: 15
+  slow_seconds: 90
+  min_correct_score: 60
+  wrong_score: 0

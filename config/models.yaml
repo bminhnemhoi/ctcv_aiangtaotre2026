@@ -1,0 +1,196 @@
+# Model registry for runtime (brief §8, §17.2; D7–D10 v2, D29). Changing a model is a
+# mandatory stop point (plan §6) — entries with `status: proposed` await the user's decision
+# in the referenced ADR. Licenses verified 2026-09-18 (SPDX ids, `license_url` = model card).
+# `endpoint` is the Compose-internal default; `endpoint_env` names the env var that overrides
+# it at runtime. Validated by config/schemas/models.schema.json.
+version: 1
+
+models:
+  planner:
+    id: Qwen/Qwen3.5-9B
+    kind: llm
+    license: Apache-2.0
+    license_url: https://huggingface.co/Qwen/Qwen3.5-9B
+    served_by: vllm
+    endpoint: http://models:8040/v1
+    endpoint_env: VLLM_BASE_URL
+    adapter: lora
+    quantization: awq
+    confidence_threshold: 0.6
+    max_output_tokens: 160
+    prompt: coach.v1
+    tools_allowed: true
+    status: decided
+    notes: Coach planner; LoRA SFT + DPO in E07 (training/reports/ablation.md). Profile gpu.
+
+  planner_small:
+    id: Qwen/Qwen3.5-2B
+    kind: llm
+    license: Apache-2.0
+    license_url: https://huggingface.co/Qwen/Qwen3.5-2B
+    served_by: llama_cpp
+    endpoint: http://models:8040/v1
+    endpoint_env: VLLM_BASE_URL
+    adapter: lora
+    quantization: gguf_q4_k_m
+    confidence_threshold: 0.6
+    max_output_tokens: 120
+    prompt: coach.v1
+    tools_allowed: true
+    status: decided
+    notes: >-
+      Official CPU path (D29): llama.cpp server on the dev machine, CI demo, hackathon kit and
+      finals fallback (Compose profile cpu). Qwen3.5 has no 1.7B variant (D8).
+
+  vlm:
+    id: Qwen/Qwen3.5-9B
+    kind: vlm
+    license: Apache-2.0
+    license_url: https://huggingface.co/Qwen/Qwen3.5-9B
+    served_by: vllm
+    endpoint: http://models:8040/v1
+    endpoint_env: VLLM_BASE_URL
+    adapter: none
+    quantization: awq
+    confidence_threshold: 0.7
+    max_output_tokens: 400
+    prompt: vlm_screen.v1
+    tools_allowed: false
+    status: proposed
+    decision_ref: ADR-002
+    notes: >-
+      D9 v2 PROPOSAL awaiting the user's decision at PR E01: one served model — the natively
+      multimodal Qwen3.5-9B base reads screens while the planner uses its LoRA adapter (vLLM
+      multi-LoRA). Two vLLM instances + KV cache for 50 users do not fit 24 GB. Plan B in
+      ADR-002: Qwen/Qwen3-VL-8B-Instruct (Apache-2.0).
+
+  quarantine:
+    id: Qwen/Qwen3.5-9B
+    kind: llm
+    license: Apache-2.0
+    license_url: https://huggingface.co/Qwen/Qwen3.5-9B
+    served_by: vllm
+    endpoint: http://models:8040/v1
+    endpoint_env: VLLM_BASE_URL
+    adapter: none
+    quantization: awq
+    confidence_threshold: 0.5
+    max_output_tokens: 300
+    prompt: quarantine.v1
+    tools_allowed: false
+    status: decided
+    notes: Quarantined LLM (ADR-004, SEC-03) — same base, own prompt, closed output schema, no tools.
+
+  judge:
+    id: Qwen/Qwen3.5-9B
+    kind: llm
+    license: Apache-2.0
+    license_url: https://huggingface.co/Qwen/Qwen3.5-9B
+    served_by: vllm
+    endpoint: http://models:8040/v1
+    endpoint_env: VLLM_BASE_URL
+    adapter: none
+    quantization: awq
+    confidence_threshold: 0.0
+    max_output_tokens: 300
+    prompt: judge.v1
+    tools_allowed: false
+    status: decided
+    notes: >-
+      LLM-judge for data filtering (E06) and dialogue eval (`make gate`). During synthesis the
+      SYNTH_LLM_PROVIDER declared in .env may run this prompt instead; declared in the dossier.
+
+  asr:
+    id: vinai/PhoWhisper-small
+    kind: asr
+    license: BSD-3-Clause
+    license_url: https://huggingface.co/vinai/PhoWhisper-small
+    served_by: faster_whisper
+    endpoint: http://speech:8020
+    endpoint_env: null
+    adapter: none
+    quantization: int8
+    confidence_threshold: 0.5
+    tools_allowed: false
+    status: decided
+    notes: Server ASR (E04). License corrected from Apache-2.0 → BSD-3-Clause (D10).
+
+  asr_small:
+    id: vinai/PhoWhisper-tiny
+    kind: asr
+    license: BSD-3-Clause
+    license_url: https://huggingface.co/vinai/PhoWhisper-tiny
+    served_by: faster_whisper
+    endpoint: http://speech:8020
+    endpoint_env: null
+    adapter: none
+    quantization: int8
+    confidence_threshold: 0.5
+    tools_allowed: false
+    status: decided
+    notes: ASR for the CPU profile and offline PWA (D29/D30).
+
+  tts:
+    id: TBD-ADR-002
+    kind: tts
+    license: TBD
+    license_url: null
+    served_by: tbd
+    endpoint: http://speech:8020
+    endpoint_env: null
+    adapter: none
+    quantization: none
+    confidence_threshold: 0.0
+    candidates:
+      - F5-TTS-Vietnamese
+      - viXTTS
+      - Piper vi
+    tools_allowed: false
+    status: proposed
+    decision_ref: ADR-002
+    notes: Chosen in ADR-002 after MOS test with 10 elderly listeners (idea §6).
+
+  embed:
+    id: BAAI/bge-m3
+    kind: embedding
+    license: MIT
+    license_url: https://huggingface.co/BAAI/bge-m3
+    served_by: sentence_transformers
+    endpoint: http://agent:8010
+    endpoint_env: null
+    adapter: none
+    quantization: none
+    confidence_threshold: 0.0
+    tools_allowed: false
+    status: decided
+    notes: Dense retrieval for RAG (E03), hybrid with BM25 in Qdrant.
+
+  rerank:
+    id: BAAI/bge-reranker-v2-m3
+    kind: reranker
+    license: MIT
+    license_url: https://huggingface.co/BAAI/bge-reranker-v2-m3
+    served_by: sentence_transformers
+    endpoint: http://agent:8010
+    endpoint_env: null
+    adapter: none
+    quantization: none
+    confidence_threshold: 0.0
+    tools_allowed: false
+    status: decided
+    notes: Reranks top-20 chunks before citation.
+
+  ui_detector:
+    id: yolox-tiny
+    kind: detector
+    license: Apache-2.0
+    license_url: https://github.com/Megvii-BaseDetection/YOLOX/blob/main/LICENSE
+    served_by: onnxruntime
+    endpoint: http://vision:8030
+    endpoint_env: null
+    adapter: none
+    quantization: none
+    confidence_threshold: 0.5
+    tools_allowed: false
+    status: decided
+    notes: Trained in-house on 20k rendered sandbox screens (E08); Apache-2.0 instead of Ultralytics (D7).

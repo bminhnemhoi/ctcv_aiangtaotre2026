@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/models-registry.schema.json",
+  "title": "CTCV model registry (data/registry/models.yaml) — a list of models (brief §9, §17.4)",
+  "type": "array",
+  "items": { "$ref": "#/$defs/model" },
+  "$defs": {
+    "nullable_path": {
+      "description": "Repo-relative path, or null when not yet produced.",
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "base",
+        "license",
+        "license_url",
+        "adapter_path",
+        "quantization",
+        "eval_report",
+        "served_at",
+        "card"
+      ],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "base": {
+          "description": "Upstream model id (e.g. Qwen/Qwen3.5-9B) or 'scratch' for models trained from zero.",
+          "type": "string",
+          "minLength": 1
+        },
+        "license": {
+          "type": "string",
+          "enum": ["Apache-2.0", "MIT", "BSD-3-Clause", "CC-BY-4.0", "TBD"]
+        },
+        "license_url": {
+          "type": ["string", "null"],
+          "pattern": "^https://[^\\s]+$"
+        },
+        "adapter_path": { "$ref": "#/$defs/nullable_path" },
+        "quantization": {
+          "type": "string",
+          "enum": ["none", "awq", "gguf_q4_k_m", "int8", "fp16", "bf16", "onnx"]
+        },
+        "eval_report": { "$ref": "#/$defs/nullable_path" },
+        "served_at": {
+          "description": "Endpoint URL, 'local' for on-device, or null when not served.",
+          "anyOf": [
+            { "type": "string", "pattern": "^(https?://[^\\s]+|local)$" },
+            { "type": "null" }
+          ]
+        },
+        "card": { "$ref": "#/$defs/nullable_path" },
+        "trained_on": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "$defs": {
+    "Channel": {
+      "description": "How the simulated scammer reaches the learner.",
+      "enum": [
+        "sms",
+        "zalo",
+        "call"
+      ],
+      "title": "Channel",
+      "type": "string"
+    },
+    "Impersonates": {
+      "description": "Who the scammer pretends to be — a category label, never a real organisation.",
+      "enum": [
+        "cong-an",
+        "thue",
+        "ngan-hang",
+        "shipper",
+        "trung-thuong",
+        "nguoi-than",
+        "dien-luc",
+        "buu-dien"
+      ],
+      "title": "Impersonates",
+      "type": "string"
+    },
+    "Option": {
+      "additionalProperties": false,
+      "description": "One action the learner can choose.",
+      "properties": {
+        "correct": {
+          "title": "Correct",
+          "type": "boolean"
+        },
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "correct"
+      ],
+      "title": "Option",
+      "type": "object"
+    },
+    "RedFlag": {
+      "description": "Red-flag codes the debrief points at.",
+      "enum": [
+        "giuc-chuyen-tien",
+        "doi-otp",
+        "xung-co-quan",
+        "link-la",
+        "doa-dam",
+        "yeu-cau-cai-app",
+        "giu-bi-mat",
+        "tai-khoan-la"
+      ],
+      "title": "RedFlag",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One scam drill at behaviour-pattern level (a single labelled scammer turn).",
+  "properties": {
+    "channel": {
+      "$ref": "#/$defs/Channel"
+    },
+    "debrief": {
+      "description": "At most two plain sentences.",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Debrief",
+      "type": "string"
+    },
+    "impersonates": {
+      "$ref": "#/$defs/Impersonates"
+    },
+    "key": {
+      "description": "Scenario key shared by all variants; equals the file stem.",
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "title": "Key",
+      "type": "string"
+    },
+    "label": {
+      "const": "Đây là mô phỏng",
+      "description": "Fixed on-screen label.",
+      "title": "Label",
+      "type": "string"
+    },
+    "options": {
+      "items": {
+        "$ref": "#/$defs/Option"
+      },
+      "maxItems": 4,
+      "minItems": 3,
+      "title": "Options",
+      "type": "array"
+    },
+    "pretext": {
+      "description": "One sentence describing the situation (≤ 30 words).",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Pretext",
+      "type": "string"
+    },
+    "red_flags": {
+      "items": {
+        "$ref": "#/$defs/RedFlag"
+      },
+      "minItems": 1,
+      "title": "Red Flags",
+      "type": "array"
+    },
+    "severity": {
+      "description": "Weight in scoring.",
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Severity",
+      "type": "integer"
+    },
+    "three_things": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Three Things",
+      "type": "array"
+    },
+    "utterance": {
+      "description": "Exactly one turn the scammer says/sends, ≤ 40 words, contains \"[Mô phỏng]\".",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Utterance",
+      "type": "string"
+    },
+    "variant": {
+      "maximum": 5,
+      "minimum": 1,
+      "title": "Variant",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "key",
+    "channel",
+    "impersonates",
+    "variant",
+    "severity",
+    "label",
+    "pretext",
+    "utterance",
+    "red_flags",
+    "options",
+    "debrief",
+    "three_things"
+  ],
+  "title": "Drill",
+  "type": "object"
+}

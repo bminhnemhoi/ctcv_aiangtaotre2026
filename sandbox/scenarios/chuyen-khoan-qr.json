@@ -1,0 +1,98 @@
+{
+  "id": "chuyen-khoan-qr",
+  "skill_group": "thanh-toan-thue-so",
+  "level": 1,
+  "version": "1.0.0",
+  "app_label": "Ứng dụng mô phỏng ngân hàng",
+  "goal": "Chuyển 200.000đ cho con bằng quét mã QR",
+  "intent_confirmation": "Bác muốn chuyển tiền cho con hay trả tiền hàng?",
+  "start_screen": "home",
+  "screens": [
+    {
+      "id": "home",
+      "title": "Trang chính",
+      "elements": [
+        { "id": "txt_balance", "kind": "text", "label": "Số dư: 1.250.000đ" },
+        { "id": "btn_promo", "kind": "banner", "label": "Ưu đãi hôm nay, bấm ngay!", "color": "vang" },
+        { "id": "btn_qr", "kind": "button", "label": "Quét QR", "color": "xanh" },
+        { "id": "btn_history", "kind": "button", "label": "Lịch sử", "color": "xam" }
+      ],
+      "valid_actions": [{ "tap": "btn_qr", "next": "scan" }],
+      "common_mistakes": [
+        { "tap": "btn_promo", "hint": "Đó là quảng cáo, bác bấm nút xanh có chữ Quét QR nhé." },
+        { "tap": "btn_history", "hint": "Nút xám là xem lại các lần chuyển, bác bấm nút xanh có chữ Quét QR nhé." }
+      ],
+      "coach_line": "Bác bấm nút xanh có chữ Quét QR nhé.",
+      "terminal": false
+    },
+    {
+      "id": "scan",
+      "title": "Quét mã QR",
+      "elements": [
+        { "id": "txt_frame", "kind": "text", "label": "Đưa mã QR vào khung vuông" },
+        { "id": "btn_capture", "kind": "button", "label": "Quét", "color": "xanh" },
+        { "id": "btn_gallery", "kind": "button", "label": "Chọn ảnh", "color": "xam" },
+        { "id": "btn_back", "kind": "button", "label": "Quay lại", "color": "trang" }
+      ],
+      "valid_actions": [{ "tap": "btn_capture", "next": "amount" }],
+      "common_mistakes": [
+        { "tap": "btn_gallery", "hint": "Bác không cần chọn ảnh, bác bấm nút xanh có chữ Quét để máy tự đọc mã nhé." },
+        { "tap": "btn_back", "hint": "Nút này quay về trang trước, bác bấm nút xanh có chữ Quét nhé." }
+      ],
+      "coach_line": "Bác giữ điện thoại trước mã QR rồi bấm nút xanh có chữ Quét nhé.",
+      "terminal": false
+    },
+    {
+      "id": "amount",
+      "title": "Nhập số tiền",
+      "elements": [
+        { "id": "txt_recipient", "kind": "text", "label": "Người nhận: Nguyễn Văn A" },
+        { "id": "txt_balance", "kind": "text", "label": "Số dư: 1.250.000đ" },
+        { "id": "amount", "kind": "input", "label": "Số tiền", "placeholder": "Gõ số tiền, ví dụ 200000" },
+        { "id": "btn_next", "kind": "button", "label": "Tiếp tục", "color": "xanh" }
+      ],
+      "valid_actions": [{ "input": "amount", "value_pattern": "^[1-9][0-9]{3,8}$", "next": "confirm" }],
+      "common_mistakes": [
+        { "tap": "btn_next", "hint": "Bác gõ số tiền vào ô trống trước, rồi mới bấm nút xanh Tiếp tục nhé." }
+      ],
+      "coach_line": "Bác gõ số 200000 vào ô Số tiền rồi bấm nút xanh có chữ Tiếp tục nhé.",
+      "terminal": false
+    },
+    {
+      "id": "confirm",
+      "title": "Kiểm tra lại",
+      "elements": [
+        { "id": "txt_sim_label", "kind": "banner", "label": "Ứng dụng mô phỏng, không chuyển tiền thật", "color": "vang" },
+        { "id": "txt_summary", "kind": "text", "label": "Chuyển 200.000đ tới Nguyễn Văn A" },
+        { "id": "btn_confirm", "kind": "button", "label": "Chuyển tiền", "color": "xanh" },
+        { "id": "btn_cancel", "kind": "button", "label": "Hủy", "color": "do" }
+      ],
+      "valid_actions": [{ "tap": "btn_confirm", "next": "done" }],
+      "common_mistakes": [
+        { "tap": "btn_cancel", "hint": "Nút đỏ là Hủy, bác bấm nút xanh có chữ Chuyển tiền nhé." }
+      ],
+      "coach_line": "Bác xem lại số tiền và tên người nhận rồi bấm nút xanh có chữ Chuyển tiền nhé.",
+      "terminal": false
+    },
+    {
+      "id": "done",
+      "title": "Chuyển tiền thành công",
+      "elements": [
+        { "id": "txt_done", "kind": "text", "label": "Đã chuyển 200.000đ tới Nguyễn Văn A (mô phỏng)" },
+        { "id": "btn_home", "kind": "button", "label": "Về trang chính", "color": "xanh" }
+      ],
+      "valid_actions": [],
+      "common_mistakes": [],
+      "coach_line": "Bác đã chuyển tiền xong rồi, giỏi lắm ạ.",
+      "terminal": true
+    }
+  ],
+  "success": { "screen": "done", "conditions": { "amount": 200000 } },
+  "never_ask": ["otp", "mat_khau", "so_the", "cccd", "ma_pin"],
+  "fake_data": {
+    "balance": 1250000,
+    "recipient": "Nguyễn Văn A",
+    "recipient_bank": "Ngân hàng mô phỏng",
+    "amount_expected": 200000
+  }
+}

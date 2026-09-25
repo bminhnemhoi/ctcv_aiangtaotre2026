@@ -1,0 +1,37 @@
+[project]
+name = "ctcv-vision"
+version = "0.1.0"
+description = "Vision service: UI-element detection (YOLOX-Tiny ONNX), screen reading via the VLM, PII masking, 60 s TTL — E01 skeleton, real models land in E08"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "ctcv-core",
+  "fastapi>=0.115",
+  "python-multipart>=0.0.12",
+  "uvicorn>=0.30",
+]
+
+[project.optional-dependencies]
+# E08 (epics/E08.md) — image/model runtimes are deliberately NOT installed in E01 (no GPU on
+# the dev machine; keeps the image small). When E08 lands, uncomment, add each package to
+# config/allowed-deps.yaml (D26) and install with `uv sync --package ctcv-vision --extra runtime`.
+# NEVER add ultralytics/yolov5 (AGPL-3.0, banned by D7/D26) — the detector is YOLOX-Tiny (Apache-2.0).
+runtime = [
+  # "onnxruntime>=1.19",            # E08 — YOLOX-Tiny ONNX (models.ui_detector), MIT
+  # "opencv-python-headless>=4.10", # E08 — decode + blur of pii_bboxes, Apache-2.0
+  # "pillow>=10.4",                 # E08 — image I/O and overlay, MIT-CMU
+]
+
+[project.scripts]
+ctcv-vision = "ctcv_vision.app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ctcv_vision"]
+
+[tool.uv.sources]
+ctcv-core = { workspace = true }

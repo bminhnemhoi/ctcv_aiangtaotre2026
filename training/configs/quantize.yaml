@@ -1,0 +1,33 @@
+# Lượng tử hóa (plan §7 dòng 3; epic E07): AWQ 4-bit cho vLLM (planner 9B) và GGUF Q4_K_M
+# cho đường CPU llama.cpp (planner_small = Qwen3.5-2B — D8/D29; plan ghi "1.7B" là errata).
+# Điều kiện dừng: eval giảm ≤ 2 điểm so với FP16.
+version: 1
+kind: quantize
+name: planner-quantize
+epic: E07
+adapter_from: planner-dpo # merge LoRA vào bf16 trước khi lượng tử hóa (F03), trừ khi D9 chốt multi-LoRA
+
+targets:
+  - model_key: planner # Qwen/Qwen3.5-9B
+    method: awq
+    bits: 4
+    group_size: 128
+    serve_with: vllm
+    output_name: planner-awq-int4
+  - model_key: planner_small # Qwen/Qwen3.5-2B
+    method: gguf
+    quant_type: Q4_K_M
+    serve_with: llama_cpp
+    output_name: planner-small-q4-k-m
+
+stop: # "Eval giảm ≤ 2 điểm so với FP16"
+  metric: eval_score_drop_points
+  mode: min
+  max_allowed: 2
+
+budget:
+  estimated_gpu_hours: 1
+  estimated_api_vnd: 0
+
+output:
+  run_name: planner-quantize

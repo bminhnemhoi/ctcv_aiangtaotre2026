@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/models.schema.json",
+  "title": "CTCV model config (config/models.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "models"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planner",
+        "planner_small",
+        "vlm",
+        "quarantine",
+        "judge",
+        "asr",
+        "asr_small",
+        "tts",
+        "embed",
+        "rerank",
+        "ui_detector"
+      ],
+      "properties": {
+        "planner": { "$ref": "#/$defs/model" },
+        "planner_small": { "$ref": "#/$defs/model" },
+        "vlm": { "$ref": "#/$defs/model" },
+        "quarantine": { "$ref": "#/$defs/model" },
+        "judge": { "$ref": "#/$defs/model" },
+        "asr": { "$ref": "#/$defs/model" },
+        "asr_small": { "$ref": "#/$defs/model" },
+        "tts": { "$ref": "#/$defs/model" },
+        "embed": { "$ref": "#/$defs/model" },
+        "rerank": { "$ref": "#/$defs/model" },
+        "ui_detector": { "$ref": "#/$defs/model" }
+      }
+    }
+  },
+  "$defs": {
+    "allowed_model_id": {
+      "description": "Closed list from brief §8 / D7–D10 (Qwen3-VL kept as plan B of ADR-002). Adding an id requires an ADR.",
+      "type": "string",
+      "enum": [
+        "Qwen/Qwen3.5-9B",
+        "Qwen/Qwen3.5-4B",
+        "Qwen/Qwen3.5-2B",
+        "Qwen/Qwen3-VL-8B-Instruct",
+        "vinai/PhoWhisper-small",
+        "vinai/PhoWhisper-tiny",
+        "TBD-ADR-002",
+        "BAAI/bge-m3",
+        "BAAI/bge-reranker-v2-m3",
+        "yolox-tiny"
+      ]
+    },
+    "license": {
+      "description": "SPDX identifier, or TBD while ADR-002 is open.",
+      "type": "string",
+      "enum": ["Apache-2.0", "MIT", "BSD-3-Clause", "CC-BY-4.0", "TBD"]
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "license",
+        "license_url",
+        "served_by",
+        "endpoint",
+        "endpoint_env",
+        "adapter",
+        "quantization",
+        "confidence_threshold",
+        "tools_allowed",
+        "status"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/allowed_model_id" },
+        "kind": {
+          "type": "string",
+          "enum": ["llm", "vlm", "asr", "tts", "embedding", "reranker", "detector"]
+        },
+        "license": { "$ref": "#/$defs/license" },
+        "license_url": {
+          "type": ["string", "null"],
+          "pattern": "^https://[^\\s]+$"
+        },
+        "served_by": {
+          "type": "string",
+          "enum": [
+            "vllm",
+            "llama_cpp",
+            "faster_whisper",
+            "sentence_transformers",
+            "onnxruntime",
+            "tbd"
+          ]
+        },
+        "endpoint": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(https?://[^\\s]+|local)$"
+        },
+        "endpoint_env": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "adapter": { "type": "string", "enum": ["none", "lora"] },
+        "quantization": {
+          "type": "string",
+          "enum": ["none", "awq", "gguf_q4_k_m", "int8", "fp16", "bf16"]
+        },
+        "confidence_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "max_output_tokens": { "type": "integer", "minimum": 1 },
+        "prompt": {
+          "description": "System prompt file stem in config/prompts (name.vN).",
+          "type": "string",
+          "pattern": "^[a-z_]+\\.v[0-9]+$"
+        },
+        "tools_allowed": {
+          "description": "Only the planner may call tools (ADR-004: quarantine/judge/vlm never do).",
+          "type": "boolean"
+        },
+        "status": { "type": "string", "enum": ["decided", "proposed"] },
+        "decision_ref": { "type": "string", "pattern": "^ADR-[0-9]{3}$" },
+        "candidates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "proposed" } } },
+          "then": { "required": ["decision_ref"] }
+        },
+        {
+          "if": { "properties": { "tools_allowed": { "const": true } } },
+          "then": { "properties": { "kind": { "const": "llm" } } }
+        }
+      ]
+    }
+  }
+}

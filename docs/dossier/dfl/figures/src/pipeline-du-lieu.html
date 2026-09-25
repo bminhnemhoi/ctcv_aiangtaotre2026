@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hình 2 – Pipeline dữ liệu</title>
+    <link rel="stylesheet" href="../../video/slides/style.css" />
+  </head>
+  <body class="figure">
+    <h1>Pipeline dữ liệu: từ trang công khai đến chỉ mục có kiểm chứng</h1>
+    <div class="pipe2 grow">
+      <div class="box xam">Trang công khai<small>Cổng Dịch vụ công – Bộ Công an</small></div>
+      <div class="arrow"></div>
+      <div class="box">Thu thập<small>đọc robots.txt, nêu tên dự án, giãn cách, không né chặn</small></div>
+      <div class="arrow"></div>
+      <div class="box">Manifest<small>URL, thời điểm lấy, mã băm sha256</small></div>
+
+      <div class="arrow down p5"></div>
+
+      <div class="box dam">Bộ kiểm thử nghiệp vụ<small>dev và test tách riêng</small></div>
+      <div class="arrow rev"></div>
+      <div class="box">Chỉ mục lai<small>BM25 + vector bge-m3</small></div>
+      <div class="arrow rev"></div>
+      <div class="box">Bản ghi TTHC v1<small>JSON Schema, sha256 nội dung</small></div>
+    </div>
+    <div class="metrics">
+      <div class="metric">
+        <span class="value" data-metric="suites.qa.details.kb.procedures">chưa đo</span>
+        <span class="label">thủ tục trong kho</span>
+      </div>
+      <div class="metric">
+        <span class="value" data-metric="suites.qa.details.kb.chunks">chưa đo</span>
+        <span class="label">đoạn có chỉ mục</span>
+      </div>
+      <div class="metric">
+        <span class="value" data-metric="suites.qa.details.kb.records_valid_pct">chưa đo</span>
+        <span class="label">% bản ghi hợp lệ theo schema</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Ngày cập nhật, ngày hiệu lực để trống khi nguồn không công bố; không tự điền</span>
+      <span>Số: eval/reports/latest.json</span>
+    </div>
+  </body>
+</html>

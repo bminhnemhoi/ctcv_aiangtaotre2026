@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "procedure_id": "1.004222",
+  "ma_thu_tuc": "1.004222",
+  "ten": "Đăng ký thường trú",
+  "linh_vuc": "Đăng ký, quản lý cư trú",
+  "co_quan_thuc_hien": "Công an Xã",
+  "cap_thuc_hien": "xa",
+  "muc_do_dvc": "Dịch vụ công trực tuyến một phần",
+  "doi_tuong": null,
+  "cach_thuc": [
+    {
+      "kenh": "truc_tiep",
+      "kenh_text": "Trực tiếp",
+      "thoi_han": "07 Ngày làm việc",
+      "phi_le_phi": "Trường hợp công dân nộp hồ sơ trực tiếp thu 20.000 đồng/lần đăng ký",
+      "phi_vnd": [
+        20000
+      ],
+      "mo_ta": "Nộp hồ sơ trực tiếp tại Công an cấp xã. Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật)."
+    },
+    {
+      "kenh": "truc_tuyen",
+      "kenh_text": "Trực tuyến",
+      "thoi_han": "07 Ngày làm việc",
+      "phi_le_phi": "Trường hợp công dân nộp hồ sơ qua cổng dịch vụ công trực tuyến thu 10.000 đồng/lần đăng ký.",
+      "phi_vnd": [
+        10000
+      ],
+      "mo_ta": "Nộp hồ sơ trực tuyến qua các cổng cung cấp dịch vụ công trực tuyến như: Trực tuyến qua Cổng dịch vụ công quốc gia, Cổng dịch vụ công Bộ Công an, ứng dụng VNeID hoặc dịch vụ công trực tuyến khác theo quy định của pháp luật; Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật)."
+    }
+  ],
+  "trinh_tu": [
+    "Bước 1: Cá nhân, tổ chức chuẩn bị hồ sơ theo quy định của pháp luật.",
+    "Bước 2: Cá nhân, tổ chức nộp hồ sơ tại Công an cấp xã.",
+    "Bước 3: Khi tiếp nhận hồ sơ đăng ký thường trú, cơ quan đăng ký cư trú kiểm tra tính pháp lý và nội dung hồ sơ:",
+    "+ Trường hợp hồ sơ đã đầy đủ, hợp lệ thì tiếp nhận hồ sơ và cấp Phiếu tiếp nhận hồ sơ và hẹn trả kết quả (Mẫu CT04 ban hành kèm theo Thông tư số 66/2023/TT- BCA) cho người đăng ký.",
+    "+ Trường hợp hồ sơ đủ điều kiện nhưng chưa đủ hồ sơ thì hướng dẫn bổ sung, hoàn thiện và cấp Phiếu hướng dẫn bổ sung, hoàn thiện hồ sơ (Mẫu CT05 ban hành kèm theo Thông tư số 66/2023/TT- BCA) cho người đăng ký;",
+    "+ Trường hợp hồ sơ không đủ điều kiện thì từ chối và cấp Phiếu từ chối tiếp nhận, giải quyết hồ sơ (Mẫu CT06 ban hành kèm theo Thông tư số 66/2023/TT- BCA) cho người đăng ký.",
+    "Bước 4: Cá nhân, tổ chức nộp lệ phí đăng ký cư trú theo quy định.",
+    "Bước 5: Căn cứ theo ngày hẹn trên Phiếu tiếp nhận hồ sơ và hẹn trả kết quả để nhận thông báo kết quả giải quyết thủ tục đăng ký cư trú (nếu có)."
+  ],
+  "thanh_phan_ho_so": [
+    {
+      "doc_key": "d01",
+      "truong_hop": "Trường hợp công dân đăng ký thường trú vào chỗ ở hợp pháp thuộc quyền sở hữu của mình",
+      "ten_giay_to": "Giấy tờ, tài liệu chứng minh việc sở hữu chỗ ở hợp pháp. Trừ trường hợp thông tin chứng minh về chỗ ở hợp pháp của công dân đã có trong cơ sở dữ liệu chuyên ngành đã được kết nối, chia sẻ với cơ quan đăng ký cư trú hoặc được công dân cung cấp nguồn dẫn hoặc đã có bản điện tử trên dịch vụ công qua giải quyết thủ tục hành chính khác thì cơ quan đăng ký cư trú tự kiểm tra, xác minh không yêu cầu công dân xuất trình giấy tờ chứng minh.",
+      "ban_chinh": 0,
+      "ban_sao": 1,
+      "mau": null
+    },
+    {
+      "doc_key": "d02",
+      "truong_hop": "Trường hợp công dân đăng ký thường trú vào chỗ ở hợp pháp thuộc quyền sở hữu của mình",
+      "ten_giay_to": "Trường hợp người Việt Nam định cư ở nước ngoài về Việt Nam sinh sống nhập cảnh vào Việt Nam lần gần nhất bằng hộ chiếu do nước ngoài cấp hoặc giấy tờ thay thế hộ chiếu do nước ngoài cấp hoặc giấy tờ khác do cơ quan có thẩm quyền của Việt Nam cấp hoặc sử dụng hộ chiếu Việt Nam nhưng bị mất, hết hạn sử dụng thực hiện thủ tục đăng ký thường trú thì sử dụng Tờ khai thay đổi thông tin về cư trú (dùng cho người Việt Nam định cư ở nước ngoài) (mẫu CT02 ban hành kèm theo Thông tư số 66/2023/TT-BCA)",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CT02"
+    },
+    {
+      "doc_key": "d03",
+      "truong_hop": "Trường hợp công dân đăng ký thường trú vào chỗ ở hợp pháp thuộc quyền sở hữu của mình",
+      "ten_giay_to": "Tờ khai thay đổi thông tin cư trú (mẫu CT01 ban hành kèm theo Thông tư số 66/2023/TT-BCA)",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CT01"
+    },
+    {
+      "doc_key": "d04",
+      "truong_hop": "Đăng ký thường trú tại chỗ ở hợp pháp không thuộc quyền sở hữu của mình: - Những trường hợp khác được đăng ký thường trú vào chỗ ở hợp pháp do thuê, mượn, ở nhờ, hồ sơ gồm",
+      "ten_giay_to": "Giấy tờ, tài liệu chứng minh đủ diện tích nhà ở để đăng ký thường trú theo quy định. Trừ trường hợp thông tin chứng minh về việc đủ diện tích nhà ở để đăng ký thường trú trên giấy chứng nhận về quyền sử dụng đất, quyền sở hữu nhà ở mà giấy tờ này đã có trong cơ sở dữ liệu chuyên ngành đã được kết nối, chia sẻ với cơ quan đăng ký cư trú thì cơ quan đăng ký cư trú tự kiểm tra, xác minh không yêu cầu công dân xuất trình giấy tờ chứng minh",
+      "ban_chinh": 0,
+      "ban_sao": 1,
+      "mau": null
+    },
+    {
+      "doc_key": "d05",
+      "truong_hop": "Đăng ký thường trú tại chỗ ở hợp pháp không thuộc quyền sở hữu của mình: - Những trường hợp khác được đăng ký thường trú vào chỗ ở hợp pháp do thuê, mượn, ở nhờ, hồ sơ gồm",
+      "ten_giay_to": "Hợp đồng cho thuê, cho mượn, cho ở nhờ hoặc văn bản về việc cho mượn, cho ở nhờ chỗ ở hợp pháp đã được công chứng hoặc chứng thực theo quy định của pháp luật",
+      "ban_chinh": 0,
+      "ban_sao": 1,
+      "mau": null
+    },
+    {
+      "doc_key": "d06",
+      "truong_hop": "Đăng ký thường trú tại chỗ ở hợp pháp không thuộc quyền sở hữu của mình: - Những trường hợp khác được đăng ký thường trú vào chỗ ở hợp pháp do thuê, mượn, ở nhờ, hồ sơ gồm",
+      "ten_giay_to": "Tờ khai thay đổi thông tin cư trú (Mẫu CT01 ban hành kèm theo Thông tư số 66/2023/TT-BCA) trong đó ghi rõ ý kiến đồng ý cho đăng ký thường trú của chủ hộ, chủ sở hữu chỗ ở hợp pháp được cho thuê, cho mượn, cho ở nhờ hoặc người được ủy quyền, trừ trường hợp đã có ý kiến đồng ý bằng văn bản;",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CT01"
+    }
+  ],
+  "yeu_cau_dieu_kien": "không",
+  "can_cu_phap_ly": [
+    {
+      "so_hieu": "68/2020/QH14",
+      "ten": "Luật 68/2020/QH14"
+    },
+    {
+      "so_hieu": "62/2021/NĐ-CP",
+      "ten": "Nghị định 62/2021/NĐ-CP"
+    },
+    {
+      "so_hieu": "55/2021/TT-BCA",
+      "ten": "Thông tư 55/2021/TT-BCA"
+    },
+    {
+      "so_hieu": "56/2021/TT-BCA",
+      "ten": "Thông tư 56/2021/TT-BCA"
+    },
+    {
+      "so_hieu": "57/2021/TT-BCA",
+      "ten": "Thông tư 57/2021/TT-BCA"
+    },
+    {
+      "so_hieu": "85/2019/TT-BTC",
+      "ten": "Thông tư 85/2019/TT-BTC"
+    },
+    {
+      "so_hieu": "75/2022/TT-BTC",
+      "ten": "Thông tư số 75/2022/TT-BTC của Bộ Tài chính: Quy định mức thu, chế độ thu, nộp và quản lý lệ phí đăng ký cư trú"
+    }
+  ],
+  "bieu_mau": [],
+  "ket_qua": "Cập nhật thông tin trong Cơ sở dữ liệu quốc gia về dân cư; Cập nhật thông tin trong Cơ sở dữ liệu về cư trú; Thông báo kết quả giải quyết thủ tục về cư trú, hủy bỏ thủ tục về cư trú; Phiếu từ chối tiếp nhận, giải quyết hồ sơ (lĩnh vực cư trú)",
+  "sections_raw": {
+    "Mã thủ tục": "1.004222",
+    "Lĩnh vực": "Đăng ký, quản lý cư trú",
+    "Cơ quan thực hiện": "Công an Xã",
+    "Mức độ cung cấp dịch vụ công trực tuyến": "Dịch vụ công trực tuyến một phần",
+    "Cách thức thực hiện": "Trực tiếp Trực tuyến",
+    "Thời hạn giải quyết": "Trực tiếp 07 Ngày làm việc - Nộp hồ sơ trực tiếp tại Công an cấp xã. Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật).Trực tuyến 07 Ngày làm việc - Nộp hồ sơ trực tuyến qua các cổng cung cấp dịch vụ công trực tuyến như: Trực tuyến qua Cổng dịch vụ công quốc gia, Cổng dịch vụ công Bộ Công an, ứng dụng VNeID hoặc dịch vụ công trực tuyến khác theo quy định của pháp luật; Thời gian tiếp nhận hồ sơ: Giờ hành chính các ngày làm việc từ thứ 2 đến thứ 6 và sáng thứ 7 hàng tuần (trừ các ngày nghỉ lễ, tết theo quy định của pháp luật).",
+    "Phí": "Trực tiếp 07 Ngày làm việc20.000Trường hợp công dân nộp hồ sơ trực tiếp thu 20.000 đồng/lần đăng ký;Trực tuyến 07 Ngày làm việc10.000Trường hợp công dân nộp hồ sơ qua cổng dịch vụ công trực tuyến thu 10.000 đồng/lần đăng ký.",
+    "Lệ Phí": "Không",
+    "Yêu cầu - điều kiện": "không",
+    "Kết quả thực hiện": "Cập nhật thông tin trong Cơ sở dữ liệu quốc gia về dân cư Cập nhật thông tin trong Cơ sở dữ liệu về cư trú Thông báo kết quả giải quyết thủ tục về cư trú, hủy bỏ thủ tục về cư trú Phiếu từ chối tiếp nhận, giải quyết hồ sơ (lĩnh vực cư trú)"
+  },
+  "meta": {
+    "source_url": "https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26360",
+    "source_portal": "Cổng Dịch vụ công - Bộ Công an",
+    "agency": "Bộ Công an",
+    "matt": "26360",
+    "linh_vuc_code": "QL_CU_TRU",
+    "fetched_at": "2026-09-24T18:38:59Z",
+    "sha256_raw": "fe7d4923ed42c8f4c1324c2345f4bd4e84993a76f5e7574d45d8cc1177acc224",
+    "sha256_content": "1080e616909bc4580a1535fb77b2c3342867382a5197fa778ab4e784749f506e",
+    "updated_at": null,
+    "effective_date": null,
+    "license_note": "Ghi rõ nguồn \"Cổng Dịch vụ công - Bộ Công an\" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp",
+    "parser_version": "tthc-bca/1"
+  }
+}

@@ -1,0 +1,1 @@
+Marker E01 (brief D22): khi file này tồn tại, hook protect-paths KHÔNG chặn sửa .claude/**, CLAUDE.md, .github/workflows/**, .pre-commit-config.yaml, Makefile để dựng khung E01 — PHẢI XÓA file này khi merge PR E01 (sau đó các file trên chỉ sửa qua ADR được duyệt).

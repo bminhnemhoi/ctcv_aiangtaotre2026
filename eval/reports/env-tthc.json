@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-09-25T07:55:37Z",
+  "run": {
+    "command": "uv run python -m ctcv_eval.harness",
+    "started_at": "2026-09-25T07:32:35Z",
+    "finished_at": "2026-09-25T07:34:35Z",
+    "harness_generated_at": "2026-09-25T07:34:35+00:00",
+    "num_gpu_env": null,
+    "compose_mode_env": null,
+    "pre_run_tests": "uv run pytest services/agent eval data -q -p no:cacheprovider → exit 0, 1100 test qua",
+    "calibration_command": "không chạy lại ở v2 (config/rag.yaml gate giữ như v1; xem calibration-tthc.md)"
+  },
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12450HX",
+    "physical_cores": 8,
+    "logical_cores": 12,
+    "ram_gb": 15.7,
+    "gpu_adapters": [
+      "Intel(R) UHD Graphics",
+      "NVIDIA GeForce RTX 4050 Laptop GPU"
+    ],
+    "os": "Windows 11 (10.0.22631)",
+    "python": "3.12.13"
+  },
+  "ollama": {
+    "version": "0.34.4",
+    "models": [
+      {
+        "tag": "bge-m3:latest",
+        "digest": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+        "size_bytes": 1157672605,
+        "family": "bert",
+        "parameter_size": "566.70M",
+        "quantization": "F16",
+        "format": "gguf"
+      },
+      {
+        "tag": "qwen3.5:2b",
+        "digest": "324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df",
+        "size_bytes": 2741192820,
+        "family": "qwen35",
+        "parameter_size": "2.3B",
+        "quantization": "Q8_0",
+        "format": "gguf"
+      }
+    ],
+    "loaded_at_end_of_run": [
+      {
+        "tag": "qwen3.5:2b",
+        "size": "2.4 GB",
+        "processor": "100% GPU",
+        "context_length": 4096
+      },
+      {
+        "tag": "bge-m3:latest",
+        "size": "664 MB",
+        "processor": "100% GPU",
+        "context_length": 4096
+      }
+    ],
+    "inference_device_note": "Lượt đo chính (latest.json, ablation-tthc.json): Ollama tự nạp mô hình lên GPU rời NVIDIA RTX 4050 Laptop (ollama ps cuối lượt: 100% GPU) — độ trễ là có GPU hỗ trợ. Số đo chỉ-CPU (CTCV_OLLAMA_NUM_GPU=0, ollama ps: 100% CPU) ở eval/reports/latency-cpu-only.json."
+  },
+  "chunker_version": "tthc-chunk/1",
+  "index_meta": {
+    "built_at": "2026-09-24T20:39:07Z",
+    "chunker_version": "tthc-chunk/1",
+    "embed_model_id": "BAAI/bge-m3",
+    "embed_serving_name": "bge-m3",
+    "dim": 1024,
+    "n_chunks": 955,
+    "records": 107,
+    "records_sha256": "27db0f17f0114c9b56d81d3e3454ed6d218f2cb2fa241f662a11d29682760af0",
+    "vectors_sha256": "f2b43ed40e4abfd28c2f2a313122bb38969cb3fef74177cbe6f780d9c6198abb"
+  },
+  "code": {
+    "commit": null,
+    "files": 184,
+    "sha256": "64626778d3312734278efe0154298f6740a0f686628a6a3959e6b7346c1adc67",
+    "method": "chưa có commit: sha256 của danh sách 'đường_dẫn<TAB>sha256(file)' đã sắp xếp, gồm services, libs, eval/src, data/src, config, scripts, apps/web/src (đuôi .json, .md, .py, .ts, .tsx, .yaml, .yml; bỏ tests, node_modules, __pycache__, dist)"
+  },
+  "measurement": "v2 (sau giai đoạn sửa lỗi); v1 lúc 2026-09-25T03:07Z",
+  "cpu_only_run": {
+    "command": "CTCV_OLLAMA_NUM_GPU=0 uv run python -m ctcv_eval.harness --suite qa --report-dir <thư mục tạm>",
+    "started_at": "2026-09-25T07:35:04Z",
+    "finished_at": "2026-09-25T07:53:09Z",
+    "report": "eval/reports/latency-cpu-only.json"
+  }
+}

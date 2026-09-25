@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/tools.schema.json",
+  "title": "CTCV agent tool whitelist (config/tools.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "tools"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "tools": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/tool" }
+    }
+  },
+  "$defs": {
+    "tool_name": {
+      "description": "Closed whitelist (brief §7). Adding a tool is a mandatory stop point.",
+      "type": "string",
+      "enum": [
+        "get_session_state",
+        "next_step",
+        "search_guides",
+        "verify_citation",
+        "start_drill",
+        "grade_drill",
+        "log_progress",
+        "escalate_to_volunteer"
+      ]
+    },
+    "side_effect": { "type": "string", "enum": ["none", "sandbox", "log"] },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "description", "side_effect", "args"],
+      "properties": {
+        "name": { "$ref": "#/$defs/tool_name" },
+        "description": { "type": "string", "minLength": 10 },
+        "side_effect": { "$ref": "#/$defs/side_effect" },
+        "args": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+        }
+      }
+    }
+  }
+}

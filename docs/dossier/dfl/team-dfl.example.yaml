@@ -1,0 +1,34 @@
+# Mẫu thông tin đội cho hồ sơ Data for Life 2026 (đề DA940-01).
+#
+# Cách dùng: sao chép file này thành docs/dossier/private/team-dfl.yaml (thư mục private/ đã gitignore),
+# rồi điền thông tin thật. Công cụ dựng hồ sơ (docs/dossier/build/build_dfl.py) đọc file đó để in bảng đội
+# ({{team_table}}) và các liên kết ({{link:video|…}}, {{link:repo|…}}, {{link:demo|…}}) vào bản đề xuất PDF.
+#
+# KHÔNG ghi số điện thoại, email, ngày sinh hay số giấy tờ tùy thân vào file này. Các thông tin đó chỉ gõ
+# trực tiếp trên form dataforlife.vn.
+# Mỗi thành viên phải tự đồng ý cho tên mình xuất hiện trong bản đề xuất.
+
+members:
+  - ho_ten: "Nguyễn Văn A"            # ví dụ, thay bằng họ tên thật
+    vai_tro: "Đội trưởng; dữ liệu và đánh giá"
+    trinh_do: "Sinh viên năm …, ngành …"
+    nang_luc: >-                       # ≤ 500 ký tự, trùng ô "Tóm tắt kinh nghiệm" trên form
+      Mô tả ngắn kinh nghiệm và phần đóng góp cho CTCV.
+    portfolio: "https://github.com/<ten-tai-khoan>"   # đội trưởng bắt buộc có
+  - ho_ten: "Trần Thị B"
+    vai_tro: "Backend và mô hình"
+    trinh_do: "…"
+    nang_luc: >-
+      …
+    portfolio: ""
+  - ho_ten: "Lê Văn C"
+    vai_tro: "Giao diện và video"
+    trinh_do: "…"
+    nang_luc: >-
+      …
+    portfolio: ""
+
+lien_ket:
+  video: ""   # link YouTube (Không công khai) hoặc Google Drive (ai có link đều xem được)
+  repo: ""    # link GitHub; nếu công khai, kiểm tra không có .env và docs/dossier/private/
+  demo: ""    # để trống khi chưa có máy chủ công khai (mục không bắt buộc)

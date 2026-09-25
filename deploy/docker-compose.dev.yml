@@ -1,0 +1,155 @@
+# CTCV — dev overlay (Windows dev machine / laptop). Bind mounts for hot reload, every port
+# published on localhost, no caddy / uptime-kuma (the Vite dev server talks to api directly).
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml up --build
+# or simply `make dev` (COMPOSE_PROFILES=cpu is the Makefile default).
+#
+# Hot reload works because the images install workspace packages as *editable* (uv sync);
+# if a build fell back to --no-editable, the venv holds a copy and the mount is inert.
+# Services start through deploy/docker/serve.py (same entrypoint as the image CMD) with
+# uvicorn --reload watching the mounted src/ directories.
+
+x-host-gateway: &host_gateway
+  # Reach a llama.cpp server or an SSH tunnel running on the host (VLLM_BASE_URL=
+  # http://host.docker.internal:8080/v1) from inside the containers.
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+services:
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  redis:
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  qdrant:
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+
+  minio:
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+
+  api:
+    <<: *host_gateway
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ../libs:/app/libs
+      - ../config:/app/config
+      - ../sandbox:/app/sandbox
+      - ../drills:/app/drills
+      - ../services/api:/app/services/api
+    environment:
+      CTCV_ENV: dev
+      LOG_LEVEL: DEBUG
+    command:
+      - python
+      - /app/serve.py
+      - ctcv_api
+      - "8000"
+      - --reload
+      - --reload-dir
+      - /app/services/api/src
+      - --reload-dir
+      - /app/libs/core/src
+
+  agent:
+    <<: *host_gateway
+    ports:
+      - "${AGENT_PORT:-8010}:8010"
+    volumes:
+      - ../libs:/app/libs
+      - ../config:/app/config
+      - ../sandbox:/app/sandbox
+      - ../drills:/app/drills
+      - ../services/agent:/app/services/agent
+    environment:
+      CTCV_ENV: dev
+      LOG_LEVEL: DEBUG
+    command:
+      - python
+      - /app/serve.py
+      - ctcv_agent
+      - "8010"
+      - --reload
+      - --reload-dir
+      - /app/services/agent/src
+      - --reload-dir
+      - /app/libs/core/src
+
+  speech:
+    ports:
+      - "${SPEECH_PORT:-8020}:8020"
+    volumes:
+      - ../libs:/app/libs
+      - ../config:/app/config
+      - ../sandbox:/app/sandbox
+      - ../drills:/app/drills
+      - ../services/speech:/app/services/speech
+    environment:
+      CTCV_ENV: dev
+      LOG_LEVEL: DEBUG
+    command:
+      - python
+      - /app/serve.py
+      - ctcv_speech
+      - "8020"
+      - --reload
+      - --reload-dir
+      - /app/services/speech/src
+
+  vision:
+    <<: *host_gateway
+    ports:
+      - "${VISION_PORT:-8030}:8030"
+    volumes:
+      - ../libs:/app/libs
+      - ../config:/app/config
+      - ../sandbox:/app/sandbox
+      - ../drills:/app/drills
+      - ../services/vision:/app/services/vision
+    environment:
+      CTCV_ENV: dev
+      LOG_LEVEL: DEBUG
+    command:
+      - python
+      - /app/serve.py
+      - ctcv_vision
+      - "8030"
+      - --reload
+      - --reload-dir
+      - /app/services/vision/src
+
+  # Vite dev server instead of the caddy-served build: node image, workspace mounted,
+  # node_modules kept in a named volume so the Windows host tree stays clean.
+  web:
+    image: ${NODE_IMAGE:-node:20-alpine}
+    build: !reset null
+    working_dir: /workspace/apps/web
+    command: ["sh", "-c", "corepack enable && corepack prepare pnpm@10.18.0 --activate && pnpm install --frozen-lockfile && pnpm dev --host 0.0.0.0 --port 5173"]
+    ports:
+      - "${WEB_PORT:-5173}:5173"
+    volumes:
+      - ..:/workspace
+      - web_node_modules:/workspace/node_modules
+      - web_app_node_modules:/workspace/apps/web/node_modules
+    environment:
+      # apps/web reads VITE_API_BASE (default /v1). The Vite proxy targets localhost:8000,
+      # which is not the api container from inside this one, so the browser calls the
+      # host-published api port directly (CORS allows http://localhost:5173).
+      VITE_API_BASE: http://localhost:${API_PORT:-8000}/v1
+    healthcheck: !reset null
+
+  # Not needed in dev: hidden behind a profile nobody enables.
+  caddy:
+    profiles: ["edge"]
+
+  uptime-kuma:
+    profiles: ["edge"]
+
+volumes:
+  web_node_modules:
+  web_app_node_modules:

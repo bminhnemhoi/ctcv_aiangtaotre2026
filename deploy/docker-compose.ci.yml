@@ -1,0 +1,27 @@
+# CTCV — CI overlay: BuildKit GitHub Actions cache for every built image (check.yml `build`
+# job). Kept out of the base file so local `make build` never tries the gha exporter.
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.ci.yml --profile cpu build
+# Requires ACTIONS_RUNTIME_TOKEN/ACTIONS_CACHE_URL in the environment
+# (crazy-max/ghaction-github-runtime) and a buildx builder (docker/setup-buildx-action).
+
+services:
+  api:
+    build:
+      cache_from: ["type=gha,scope=ctcv-api"]
+      cache_to: ["type=gha,scope=ctcv-api,mode=max"]
+  agent:
+    build:
+      cache_from: ["type=gha,scope=ctcv-agent"]
+      cache_to: ["type=gha,scope=ctcv-agent,mode=max"]
+  speech:
+    build:
+      cache_from: ["type=gha,scope=ctcv-speech"]
+      cache_to: ["type=gha,scope=ctcv-speech,mode=max"]
+  vision:
+    build:
+      cache_from: ["type=gha,scope=ctcv-vision"]
+      cache_to: ["type=gha,scope=ctcv-vision,mode=max"]
+  web:
+    build:
+      cache_from: ["type=gha,scope=ctcv-web"]
+      cache_to: ["type=gha,scope=ctcv-web,mode=max"]

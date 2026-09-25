@@ -1,0 +1,25 @@
+[project]
+name = "ctcv-drills"
+version = "0.1.0"
+description = "Scam-vaccine drills: behaviour-level scenarios, D27 validator, scoring (E01 brief §6)"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "ctcv-core",
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+]
+
+[project.scripts]
+ctcv-drills-validate = "ctcv_drills.validate:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ctcv_drills"]
+
+[tool.uv.sources]
+ctcv-core = { workspace = true }

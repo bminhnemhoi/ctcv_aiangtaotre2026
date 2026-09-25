@@ -1,0 +1,800 @@
+# data/sources.tthc.candidates.yaml — DANH SÁCH ĐỀ XUẤT (chưa duyệt) thủ tục hành chính cho kho RAG.
+# Sinh bởi khảo sát 25/9/2026 (docs/analysis/2026-09-25-nguon-du-lieu-tthc.md). KHÔNG phải nguồn crawl:
+# crawler chỉ đọc data/sources.yaml. Đội duyệt → chuyển mục đã duyệt vào sources.yaml (E03).
+# verified: true  = đã mở trang chi tiết trên dichvucong.bocongan.gov.vn (robots cho phép), mã lấy từ mục 'Mã thủ tục'.
+# verified: false = mã nhớ lại hoặc chưa biết (null); CSDL TTHC quốc gia chưa truy cập được (503 / SPA) — phải tra lại.
+version: 1
+surveyed_on: "2026-09-25"
+source_portal:
+  verified: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=<matt>
+  license_note: 'Khi sử dụng lại thông tin, đề nghị ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" (chân trang)'
+procedures:
+  - ma_thu_tuc: "1.004222"
+    ten: "Đăng ký thường trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26360
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:38:59+00:00
+    sha256: fe7d4923ed42c8f4c1324c2345f4bd4e84993a76f5e7574d45d8cc1177acc224
+  - ma_thu_tuc: "1.004194"
+    ten: "Đăng ký tạm trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26356
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:38:57+00:00
+    sha256: c17e9f0ec34e94959517192d53a41a6e35d40c9591cc563397d11007c827ade3
+  - ma_thu_tuc: "1.002755"
+    ten: "Gia hạn tạm trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26345
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:38:51+00:00
+    sha256: 318fb539f9e89c85be8a2f0e5adc391bcb5baa3c27aaa922d18f182dcc10857f
+  - ma_thu_tuc: "1.003197"
+    ten: "Xóa đăng ký thường trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26348
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:38:54+00:00
+    sha256: 35e204bde0b0ac5771dcf104b79dd624d3cdd63c6d339338e072b2b1d6d4036f
+  - ma_thu_tuc: "1.010028"
+    ten: "Xóa đăng ký tạm trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26552
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:04+00:00
+    sha256: 157924ebed2962df2ed68c29c870dbff83c196eb9a365fdeacea40aece6ee574
+  - ma_thu_tuc: "1.003677"
+    ten: "Khai báo tạm vắng"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26351
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:38:55+00:00
+    sha256: 130c9914e52011a192d8f906759d83aeaa3cb91ad8f4d659a9d25252728dc25d
+  - ma_thu_tuc: "2.001159"
+    ten: "Thông báo lưu trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26346
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:38:53+00:00
+    sha256: 88094362168bd5d2d192fdade5036038b669990e74de78623c56b894b32bee4e
+  - ma_thu_tuc: "1.010038"
+    ten: "Tách hộ"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26499
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:02+00:00
+    sha256: ab2310b57afde648fd7d28ad7aa2b4c36c798d01052f176df610a3a68603c9a6
+  - ma_thu_tuc: "1.010041"
+    ten: "Xác nhận thông tin về cư trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26497
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:03+00:00
+    sha256: 43cc693c9ea03133e5fa3995e2aa69639a448e1693c355ef21278c61257f036f
+  - ma_thu_tuc: "1.010039"
+    ten: "Điều chỉnh thông tin về cư trú trong Cơ sở dữ liệu về cư trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26498
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:06+00:00
+    sha256: 60f12427d115f7e938f3e5769fc8a5febddf89a8ee045a1bb539aa7ddf0d8c9e
+  - ma_thu_tuc: "1.010040"
+    ten: "Khai báo thông tin về cư trú đối với người chưa đủ điều kiện đăng ký thường trú, đăng ký tạm trú"
+    nhom: cu_tru
+    linh_vuc: "Đăng ký, quản lý cư trú"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26492
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:00+00:00
+    sha256: f0261a9d1fdc716914819d12d7feb1c4f023cae232a2f0f1190f16e902d8fbfa
+  - ma_thu_tuc: "2.000200"
+    ten: "Cấp thẻ Căn cước cho người từ đủ 14 tuổi trở lên thực hiện tại Công an cấp tỉnh"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Phòng cảnh sát quản lý hành chính về trật tự xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26052
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:13+00:00
+    sha256: 8d051fb56f331aa02de7789b904f8096b77686f254fc2ce9e0616e8a4af85e3b
+  - ma_thu_tuc: "2.001195"
+    ten: "Cấp đổi thẻ căn cước (thực hiện tại cấp tỉnh)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Phòng cảnh sát quản lý hành chính về trật tự xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26094
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:10+00:00
+    sha256: b088860c54aa1a559304c36a2c89595daf2cb5cc17092992dda0c7863f19cd30
+  - ma_thu_tuc: "2.001194"
+    ten: "Cấp lại thẻ căn cước (thực hiện tại cấp tỉnh)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Phòng cảnh sát quản lý hành chính về trật tự xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26093
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:07+00:00
+    sha256: b335ce3167f0bafe980c85a11433568110887159a39ba7e013e1d48c93fa702f
+  - ma_thu_tuc: "1.001247"
+    ten: "Cấp thẻ căn cước cho người từ đủ 14 tuổi trở lên (thực hiện tại cấp trung ương)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Cục cảnh sát quản lý hành chính về trật tự, xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26054
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:15+00:00
+    sha256: 363c81190aa64d22b1b843bff6ec901c2fe21489762a691a01821a9232471553
+  - ma_thu_tuc: "1.000889"
+    ten: "Cấp đổi thẻ căn cước (thực hiện tại cấp trung ương)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Cục cảnh sát quản lý hành chính về trật tự, xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26099
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:12+00:00
+    sha256: 9dcb73f4063993592e8a5b577416217eb4623df58965492ce7870752dd113208
+  - ma_thu_tuc: "1.000757"
+    ten: "Cấp lại thẻ căn cước (thực hiện tại cấp trung ương)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Cục cảnh sát quản lý hành chính về trật tự, xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26096
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:09+00:00
+    sha256: f8cfa0d8a56f83836798cb6a37f021b29ab2707f8ad4ad4722b3201115e0f2e5
+  - ma_thu_tuc: "1.012549"
+    ten: "Cấp thẻ căn cước cho người dưới 14 tuổi (thực hiện tại cấp tỉnh)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Công an tỉnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=57013
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:18+00:00
+    sha256: 638e8896e15bd4f70a0b389c34fc279a27806a1155bae833d0430c542e944b79
+  - ma_thu_tuc: "1.012543"
+    ten: "Cấp thẻ căn cước cho người dưới 14 tuổi (thực hiện tại cấp trung ương)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Cục cảnh sát quản lý hành chính về trật tự, xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=57072
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:16+00:00
+    sha256: 815ecf550d6cbd013b42aa5f26b604a7bd70480ca8ca488f0b819cbd756f811c
+  - ma_thu_tuc: "1.014062"
+    ten: "Cấp thẻ căn cước cho người dưới 14 tuổi thực hiện tại Công an cấp xã"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=122156
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:22+00:00
+    sha256: 35a6f68b2ca862c729756ef7a6ff29166b2a7235b9e721b486f0a409f40446b9
+  - ma_thu_tuc: "2.001178"
+    ten: "Cấp xác nhận số chứng minh nhân dân 09 số, số định danh cá nhân (thực hiện tại cấp tỉnh)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Phòng cảnh sát quản lý hành chính về trật tự xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26092
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:21+00:00
+    sha256: 4ef84ad41069b698ec6855a7c0aa8f27ed1fcc63909cf8b23261f43ca74b3ea5
+  - ma_thu_tuc: "1.000466"
+    ten: "Cấp xác nhận số chứng minh nhân dân 09 số, số định danh cá nhân (thực hiện tại cấp trung ương)"
+    nhom: can_cuoc
+    linh_vuc: "Cấp, quản lý căn cước"
+    co_quan_thuc_hien: "Cục cảnh sát quản lý hành chính về trật tự, xã hội"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26053
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:19+00:00
+    sha256: 33a786c07d940a5bd0f83020379b048798348207e956376632a6af1a7eaf2bb1
+  - ma_thu_tuc: "3.000333"
+    ten: "Cấp phiếu lý lịch tư pháp cho công dân Việt Nam, người nước ngoài đang cư trú tại Việt Nam thực hiện tại Công an cấp tỉnh"
+    nhom: ly_lich_tu_phap
+    linh_vuc: "Lý lịch tư pháp"
+    co_quan_thuc_hien: "Công an tỉnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=61555
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:23+00:00
+    sha256: d4edc4315f75fde4f4efa14b0a44125bf596bbae32bede629c020619867d631c
+  - ma_thu_tuc: "3.000346"
+    ten: "Cấp giấy phép lái xe"
+    nhom: gplx
+    linh_vuc: "Sát hạch, cấp giấy phép lái xe"
+    co_quan_thuc_hien: "Cục Cảnh sát giao thông"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=61616
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:38+00:00
+    sha256: 6d703cbb09c1587c64a94d1765d25db90870c836b1961cebe368fc7c662d552c
+  - ma_thu_tuc: "1.000377"
+    ten: "Đăng ký, cấp biển số xe lần đầu thực hiện tại Công an cấp tỉnh"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Phòng Cảnh sát giao thông"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=39372
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:54+00:00
+    sha256: 50854df4ce16219fb71323e7ad2eb8d6dc98d40b69528f9620f8d42a3268adb8
+  - ma_thu_tuc: "2.000076"
+    ten: "Đăng ký sang tên, di chuyển xe thực hiện tại Công an cấp tỉnh"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "- Cơ quan đăng ký xe đã đăng ký xe ô tô đó để làm thủ tục thu hồi chứng nhận đăng ký xe, biển số xe."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=43474
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:56+00:00
+    sha256: 107e1dd8cb7b3c46de892c02f04a02d67945a15d4b129e7aeca4a467a8164cd7
+  - ma_thu_tuc: "2.001721"
+    ten: "Cấp đổi chứng nhận đăng ký xe, biển số xe thực hiện tại Công an cấp tỉnh"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=43492
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:57+00:00
+    sha256: 226411227f6daccb6670fcf7408f04a4d282d36d5fc503e2c3a596aa1f574707
+  - ma_thu_tuc: "1.004023"
+    ten: "Cấp lại giấy chứng nhận đăng ký xe, biển số xe tại Công an cấp tỉnh"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=43475
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:59+00:00
+    sha256: f3f60078bec79eddd5e009dc266949136e1826e52516fea04b3f43014e4c3bed
+  - ma_thu_tuc: "2.001237"
+    ten: "Đăng ký xe tạm thời thực hiện tại Công an cấp tỉnh"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=43472
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:00+00:00
+    sha256: 91b71a7a2e818088391fd89655681aa2036332b6d07e71283bb7d7cd76fec151
+  - ma_thu_tuc: "2.001485"
+    ten: "Thu hồi chứng nhận đăng ký xe, biển số xe thực hiện tại Công an cấp tỉnh"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=43493
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:02+00:00
+    sha256: be1fd4519f599058f028eb3be9fd16a60a6a3f5ad20d0af790e69c952dede60f
+  - ma_thu_tuc: "1.010910"
+    ten: "Đăng ký, cấp biển số xe lần đầu thực hiện tại Công an cấp xã được phân cấp đăng ký xe"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Công an xã, phường, thị trấn ."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64188
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:03+00:00
+    sha256: 6cbcb76eafec8717ed65f27cb15bff3f4c9c5b7f229629183861548909f658c3
+  - ma_thu_tuc: "1.010912"
+    ten: "Đăng ký sang tên, di chuyển xe thực hiện tại Công an cấp xã được phân cấp đăng ký xe"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "+ Cơ quan đăng ký xe nơi chủ xe có trụ sở, cư trú làm thủ tục thu hồi giấy chứng nhận đăng ký xe, biển số xe."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64208
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:05+00:00
+    sha256: 421a2905f661b4e8a18240e96430a8e8f32f4d1a09c7ad3dd77af09118a9fa87
+  - ma_thu_tuc: "1.010916"
+    ten: "Cấp đổi chứng nhận đăng ký xe, biển số xe thực hiện tại Công an cấp xã được phân cấp đăng ký xe"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Công an xã, phường, thị trấn nơi đăng ký, quản lý xe đó."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64209
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:06+00:00
+    sha256: 54a85ba2617a7a5db2ce83ea5104cac4c1643fde97e90276510d00817737b811
+  - ma_thu_tuc: "1.010917"
+    ten: "Cấp lại chứng nhận đăng ký xe, biển số xe thực hiện tại Công an xã được phân cấp đăng ký xe"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64189
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:08+00:00
+    sha256: 6db864b8726ac4d2755e60190eb17e8a847c71e6529d92a0502d78e2e835c809
+  - ma_thu_tuc: "1.010918"
+    ten: "Đăng ký xe tạm thời thực hiện tại Công an cấp xã được phân cấp đăng ký xe"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64169
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:09+00:00
+    sha256: 002ad74e912dc57224bdeff79d41e31518c4ccbce0111699f3747a247bc2afb8
+  - ma_thu_tuc: "1.010919"
+    ten: "Thu hồi chứng nhận đăng ký xe, biển số xe thực hiện tại Công an cấp xã được phân cấp đăng ký xe"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe theo quy định tại Điều 4 Thông tư số 79/2024/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64190
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:11+00:00
+    sha256: 669f9275afd8a0b5665428a05b0535dc8577ea383a6f97079b661049240634b0
+  - ma_thu_tuc: "1.012575"
+    ten: "Đăng ký xe lần đầu trực tuyến toàn trình đối với xe sản xuất lắp ráp trong nước"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe cấp tỉnh, cấp xã theo quy định tại: Điều 4 Thông tư số 79/2024/TT-BCA; Điều 12 Thông tư số 13/2025/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=56952
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:44+00:00
+    sha256: da3968c41f3f5f6c00f63694d9f96b6ff020bb8da319682c10b244d1ddd377eb
+  - ma_thu_tuc: "1.013066"
+    ten: "Đăng ký xe lần đầu trực tuyến toàn trình đối với xe nhập khẩu"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe cấp tỉnh, cấp xã theo quy định tại: Điều 4 Thông tư số 79/2024/TT-BCA; Điều 12 Thông tư số 13/2025/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=58712
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:42+00:00
+    sha256: 462b170805346d82560d3f37644f1b1e284ff22734fba5e7c71cd3c4a597774a
+  - ma_thu_tuc: "1.013123"
+    ten: "Thu hồi giấy chứng nhận đăng ký, biển số xe thực hiện bằng dịch vụ công trực tuyến một phần hoặc trực tiếp tại cơ quan đăng ký xe thực hiện tại cấp trung ương, cấp tỉnh, cấp xã"
+    nhom: dang_ky_xe
+    linh_vuc: "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ"
+    co_quan_thuc_hien: "Cơ quan làm thủ tục đăng ký xe cấp tỉnh, cấp xã theo quy định tại: Điều 4 Thông tư số 79/2024/TT-BCA; Điều 12 Thông tư số 13/2025/TT-BCA."
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=62012
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:39:41+00:00
+    sha256: a99b30adbe2c096ec0e4db218287bcebbdfa4060a7092f8e74397d03043b4990
+  - ma_thu_tuc: "1.001456"
+    ten: "Cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp tỉnh)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Công an Tỉnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=29497
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:16+00:00
+    sha256: 5ac91816e3bc29dddc80f8f06805d2b0a4aeaf5701405bf6986263428561995f
+  - ma_thu_tuc: "1.001471"
+    ten: "Cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp trung ương)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Cục quản lý xuất nhập cảnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26270
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:15+00:00
+    sha256: adf2e1703d119526a44dd60ebf1c3d57fbcfd154986a176c7162dc7c11f4a9e5
+  - ma_thu_tuc: "1.001445"
+    ten: "Trình báo mất hộ chiếu phổ thông (thực hiện tại cấp tỉnh)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Công an Tỉnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=35714
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:43+00:00
+    sha256: 4d2ada9fd20a57dba19e264ed0c830dc21327acd377c49d18c2a01d6a783fb24
+  - ma_thu_tuc: "1.010386"
+    ten: "Trình báo mất hộ chiếu phổ thông (thực hiện tại cấp xã)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Công an Xã"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=64227
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:44+00:00
+    sha256: fe9378b1a8e9bd7c454c32615598215e650c96a9e5cf53400180725f93f7e01f
+  - ma_thu_tuc: "2.000539"
+    ten: "Trình báo mất hộ chiếu phổ thông (thực hiện tại cấp trung ương)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Cục quản lý xuất nhập cảnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26256
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:41+00:00
+    sha256: 3444f28448fa02dd6437512b57de918ef353b84d6abb5047554a81f26a686bdf
+  - ma_thu_tuc: "1.010384"
+    ten: "Khôi phục giá trị sử dụng hộ chiếu phổ thông (thực hiện tại cấp tỉnh)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Phòng quản lý xuất nhập cảnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=35692
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:41:01+00:00
+    sha256: 8f6812a0a7ea599b06b4a46eea2bff4841f06cba19421e1570ed81e0bad86339
+  - ma_thu_tuc: "1.010382"
+    ten: "Khôi phục giá trị sử dụng hộ chiếu phổ thông (thực hiện tại cấp trung ương)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Cục quản lý xuất nhập cảnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26690
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:40:59+00:00
+    sha256: 59bdd3dbfe559b2a6034b267befdb0f17b9d3334be7c8c256cb3d3c85108c0a3
+  - ma_thu_tuc: "1.010048"
+    ten: "Xác nhận, cung cấp thông tin liên quan đến xuất nhập cảnh của công dân Việt Nam"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Cục quản lý xuất nhập cảnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26513
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:41:02+00:00
+    sha256: 88dd36909c0288b63f9d202d36c90dad53cb86d949b131cd1927a6438736b172
+  - ma_thu_tuc: "2.002180"
+    ten: "Đăng ký thường trú tại Việt Nam đối với công dân Việt Nam định cư ở nước ngoài (thực hiện tại cấp Trung ương)"
+    nhom: ho_chieu_xnc
+    linh_vuc: "Quản lý xuất nhập cảnh"
+    co_quan_thuc_hien: "Cục quản lý xuất nhập cảnh"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26368
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:41:23+00:00
+    sha256: 611aa9a7a8fd85ad93474d4aa01c176be7651f78df094427184ee2db3cf10fd2
+  - ma_thu_tuc: "C08_XPHCDB"
+    ten: "Nộp phạt quyết định xử phạt vi phạm hành chính trong lĩnh vực giao thông"
+    nhom: giao_thong
+    linh_vuc: "Nộp phạt vi phạm hành chính trong lĩnh vực giao thông"
+    co_quan_thuc_hien: "Cục Cảnh sát giao thông, Phòng Cảnh sát giao thông Công an các địa phương, Công an cấp huyện."
+    muc_do_dvc: "Dịch vụ công trực tuyến toàn trình"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26612
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:41:29+00:00
+    sha256: 3e92a594962512c6a5d5908b432a07668f7763532b6d7dd3e1ad73db14c570d1
+    notes: Mã không theo định dạng CSDL quốc gia (x.xxxxxx) — mã nội bộ cổng BCA.
+  - ma_thu_tuc: "1.013211"
+    ten: "Đăng ký kiểm tra kiến thức pháp luật về trật tự, an toàn giao thông đường bộ"
+    nhom: giao_thong
+    linh_vuc: "Kiểm tra kiến thức pháp luật về trật tự, an toàn giao thông đường bộ"
+    co_quan_thuc_hien: "Phòng Cảnh sát giao thông, Cục Cảnh sát giao thông"
+    muc_do_dvc: "Dịch vụ công trực tuyến một phần"
+    url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=60552
+    verified: true
+    verified_on: "2026-09-25"  # fetched_at 2026-09-24T18:41:30+00:00
+    sha256: 83a47b270c97a78bfa315bce9048f179c193e52c103183c6f54d4b6dc1f693d2
+  - ma_thu_tuc: "1.001193"
+    ten: "Đăng ký khai sinh"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.000894"
+    ten: "Đăng ký kết hôn"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.000656"
+    ten: "Đăng ký khai tử"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.001022"
+    ten: "Đăng ký nhận cha, mẹ, con"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.004873"
+    ten: "Cấp Giấy xác nhận tình trạng hôn nhân"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "2.000635"
+    ten: "Cấp bản sao trích lục hộ tịch"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký thay đổi, cải chính, bổ sung thông tin hộ tịch"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký lại khai sinh"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Liên thông đăng ký khai sinh – đăng ký thường trú – cấp thẻ BHYT cho trẻ em dưới 6 tuổi"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã; Công an cấp xã; BHXH"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Liên thông đăng ký khai tử – xóa đăng ký thường trú – hưởng chế độ tử tuất/mai táng phí"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã; Công an cấp xã; BHXH"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký giám hộ"
+    nhom: ho_tich
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "2.000815"
+    ten: "Chứng thực bản sao từ bản chính"
+    nhom: chung_thuc
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "2.000884"
+    ten: "Chứng thực chữ ký trong giấy tờ, văn bản"
+    nhom: chung_thuc
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Chứng thực hợp đồng, giao dịch liên quan đến tài sản là động sản, đất đai, nhà ở"
+    nhom: chung_thuc
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.001612"
+    ten: "Đăng ký thành lập hộ kinh doanh"
+    nhom: ho_kinh_doanh
+    co_quan_thuc_hien: "Cơ quan đăng ký kinh doanh cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký thay đổi nội dung đăng ký hộ kinh doanh"
+    nhom: ho_kinh_doanh
+    co_quan_thuc_hien: "Cơ quan đăng ký kinh doanh cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Thông báo tạm ngừng / tiếp tục kinh doanh của hộ kinh doanh"
+    nhom: ho_kinh_doanh
+    co_quan_thuc_hien: "Cơ quan đăng ký kinh doanh cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Chấm dứt hoạt động hộ kinh doanh"
+    nhom: ho_kinh_doanh
+    co_quan_thuc_hien: "Cơ quan đăng ký kinh doanh cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký thuế lần đầu cho hộ kinh doanh, cá nhân kinh doanh"
+    nhom: thue
+    co_quan_thuc_hien: "Cơ quan thuế"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Khai thuế đối với hộ kinh doanh, cá nhân kinh doanh"
+    nhom: thue
+    co_quan_thuc_hien: "Cơ quan thuế"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Nộp thuế điện tử (eTax Mobile) cho cá nhân"
+    nhom: thue
+    co_quan_thuc_hien: "Cơ quan thuế"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Cấp lại, đổi thẻ BHYT"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "BHXH cấp tỉnh/cơ sở"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký, đóng BHYT hộ gia đình"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "BHXH cấp tỉnh/cơ sở"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký, đóng BHXH tự nguyện"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "BHXH cấp tỉnh/cơ sở"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Giải quyết hưởng BHXH một lần"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "BHXH cấp tỉnh/cơ sở"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Giải quyết hưởng chế độ thai sản"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "BHXH cấp tỉnh/cơ sở"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Giải quyết hưởng trợ cấp thất nghiệp"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "Trung tâm dịch vụ việc làm"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Giải quyết hưởng chế độ tử tuất"
+    nhom: bhxh_bhyt
+    co_quan_thuc_hien: "BHXH cấp tỉnh/cơ sở"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.001776"
+    ten: "Thực hiện, điều chỉnh, thôi hưởng trợ cấp xã hội hàng tháng"
+    nhom: an_sinh
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội"
+    nhom: an_sinh
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Xác định, xác định lại mức độ khuyết tật và cấp Giấy xác nhận khuyết tật"
+    nhom: an_sinh
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Giải quyết chế độ trợ cấp một lần/hằng tháng đối với người có công"
+    nhom: an_sinh
+    co_quan_thuc_hien: "Cơ quan quản lý người có công"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký đất đai, tài sản gắn liền với đất lần đầu; cấp Giấy chứng nhận"
+    nhom: dat_dai
+    co_quan_thuc_hien: "Văn phòng/Chi nhánh đăng ký đất đai"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Đăng ký biến động do chuyển nhượng, tặng cho, thừa kế quyền sử dụng đất"
+    nhom: dat_dai
+    co_quan_thuc_hien: "Văn phòng/Chi nhánh đăng ký đất đai"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Cấp đổi, cấp lại Giấy chứng nhận quyền sử dụng đất"
+    nhom: dat_dai
+    co_quan_thuc_hien: "Văn phòng/Chi nhánh đăng ký đất đai"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Chuyển mục đích sử dụng đất (hộ gia đình, cá nhân)"
+    nhom: dat_dai
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Cung cấp thông tin, dữ liệu đất đai"
+    nhom: dat_dai
+    co_quan_thuc_hien: "Văn phòng/Chi nhánh đăng ký đất đai"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: "1.009994"
+    ten: "Cấp giấy phép xây dựng nhà ở riêng lẻ"
+    nhom: xay_dung
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Mã nhớ lại, CHƯA mở trang — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Điều chỉnh, gia hạn, cấp lại giấy phép xây dựng nhà ở riêng lẻ"
+    nhom: xay_dung
+    co_quan_thuc_hien: "UBND cấp xã"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Cấp đổi giấy phép lái xe"
+    nhom: gplx
+    co_quan_thuc_hien: "Công an cấp tỉnh"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+  - ma_thu_tuc: null
+    ten: "Cấp lại giấy phép lái xe"
+    nhom: gplx
+    co_quan_thuc_hien: "Công an cấp tỉnh"
+    url: null
+    verified: false
+    notes: "Chưa có mã — tra trên CSDL TTHC quốc gia; có thể đã đổi sau sắp xếp chính quyền 2 cấp (1/7/2025)."
+# Tổng: 50 verified + 41 chưa xác minh = 91 thủ tục.

@@ -1,0 +1,141 @@
+# CTCV — release on tag v* (plan §8 "deploy tự động khi tag"): the full check gate → build and
+# push ghcr.io/<owner>/ctcv-<svc>:<tag> for api, agent, speech, vision, web (models is the
+# upstream vLLM image, never built) → deploy/scripts/deploy.sh over SSH, only when the
+# DEPLOY_HOST and SSH_KEY secrets exist → GitHub release with generated notes.
+# Environment rule: pre-release tags (v1.0-rc1, v2.0-beta) go to staging, final tags to prod.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: "1"
+
+jobs:
+  check:
+    name: make check (full, via check.yml)
+    uses: ./.github/workflows/check.yml
+    secrets: inherit
+
+  images:
+    name: build + push ${{ matrix.svc }}
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        svc: [api, agent, speech, vision, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Image metadata (lower-cased owner, :<tag> and :latest for final releases)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/ctcv-${{ matrix.svc }}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable=${{ !contains(github.ref_name, '-') }}
+          labels: |
+            org.opencontainers.image.title=ctcv-${{ matrix.svc }}
+            org.opencontainers.image.description=Cầm Tay Chỉ Việc — ${{ matrix.svc }} service
+            org.opencontainers.image.licenses=Apache-2.0
+      - name: Build and push (context = repo root, brief D14; cache shared with check.yml)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/docker/${{ matrix.svc }}.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=ctcv-${{ matrix.svc }}
+          cache-to: type=gha,scope=ctcv-${{ matrix.svc }},mode=max
+          provenance: false
+
+  deploy:
+    name: deploy.sh (${{ contains(github.ref_name, '-') && 'staging' || 'prod' }})
+    needs: images
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ contains(github.ref_name, '-') && 'staging' || 'production' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secrets present? (DEPLOY_HOST + SSH_KEY gate every step below)
+        id: gate
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          if [ -n "$DEPLOY_HOST" ] && [ -n "$SSH_KEY" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::DEPLOY_HOST/SSH_KEY chưa cấu hình — bỏ qua deploy (image đã lên GHCR)"
+          fi
+      - name: SSH key from secrets
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/ctcv_deploy"
+          chmod 600 "$HOME/.ssh/ctcv_deploy"
+      - name: deploy/scripts/deploy.sh --skip-check --no-build (CI already did both)
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_DIR: ${{ vars.DEPLOY_DIR }}
+          DEPLOY_SSH_PORT: ${{ vars.DEPLOY_SSH_PORT }}
+          DEPLOY_PROFILE: ${{ vars.DEPLOY_PROFILE }}
+          APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPTIME_KUMA_PUSH_URL: ${{ secrets.UPTIME_KUMA_PUSH_URL }}
+        run: |
+          [ -n "$APP_DOMAIN" ] || { echo "::error::Repository variable APP_DOMAIN chưa đặt (smoke test cần)"; exit 2; }
+          TAG="${GITHUB_REF_NAME}"
+          case "$TAG" in *-*) ENV_NAME=staging ;; *) ENV_NAME=prod ;; esac
+          export SSH_KEY_FILE="$HOME/.ssh/ctcv_deploy"
+          export REGISTRY="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"
+          bash deploy/scripts/deploy.sh "$ENV_NAME" --tag "$TAG" --skip-check --no-build --auto-rollback
+      - name: Remove SSH key
+        if: always()
+        run: rm -f "$HOME/.ssh/ctcv_deploy"
+
+  github-release:
+    name: GitHub release
+    needs: [images, deploy]
+    if: always() && needs.images.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create release with generated notes (pre-release when the tag has a '-')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "release $TAG đã có"; exit 0; fi
+          extra=""
+          case "$TAG" in *-*) extra="--prerelease" ;; esac
+          gh release create "$TAG" --title "CTCV $TAG" --generate-notes $extra

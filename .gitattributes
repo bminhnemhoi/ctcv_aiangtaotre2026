@@ -1,0 +1,37 @@
+# Normalise line endings: LF in the repo, LF on checkout for everything except PowerShell.
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+Makefile text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.pptx binary
+*.xlsx binary
+*.zip binary
+*.mp3 binary
+*.mp4 binary
+*.wav binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.gguf binary
+*.onnx binary
+*.safetensors binary
+
+# Lockfiles: never diff-merge by hand
+uv.lock linguist-generated=true merge=binary
+pnpm-lock.yaml linguist-generated=true merge=binary
+
+# Prompt log is evidence; treat as generated so reviews focus on code
+docs/prompt-log/*.jsonl linguist-generated=true

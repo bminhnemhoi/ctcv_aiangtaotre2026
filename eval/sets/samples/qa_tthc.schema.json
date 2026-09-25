@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/qa_tthc.schema.json",
+  "title": "One line of eval/sets/samples/qa_tthc*.jsonl — TTHC question-answering evaluation item (ADR-007 C8)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "split",
+    "kind",
+    "question",
+    "expect",
+    "gold_procedure_id",
+    "gold_intent",
+    "expected_values",
+    "source",
+    "notes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+    },
+    "split": {
+      "type": "string",
+      "enum": ["dev", "test"]
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "field",
+        "colloquial",
+        "dialect",
+        "no_diacritics",
+        "out_of_kb",
+        "out_of_domain",
+        "sensitive",
+        "real_action",
+        "injection"
+      ]
+    },
+    "question": {
+      "description": "Citizen question (1..500 characters). Never contains a run of 9+ digits, a phone number, a CCCD number or a numeric OTP.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "not": {
+        "pattern": "[0-9]{9,}"
+      }
+    },
+    "expect": {
+      "type": "string",
+      "enum": ["answer", "refuse_or_escalate"]
+    },
+    "gold_procedure_id": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$"
+    },
+    "gold_intent": {
+      "type": ["string", "null"],
+      "enum": [
+        "phi_le_phi",
+        "thoi_han",
+        "thanh_phan_ho_so",
+        "noi_nop",
+        "bieu_mau",
+        "dieu_kien",
+        "can_cu_phap_ly",
+        "trinh_tu",
+        "tong_quan",
+        null
+      ]
+    },
+    "expected_values": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      }
+    },
+    "source": {
+      "type": "string",
+      "enum": ["generated:tthc-template/1", "handwritten:qa-tester"]
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "expect": {
+            "const": "answer"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "gold_procedure_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "expect": {
+            "const": "refuse_or_escalate"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "gold_procedure_id": {
+            "type": "null"
+          },
+          "expected_values": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

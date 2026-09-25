@@ -1,0 +1,62 @@
+# Danh mục văn bản pháp luật được trích dẫn trong hồ sơ CTCV (LEG-11, brief §17.5).
+# Cổng: `make dossier` (không DRAFT) thất bại nếu PDF nhắc một số hiệu không có ở đây hoặc
+# có `verified_on` rỗng. Tra cứu là việc của một THÀNH VIÊN NGƯỜI (không giao Claude) trên
+# vbpl.vn / chinhphu.vn / congbao.chinhphu.vn; ghi tên người và ngày vào `verified_by`/`verified_on`.
+# Schema: id, so_hieu, ten, ngay_ban_hanh, hieu_luc, dieu_khoan_ap_dung, url, verified_on, verified_by, ghi_chu.
+version: 1
+
+refs:
+  - id: luat-ai-2025
+    so_hieu: "134/2025/QH15"
+    ten: "Luật Trí tuệ nhân tạo"
+    ngay_ban_hanh: "2025-12-10"
+    hieu_luc: "2026-03-01"
+    dieu_khoan_ap_dung: "Quản lý theo mức rủi ro; nghĩa vụ minh bạch, giải trình; nhãn nội dung do AI tạo (điều khoản cụ thể: điền số điều sau khi đọc toàn văn)"
+    url: ""                      # link vbpl.vn / chinhphu.vn sau khi tra cứu
+    verified_on: "2026-09-18"
+    verified_by: "rà soát 6 lăng kính 18/9 (docs/analysis/2026-09-18-review-findings.md) — xác minh số hiệu và ngày hiệu lực; điều khoản cụ thể chưa đọc toàn văn"
+    ghi_chu: "Cơ sở cho 'tự phân loại rủi ro thấp' ở mục 11 hồ sơ; phải dẫn đúng điều/khoản khi trích."
+
+  - id: nd-142-2026
+    so_hieu: "142/2026/NĐ-CP"
+    ten: "Nghị định quy định chi tiết một số điều của Luật Trí tuệ nhân tạo (tên đầy đủ: điền khi tra cứu)"
+    ngay_ban_hanh: ""
+    hieu_luc: "2026-05-01"
+    dieu_khoan_ap_dung: "Tiêu chí phân loại mức rủi ro hệ thống AI (đọc và ghi số điều/khoản làm căn cứ 'rủi ro thấp' — LEG-11)"
+    url: ""
+    verified_on: "2026-09-18"
+    verified_by: "rà soát 6 lăng kính 18/9 — xác minh số hiệu và ngày hiệu lực; điều khoản phân loại rủi ro chưa đọc toàn văn"
+    ghi_chu: "Mục 11 hồ sơ phải dẫn tiêu chí cụ thể của nghị định này, không tự phân loại chung chung."
+
+  - id: tt-05-2026-bkhcn
+    so_hieu: "05/2026/TT-BKHCN"
+    ten: "Thông tư ban hành Khung đạo đức trí tuệ nhân tạo quốc gia (Bộ Khoa học và Công nghệ)"
+    ngay_ban_hanh: "2026-03-10"
+    hieu_luc: "2026-03-10"       # có hiệu lực kể từ ngày ký
+    dieu_khoan_ap_dung: "Nguyên tắc đạo đức, an toàn, trách nhiệm khi phát triển/triển khai hệ thống AI; khuyến khích áp dụng với tổ chức, cá nhân ngoài khu vực công (ghi số điều sau khi đọc toàn văn)"
+    url: "https://vanban.chinhphu.vn/?pageid=27160&docid=217165"
+    verified_on: "2026-09-19"
+    verified_by: "Claude Code tra cứu web 19/9/2026 trên nguồn chính thức (vanban.chinhphu.vn, congbao.chinhphu.vn) — xác minh số hiệu, tên, ngày ban hành, ngày hiệu lực; một thành viên đội đọc lại toàn văn và ghi số điều/khoản trước khi nộp"
+    ghi_chu: "Áp dụng bắt buộc cho hệ thống AI trong quản lý nhà nước/dịch vụ công; CTCV áp dụng tự nguyện như chuẩn tham chiếu."
+
+  - id: luat-bvdlcn-2025
+    so_hieu: "91/2025/QH15"
+    ten: "Luật Bảo vệ dữ liệu cá nhân"
+    ngay_ban_hanh: "2025-06-26"
+    hieu_luc: "2026-01-01"
+    dieu_khoan_ap_dung: "Đồng thuận, tối thiểu hóa dữ liệu, quyền xóa, lưu trữ trong nước (điền số điều sau khi đọc)"
+    url: "https://congbao.chinhphu.vn/van-ban/luat-so-91-2025-qh15-45578.htm"
+    verified_on: "2026-09-19"
+    verified_by: "Claude Code tra cứu web 19/9/2026 trên nguồn chính thức (vanban.chinhphu.vn, congbao.chinhphu.vn) — xác minh số hiệu, tên, ngày ban hành, ngày hiệu lực; một thành viên đội đọc lại toàn văn và ghi số điều/khoản trước khi nộp"
+    ghi_chu: "Cơ sở cho ADR-005 và mục 11; phân biệt dữ liệu cá nhân cơ bản và nhạy cảm."
+
+  - id: nd-356-2025
+    so_hieu: "356/2025/NĐ-CP"
+    ten: "Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Bảo vệ dữ liệu cá nhân"
+    ngay_ban_hanh: "2025-12-31"
+    hieu_luc: "2026-01-01"
+    dieu_khoan_ap_dung: "Phân loại dữ liệu cá nhân cơ bản/nhạy cảm; hồ sơ, biểu mẫu (5 chương, 42 điều, 1 phụ lục) — ghi số điều áp dụng sau khi đọc toàn văn"
+    url: "https://vanban.chinhphu.vn/?pageid=27160&docid=216387"
+    verified_on: "2026-09-19"
+    verified_by: "Claude Code tra cứu web 19/9/2026 trên nguồn chính thức (vanban.chinhphu.vn, congbao.chinhphu.vn) — xác minh số hiệu, tên, ngày ban hành, ngày hiệu lực; một thành viên đội đọc lại toàn văn và ghi số điều/khoản trước khi nộp"
+    ghi_chu: "Xác minh cùng Luật 91/2025; nếu số hiệu khác, sửa ở đây trước rồi mới sửa hồ sơ."

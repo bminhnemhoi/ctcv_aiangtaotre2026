@@ -1,0 +1,1 @@
+- [DFL review patterns](project_dfl_review_patterns.md) — recurring DFL/RAG defects: CPU-vs-GPU claims, Q8_0 quant, ablation pid bias, numeric scale hole, dossier↔test mismatch, gitleaks fixtures

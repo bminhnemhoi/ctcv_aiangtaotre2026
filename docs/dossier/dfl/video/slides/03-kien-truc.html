@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>03 – Kiến trúc</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="slide">
+    <p class="kicker">Kiến trúc · một câu hỏi đi qua bảy lớp</p>
+    <h1>Không chắc thì không nói: mỗi câu trả lời phải qua kiểm chứng</h1>
+    <div class="flow grow">
+      <div class="box xam">Câu hỏi của người dân</div>
+      <div class="arrow"></div>
+      <div class="box"><span><span class="num">1</span>Guardrail</span><small>che dữ liệu cá nhân</small></div>
+      <div class="arrow"></div>
+      <div class="box"><span><span class="num">2</span>Truy xuất lai</span><small>BM25 + bge-m3</small></div>
+      <div class="arrow"></div>
+      <div class="box"><span><span class="num">3</span>Cổng tin cậy</span><small>đúng thủ tục?</small></div>
+      <div class="arrow"></div>
+      <div class="box"><span><span class="num">4</span>Mô hình viết câu</span><small>Qwen3.5-2B, không có tool</small></div>
+      <div class="arrow"></div>
+      <div class="box"><span><span class="num">5</span>Kiểm chứng</span><small>số phải có trong nguồn</small></div>
+      <div class="arrow"></div>
+      <div class="box dam">Trả lời + nút Nguồn</div>
+
+      <div class="arrow down do c3"></div>
+      <div class="arrow down do c7"></div>
+      <div class="arrow down do c11"></div>
+
+      <div class="box do c3">Hỏi OTP, mật khẩu: câu an toàn cố định</div>
+      <div class="box do c7"><span><span class="num">7</span>Ngoài kho:</span><small>“chưa chắc”, mời người thật</small></div>
+      <div class="box vang c11"><span><span class="num">6</span>Không đạt:</span><small>thay bằng câu mẫu từ dữ liệu</small></div>
+    </div>
+    <div class="footer">
+      <span>API, chỉ mục, Ollama (bge-m3, Qwen3.5-2B) chạy trên máy cục bộ</span>
+      <span>Màn cán bộ: tất định, không dùng mô hình</span>
+    </div>
+  </body>
+</html>

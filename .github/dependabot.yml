@@ -1,0 +1,82 @@
+# Dependabot — weekly bumps, Monday morning Vietnam time, grouped so one PR per ecosystem.
+# Every bump still goes through check.yml; `make audit` (D26) fails the PR if a transitive
+# dependency outside config/allowed-deps.yaml or with a banned licence sneaks in.
+version: 2
+
+updates:
+  - package-ecosystem: uv # root uv.lock covers every workspace member (libs/, services/, …)
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 5
+    labels: [dependencies, python]
+    commit-message:
+      prefix: "[deps]"
+    groups:
+      python-minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm # pnpm workspace: apps/web
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 5
+    labels: [dependencies, web]
+    commit-message:
+      prefix: "[deps]"
+    groups:
+      web-minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Pinned to the Chromium build installed on the dev machine (apps/web/README.md).
+      - dependency-name: "@playwright/test"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  - package-ecosystem: docker # FROM lines in deploy/docker/*.Dockerfile
+    directory: /deploy/docker
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 3
+    labels: [dependencies, docker]
+    commit-message:
+      prefix: "[deps]"
+
+  - package-ecosystem: docker-compose # image tags in deploy/docker-compose*.yml (postgres, qdrant, vllm, …)
+    directory: /deploy
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 3
+    labels: [dependencies, docker]
+    commit-message:
+      prefix: "[deps]"
+    ignore:
+      # Model-server images are changed deliberately with a spike on the GPU box (ADR-002).
+      - dependency-name: vllm/vllm-openai
+      - dependency-name: ghcr.io/ggml-org/llama.cpp
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Asia/Ho_Chi_Minh
+    open-pull-requests-limit: 3
+    labels: [dependencies, ci]
+    commit-message:
+      prefix: "[deps]"
+    groups:
+      actions:
+        patterns: ["*"]

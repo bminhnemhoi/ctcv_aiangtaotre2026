@@ -1,0 +1,50 @@
+# Bản MẪU thông tin đội thi (brief D25). Chép file này thành `team.yaml` trong cùng thư mục
+# rồi điền dữ liệu thật. `team.yaml` nằm trong .gitignore và KHÔNG BAO GIỜ được commit,
+# đưa lên Google Drive hay gửi cho công cụ AI. Mọi giá trị còn dấu <...> bị coi là chưa điền:
+# `build_dossier.py` chỉ chấp nhận chúng ở chế độ --draft (kèm dấu "DỮ LIỆU MẪU").
+# Sáu trường của mỗi thí sinh khớp đúng sáu dòng trong bảng thông tin của MẪU 3 (Bảng C).
+
+san_pham: "Cầm Tay Chỉ Việc (CTCV)"
+bang: "C"
+truong: "Trường Đại học Tôn Đức Thắng (TDTU)" # ghi đúng tên trên giấy xác nhận sinh viên
+tuyen_dang_ky: "Qua trường (trường gửi danh sách đội trước 30/9/2026)"
+so_luong_thi_sinh: 3 # 1, 2 hoặc 3 — ô tương ứng trong bảng sẽ được đánh dấu ☒
+
+thi_sinh:
+  - vai_tro: "Thí sinh thứ nhất (đội trưởng)"
+    ho_ten: "<Họ và tên thí sinh 1>"
+    ngay_sinh: "<dd/mm/yyyy>"
+    lop_nganh_khoa_truong: "<Lớp hành chính>, <ngành>, <khoa>, Trường Đại học Tôn Đức Thắng"
+    xa_phuong_tinh: "<Xã/phường/đặc khu>, <tỉnh/thành phố>"
+    dien_thoai: "<số điện thoại>"
+    email: "<email sinh viên>"
+  - vai_tro: "Thí sinh thứ hai"
+    ho_ten: "<Họ và tên thí sinh 2>"
+    ngay_sinh: "<dd/mm/yyyy>"
+    lop_nganh_khoa_truong: "<Lớp hành chính>, <ngành>, <khoa>, Trường Đại học Tôn Đức Thắng"
+    xa_phuong_tinh: "<Xã/phường/đặc khu>, <tỉnh/thành phố>"
+    dien_thoai: "<số điện thoại>"
+    email: "<email sinh viên>"
+  - vai_tro: "Thí sinh thứ ba"
+    ho_ten: "<Họ và tên thí sinh 3>"
+    ngay_sinh: "<dd/mm/yyyy>"
+    lop_nganh_khoa_truong: "<Lớp hành chính>, <ngành>, <khoa>, Trường Đại học Tôn Đức Thắng"
+    xa_phuong_tinh: "<Xã/phường/đặc khu>, <tỉnh/thành phố>"
+    dien_thoai: "<số điện thoại>"
+    email: "<email sinh viên>"
+
+# Các liên kết được thay vào chỗ {{team:<khóa>}} trong docs/dossier/src/*.md (mục 10, 13).
+lien_ket:
+  drive_url: "<https://drive.google.com/drive/folders/... — đã mở quyền 'Bất kỳ ai có liên kết'>"
+  repo_url: "<https://github.com/<tổ chức>/ctcv>"
+  repo_tag: "v1.0-dossier"
+  app_url: "<https://app.<tên miền>>"
+  status_url: "<https://status.<tên miền>>"
+
+# Khối ký ở cuối MẪU 3: "………, ngày …… tháng …… năm 2026 / Đại diện đội thi / (Ký, ghi rõ họ tên)".
+# Để trống `ngay`/`thang` thì giữ nguyên dấu chấm của mẫu (ký tay sau khi in).
+ky_ten:
+  dia_diem: "TP. Hồ Chí Minh"
+  ngay: ""
+  thang: ""
+  dai_dien: "<Họ và tên đội trưởng>"

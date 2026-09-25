@@ -1,0 +1,14 @@
+# Grafana dashboard provisioning: every JSON under deploy/monitoring/grafana/dashboards.
+apiVersion: 1
+
+providers:
+  - name: ctcv
+    orgId: 1
+    folder: CTCV
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 60
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

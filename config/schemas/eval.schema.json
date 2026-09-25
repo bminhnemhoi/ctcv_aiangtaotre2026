@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/eval.schema.json",
+  "title": "CTCV evaluation thresholds (config/eval.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "quick", "judge", "suites"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "quick": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_samples"],
+      "properties": {
+        "total_samples": { "type": "integer", "minimum": 1 },
+        "description": { "type": "string" }
+      }
+    },
+    "judge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scale", "min_score", "prompt"],
+      "properties": {
+        "scale": { "type": "integer", "const": 5 },
+        "min_score": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "prompt": { "type": "string", "pattern": "^[a-z_]+\\.v[0-9]+$" },
+        "human_check_samples": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "suites": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qa", "dialogue", "vision", "audio", "redteam", "loadtest"],
+      "properties": {
+        "qa": { "$ref": "#/$defs/suite" },
+        "dialogue": { "$ref": "#/$defs/suite" },
+        "vision": { "$ref": "#/$defs/suite" },
+        "audio": { "$ref": "#/$defs/suite" },
+        "redteam": { "$ref": "#/$defs/suite" },
+        "loadtest": { "$ref": "#/$defs/suite" }
+      }
+    }
+  },
+  "$defs": {
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "direction", "accept", "block"],
+      "properties": {
+        "unit": {
+          "type": "string",
+          "enum": ["percent", "ratio", "count", "seconds"]
+        },
+        "direction": { "type": "string", "enum": ["higher", "lower"] },
+        "accept": { "type": "number", "minimum": 0 },
+        "block": { "type": "number", "minimum": 0 }
+      }
+    },
+    "suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "quick_size", "metrics"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "size": { "type": "integer", "minimum": 1 },
+        "real_size": { "type": "integer", "minimum": 1 },
+        "size_hours": { "type": "number", "minimum": 0 },
+        "concurrency": { "type": "integer", "minimum": 1 },
+        "quick_size": { "type": "integer", "minimum": 0 },
+        "metrics": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[a-z][a-z0-9_]*$": { "$ref": "#/$defs/metric" }
+          }
+        }
+      }
+    }
+  }
+}

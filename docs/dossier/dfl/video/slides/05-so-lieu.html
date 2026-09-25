@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>05 – Số liệu</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="slide">
+    <p class="kicker">Số đo thật · tập test · laptop, GPU RTX 4050 Laptop</p>
+    <h1>Đo được, tái lập được; chưa có số thì ghi “chưa đo”</h1>
+    <div class="metrics grow">
+      <div class="metric">
+        <span><span class="value" data-metric="suites.qa.metrics.recall_at_5">chưa đo</span> <span class="unit">%</span></span>
+        <span class="label">Tìm đúng thủ tục trong 5 kết quả đầu (recall@5)</span>
+      </div>
+      <div class="metric">
+        <span><span class="value" data-metric="suites.qa.metrics.answer_accuracy">chưa đo</span> <span class="unit">%</span></span>
+        <span class="label">Đúng thủ tục và đủ giá trị kỳ vọng (answer_accuracy)</span>
+      </div>
+      <div class="metric">
+        <span><span class="value" data-metric="suites.qa.metrics.refusal_accuracy">chưa đo</span> <span class="unit">%</span></span>
+        <span class="label">Câu ngoài kho, nhạy cảm, chèn lệnh được từ chối hoặc chuyển người</span>
+      </div>
+      <div class="metric">
+        <span><span class="value" data-metric="ablation.modes.llm_unverified.hallucination">chưa đo</span> <span class="unit">%</span></span>
+        <span class="label">Câu mô hình viết lệch nguồn khi không kiểm; lớp kiểm chứng thay bằng câu mẫu</span>
+      </div>
+      <div class="metric">
+        <span><span class="value" data-metric="suites.qa.metrics.latency_p50_s">chưa đo</span> <span class="unit">/</span> <span class="value" data-metric="suites.qa.metrics.latency_p95_s">chưa đo</span> <span class="unit">giây</span></span>
+        <span class="label">Độ trễ p50 / p95 (có GPU hỗ trợ)</span>
+      </div>
+      <div class="metric">
+        <span class="label">Máy chủ ứng dụng đã gọi khi đánh giá:</span>
+        <span class="label mono" data-list="suites.qa.details.network_hosts">chưa đo</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Nguồn: eval/reports/latest.json (chạy lúc <span data-metric="generated_at">chưa đo</span>) và ablation-tthc.json</span>
+      <span>Bộ kiểm thử không phải câu hỏi thật của người dân</span>
+    </div>
+  </body>
+</html>

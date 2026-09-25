@@ -1,0 +1,16 @@
+{
+  "name": "ctcv-kit",
+  "version": "1.0.0",
+  "description": "Đội ngũ agent, skill, hook và quy trình của Cầm Tay Chỉ Việc; dùng lại cho hackathon 2 ngày và thử thách 12 giờ.",
+  "author": {
+    "name": "Đội CTCV"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "ctcv",
+    "agents",
+    "skills",
+    "hooks",
+    "hackathon"
+  ]
+}

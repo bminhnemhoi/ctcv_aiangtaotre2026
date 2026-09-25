@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/training-config.schema.json",
+  "title": "CTCV training config (training/configs/*.yaml) — one of: sft, dpo, quantize, detector, asr_lora",
+  "type": "object",
+  "required": ["version", "kind", "name", "epic", "stop", "budget", "output"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "kind": { "type": "string", "enum": ["sft", "dpo", "quantize", "detector", "asr_lora"] },
+    "name": { "$ref": "#/$defs/slug" },
+    "epic": { "type": "string", "pattern": "^E(0[1-9]|1[0-2])$" },
+    "optional": { "type": "boolean" },
+    "model_key": { "$ref": "#/$defs/model_key" },
+    "adapter_from": { "$ref": "#/$defs/slug" },
+    "dataset": { "$ref": "#/$defs/nullable_dataset" },
+    "datasets": { "type": "array", "items": { "$ref": "#/$defs/dataset_name" } },
+    "eval_dataset": { "$ref": "#/$defs/nullable_dataset" },
+    "lora": { "$ref": "#/$defs/lora" },
+    "train": { "$ref": "#/$defs/train" },
+    "dpo": { "$ref": "#/$defs/dpo" },
+    "targets": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/quant_target" } },
+    "detector": { "$ref": "#/$defs/detector" },
+    "export": { "$ref": "#/$defs/export" },
+    "audio": { "$ref": "#/$defs/audio" },
+    "stop": { "$ref": "#/$defs/stop" },
+    "budget": { "$ref": "#/$defs/budget" },
+    "output": { "$ref": "#/$defs/output" }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "sft" } } },
+      "then": { "required": ["model_key", "dataset", "lora", "train"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "dpo" } } },
+      "then": { "required": ["model_key", "dataset", "dpo"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "quantize" } } },
+      "then": { "required": ["targets"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "detector" } } },
+      "then": { "required": ["model_key", "dataset", "detector", "export"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "asr_lora" } } },
+      "then": { "required": ["model_key", "audio", "lora", "train"] }
+    }
+  ],
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+    "model_key": {
+      "description": "Key in config/models.yaml (planner, planner_small, ui_detector, asr...). Never a raw model id.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "dataset_name": {
+      "description": "Name in data/registry/datasets.yaml.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "nullable_dataset": {
+      "anyOf": [{ "$ref": "#/$defs/dataset_name" }, { "type": "null" }]
+    },
+    "precision": { "type": "string", "enum": ["bf16", "fp16", "fp32", "nf4"] },
+    "lora": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["r", "alpha"],
+      "properties": {
+        "r": { "type": "integer", "minimum": 1, "maximum": 256 },
+        "alpha": { "type": "integer", "minimum": 1, "maximum": 512 },
+        "dropout": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "target_modules": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    },
+    "train": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["learning_rate", "epochs", "precision"],
+      "properties": {
+        "learning_rate": { "type": "number", "exclusiveMinimum": 0, "maximum": 0.1 },
+        "epochs": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "max_seq_len": { "type": "integer", "minimum": 256, "maximum": 32768 },
+        "precision": { "$ref": "#/$defs/precision" },
+        "gradient_checkpointing": { "type": "boolean" },
+        "per_device_batch_size": { "type": "integer", "minimum": 1 },
+        "gradient_accumulation_steps": { "type": "integer", "minimum": 1 },
+        "warmup_ratio": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "lr_scheduler": { "type": "string", "enum": ["cosine", "linear", "constant"] },
+        "seed": { "type": "integer", "minimum": 0 },
+        "packing": { "type": "boolean" }
+      }
+    },
+    "dpo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pairs", "beta", "epochs"],
+      "properties": {
+        "pairs": { "type": "integer", "minimum": 1 },
+        "beta": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "epochs": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "learning_rate": { "type": "number", "exclusiveMinimum": 0, "maximum": 0.01 },
+        "max_seq_len": { "type": "integer", "minimum": 256 },
+        "max_prompt_len": { "type": "integer", "minimum": 128 },
+        "precision": { "$ref": "#/$defs/precision" },
+        "gradient_checkpointing": { "type": "boolean" },
+        "per_device_batch_size": { "type": "integer", "minimum": 1 },
+        "gradient_accumulation_steps": { "type": "integer", "minimum": 1 },
+        "seed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "quant_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_key", "method", "serve_with", "output_name"],
+      "properties": {
+        "model_key": { "$ref": "#/$defs/model_key" },
+        "method": { "type": "string", "enum": ["awq", "gguf"] },
+        "bits": { "type": "integer", "enum": [4, 8] },
+        "group_size": { "type": "integer", "enum": [32, 64, 128] },
+        "quant_type": { "type": "string", "pattern": "^Q[0-9]_[A-Z0-9_]+$" },
+        "serve_with": { "type": "string", "enum": ["vllm", "llama_cpp", "onnxruntime"] },
+        "output_name": { "$ref": "#/$defs/slug" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "method": { "const": "awq" } } },
+          "then": { "required": ["bits"] }
+        },
+        {
+          "if": { "properties": { "method": { "const": "gguf" } } },
+          "then": { "required": ["quant_type"] }
+        }
+      ]
+    },
+    "detector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["arch", "epochs", "images", "input_size"],
+      "properties": {
+        "arch": { "type": "string", "enum": ["yolox-nano", "yolox-tiny", "yolox-s"] },
+        "epochs": { "type": "integer", "minimum": 1, "maximum": 300 },
+        "images": { "type": "integer", "minimum": 1 },
+        "input_size": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "integer", "minimum": 64 }
+        },
+        "batch_size": { "type": "integer", "minimum": 1 },
+        "learning_rate": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "num_classes": { "type": "integer", "minimum": 1 },
+        "augmentation": { "type": "object" },
+        "seed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "export": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format"],
+      "properties": {
+        "format": { "type": "string", "enum": ["onnx", "torchscript"] },
+        "opset": { "type": "integer", "minimum": 11 },
+        "dynamic_batch": { "type": "boolean" }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_hours", "max_hours", "consent_required"],
+      "properties": {
+        "min_hours": { "type": "number", "minimum": 0 },
+        "max_hours": { "type": "number", "minimum": 0 },
+        "consent_required": { "type": "boolean", "const": true },
+        "regions": { "type": "array", "items": { "type": "string", "enum": ["bac", "trung", "nam"] } }
+      }
+    },
+    "stop": {
+      "description": "Stopping rule from plan §7: a metric with either a threshold or an early-stopping patience.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "mode"],
+      "properties": {
+        "metric": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "mode": { "type": "string", "enum": ["min", "max"] },
+        "patience": { "type": "integer", "minimum": 1 },
+        "threshold": { "type": "number" },
+        "max_allowed": { "type": "number", "minimum": 0 }
+      },
+      "anyOf": [
+        { "required": ["patience"] },
+        { "required": ["threshold"] },
+        { "required": ["max_allowed"] }
+      ]
+    },
+    "budget": {
+      "description": "Estimate checked by ctcv_training.budget before the job starts (≤ 20 h GPU, ≤ 500.000 đ API per job).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["estimated_gpu_hours", "estimated_api_vnd"],
+      "properties": {
+        "estimated_gpu_hours": { "type": "number", "minimum": 0, "maximum": 20 },
+        "estimated_api_vnd": { "type": "number", "minimum": 0, "maximum": 500000 }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_name"],
+      "properties": {
+        "run_name": { "$ref": "#/$defs/slug" },
+        "save_adapter_only": { "type": "boolean" }
+      }
+    }
+  }
+}

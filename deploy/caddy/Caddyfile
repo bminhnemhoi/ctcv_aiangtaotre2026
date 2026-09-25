@@ -1,0 +1,83 @@
+# Edge Caddyfile (staging/prod) — mounted into the `caddy` service by deploy/docker-compose.yml.
+# Domains come from the environment (.env: APP_DOMAIN, STATUS_DOMAIN); Caddy issues and renews
+# the certificates itself (automatic HTTPS, Let's Encrypt/ZeroSSL). With APP_DOMAIN=localhost
+# Caddy uses its internal CA, so the same file works on a laptop.
+#
+# ETH-12: keep Cloudflare DNS-only (grey cloud) while the dossier promises "máy chủ trong
+# nước" — see docker-compose.prod.yml header. Set ACME_EMAIL in .env for expiry notices.
+
+{
+	email {$ACME_EMAIL:admin@localhost}
+	# Uncomment on staging to stay under Let's Encrypt rate limits while testing:
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(self), microphone=(self), geolocation=()"
+		-Server
+	}
+}
+
+# ---------------------------------------------------------------- application
+{$APP_DOMAIN:localhost} {
+	import security_headers
+	encode zstd gzip
+
+	# Request bodies: audio uploads (/v1/speech/asr) and screenshots (/v1/coach/screen) stay
+	# small by design (ADR-005: images live 60 s); 20 MB is generous.
+	request_body {
+		max_size 20MB
+	}
+
+	# SSE for /v1/sessions/{id}/events (brief §3) must stream through both proxies.
+	@sse path /v1/sessions/*/events
+	handle @sse {
+		reverse_proxy web:80 {
+			flush_interval -1
+			transport http {
+				read_timeout 10m
+			}
+		}
+	}
+
+	# Never expose Prometheus scrape endpoints publicly.
+	@metrics path /metrics /v1/metrics
+	respond @metrics 404
+
+	handle {
+		reverse_proxy web:80 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}
+
+# ---------------------------------------------------------------- public status page
+{$STATUS_DOMAIN:status.localhost} {
+	import security_headers
+	encode zstd gzip
+
+	# Grafana behind the same host (prod overlay), sub-path /grafana/ (GF_SERVER_ROOT_URL).
+	handle /grafana/* {
+		reverse_proxy grafana:3000
+	}
+
+	# Uptime Kuma: public status page + admin UI (websocket upgrade is handled automatically).
+	handle {
+		reverse_proxy uptime-kuma:3001
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

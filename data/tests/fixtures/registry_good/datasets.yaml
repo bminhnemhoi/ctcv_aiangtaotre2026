@@ -1,0 +1,51 @@
+# Valid fixture: one crawled corpus, one synthetic set with an existing path, one NC eval-only set.
+- name: guides-fixture
+  version: "0.1"
+  source: https://dichvucong.gov.vn/
+  source_type: co_quan_nha_nuoc
+  license: "Bản quyền cơ quan ban hành — chỉ trích dẫn"
+  redistribute: false
+  derived_from: []
+  tos_url: https://dichvucong.gov.vn/
+  tos_checked_on: "2026-09-18"
+  collected_at: "2026-09-18"
+  size: { records: 10, mb: 0.5 }
+  sha256: pending
+  path: data/raw/guides/manifest.jsonl
+  used_for: [rag]
+  pii: none
+
+- name: tiny-eval
+  version: "1.0"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [guides-fixture]
+  tos_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  tos_checked_on: null
+  generator_model: human
+  generator_license: CC-BY-4.0
+  collected_at: 2026-09-18
+  size: { records: 1, mb: 0 }
+  sha256: pending
+  path: eval/sets/tiny.jsonl
+  used_for: [eval]
+  pii: none
+
+- name: nc-audio
+  version: "1.0"
+  source: https://ailab.hcmus.edu.vn/vivos
+  source_type: open_dataset
+  license: CC-BY-NC-SA-4.0
+  redistribute: false
+  derived_from: []
+  tos_url: https://ailab.hcmus.edu.vn/vivos
+  tos_checked_on: null
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  path: null
+  used_for: [eval]
+  pii: none
+  eval_only: true

@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "procedure_id": "2.000200",
+  "ma_thu_tuc": "2.000200",
+  "ten": "Cấp thẻ Căn cước cho người từ đủ 14 tuổi trở lên thực hiện tại Công an cấp tỉnh",
+  "linh_vuc": "Cấp, quản lý căn cước",
+  "co_quan_thuc_hien": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+  "cap_thuc_hien": "tinh",
+  "muc_do_dvc": "Dịch vụ công trực tuyến một phần",
+  "doi_tuong": null,
+  "cach_thuc": [
+    {
+      "kenh": "truc_tiep",
+      "kenh_text": "Trực tiếp",
+      "thoi_han": "07 ngày làm việc",
+      "phi_le_phi": "Không",
+      "phi_vnd": [],
+      "mo_ta": null
+    },
+    {
+      "kenh": "truc_tuyen",
+      "kenh_text": "Trực tuyến",
+      "thoi_han": "07 ngày làm việc",
+      "phi_le_phi": "Không",
+      "phi_vnd": [],
+      "mo_ta": null
+    }
+  ],
+  "trinh_tu": [
+    "Bước 1: Công dân đến địa điểm làm thủ tục cấp thẻ căn cước tại cơ quan quản lý căn cước của Công an cấp tỉnh (Phòng Cảnh sát Quản lý hành chính về trật tự xã hội, Công an các tỉnh, thành phố) hoặc Trung tâm phục vụ hành chính công tỉnh, thành phố (nếu đã triển khai) trong cả nước không phụ thuộc vào nơi cư trú đề nghị cấp thẻ căn cước.",
+    "Bước 2: Công dân cung cấp thông tin gồm họ, chữ đệm và tên khai sinh, số định danh cá nhân, nơi cư trú để người tiếp nhận kiểm tra đối chiếu thông tin trong Cơ sở dữ liệu quốc gia về dân cư.",
+    "Bước 3: Cán bộ thu nhận thông tin công dân tìm kiếm thông tin trong Cơ sở dữ liệu quốc gia về dân cư để lập hồ sơ cấp thẻ căn cước.",
+    "Bước 4: Tiến hành thu nhận vân tay, chụp ảnh khuôn mặt và thu nhận ảnh mống mắt của công dân.",
+    "Bước 5: In Phiếu thu nhận thông tin căn cước, Phiếu thu thập thông tin dân cư (nếu có) chuyển cho công dân kiểm tra, ký xác nhận.",
+    "Bước 6: Thu thẻ Căn cước công dân (nếu có), thu lệ phí (nếu có) và cấp giấy hẹn Trả kết quả giải quyết thủ tục về căn cước (mẫu CC02 ban hành kèm theo Thông tư số 17/2024/TT-BCA ngày 15/5/2024 của Bộ trưởng Bộ Công an).",
+    "Bước 7: Nhận kết quả trực tiếp tại cơ quan quản lý căn cước Công an cấp tỉnh hoặc trả qua dịch vụ bưu chính đến địa chỉ theo yêu cầu."
+  ],
+  "thanh_phan_ho_so": [
+    {
+      "doc_key": "d01",
+      "truong_hop": null,
+      "ten_giay_to": "Phiếu đề nghị giải quyết thủ tục về căn cước (Mẫu DC02 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "DC02"
+    },
+    {
+      "doc_key": "d02",
+      "truong_hop": "Trường hợp công dân chưa có thông tin trong cơ sở dữ liệu quốc gia về dân cư thì hồ sơ còn có",
+      "ten_giay_to": "Giấy tờ pháp lý chứa thông tin công dân",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": null
+    },
+    {
+      "doc_key": "d03",
+      "truong_hop": "Trường hợp công dân chưa có thông tin trong cơ sở dữ liệu quốc gia về dân cư thì hồ sơ còn có",
+      "ten_giay_to": "Phiếu thu thập thông tin dân cư (mẫu DC01 ban hành kèm theo Thông tư số 53/2025/TT-BCA ngày 01/7/2025 của Bộ Công an)",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "DC01"
+    },
+    {
+      "doc_key": "d04",
+      "truong_hop": null,
+      "ten_giay_to": "Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+      "ban_chinh": 1,
+      "ban_sao": 0,
+      "mau": "CC01"
+    }
+  ],
+  "yeu_cau_dieu_kien": "Không",
+  "can_cu_phap_ly": [
+    {
+      "so_hieu": "190/2025/NQ-QH15",
+      "ten": "Nghị quyết số 190/2025/QH15 của Quốc hội: Quy định về xử lý một số vấn đề liên quan đến sắp xếp tổ chức bộ máy nhà nước"
+    },
+    {
+      "so_hieu": "26/2023/QH15",
+      "ten": "Luật Căn cước"
+    },
+    {
+      "so_hieu": "70/2024/NĐ-CP",
+      "ten": "Nghị định của Chính phủ: Quy định chi tiết một số điều và biện pháp thi hành Luật Căn cước"
+    },
+    {
+      "so_hieu": "16/2024/TT-BCA",
+      "ten": "Thông tư 16/2024/TT-BCA quy định về mẫu thẻ căn cước, mẫu giấy chứng nhận căn cước"
+    },
+    {
+      "so_hieu": "17/2024/TT-BCA",
+      "ten": "Thông tư quy định chi tiết một số điều và biện pháp thi hành Luật Căn cước"
+    },
+    {
+      "so_hieu": "18/2024/TT-BCA",
+      "ten": "Thông tư quy định quy định về quy trình cấp, cấp đổi, cấp lại thẻ căn cước, giấy chứng nhận căn cước"
+    }
+  ],
+  "bieu_mau": [],
+  "ket_qua": "Thẻ căn cước",
+  "sections_raw": {
+    "Mã thủ tục": "2.000200",
+    "Lĩnh vực": "Cấp, quản lý căn cước",
+    "Cơ quan thực hiện": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+    "Mức độ cung cấp dịch vụ công trực tuyến": "Dịch vụ công trực tuyến một phần",
+    "Cách thức thực hiện": "Trực tiếp Trực tuyến",
+    "Thời hạn giải quyết": "07 ngày làm việc",
+    "Phí": "Không",
+    "Lệ Phí": "Không",
+    "Yêu cầu - điều kiện": "Không",
+    "Kết quả thực hiện": "Thẻ căn cước"
+  },
+  "meta": {
+    "source_url": "https://dichvucong.bocongan.gov.vn/bocongan/bothutuc/tthc?matt=26052",
+    "source_portal": "Cổng Dịch vụ công - Bộ Công an",
+    "agency": "Bộ Công an",
+    "matt": "26052",
+    "linh_vuc_code": "CAP_CCCD",
+    "fetched_at": "2026-09-24T18:39:13Z",
+    "sha256_raw": "8d051fb56f331aa02de7789b904f8096b77686f254fc2ce9e0616e8a4af85e3b",
+    "sha256_content": "32c18a812c5c4e6d4687a7cf324e0b0f586f2aac3953c86d6602d875feffb335",
+    "updated_at": null,
+    "effective_date": null,
+    "license_note": "Ghi rõ nguồn \"Cổng Dịch vụ công - Bộ Công an\" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp",
+    "parser_version": "tthc-bca/1"
+  }
+}

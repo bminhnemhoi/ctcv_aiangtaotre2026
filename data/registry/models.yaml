@@ -1,0 +1,101 @@
+# data/registry/models.yaml — mô hình gốc và checkpoint đội tự làm (brief §9, §17.4; plan §7).
+# Schema: config/schemas/models-registry.schema.json. Giấy phép theo SPDX; `license_url` = model card.
+# Checkpoint được chọn ở E07/E08 thêm mục mới với adapter_path/eval_report/card (không sửa mục gốc).
+# Runtime đọc config/models.yaml; file này là bản kê khai (scripts/declaration.py).
+
+- name: planner-base
+  base: Qwen/Qwen3.5-9B
+  license: Apache-2.0
+  license_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  adapter_path: null
+  quantization: none
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    Mô hình gốc của huấn luyện viên (config/models.yaml: planner). LoRA SFT + DPO + AWQ ở E07.
+
+- name: planner-small-base
+  base: Qwen/Qwen3.5-2B
+  license: Apache-2.0
+  license_url: https://huggingface.co/Qwen/Qwen3.5-2B
+  adapter_path: null
+  quantization: none
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    Đường CPU (llama.cpp, GGUF Q4_K_M ở E07) cho dev/hackathon/dự phòng — D29. Qwen3.5 không có bản 1.7B (D8).
+
+- name: vlm-base
+  base: Qwen/Qwen3.5-9B
+  license: Apache-2.0
+  license_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  adapter_path: null
+  quantization: none
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    Đọc màn hình bằng cùng model đa phương thức (D9 v2, đề xuất — chờ chốt tại PR E01). Phương án B ADR-002 Qwen/Qwen3-VL-8B-Instruct (Apache-2.0).
+
+- name: asr-phowhisper-small
+  base: vinai/PhoWhisper-small
+  license: BSD-3-Clause
+  license_url: https://huggingface.co/vinai/PhoWhisper-small
+  adapter_path: null
+  quantization: int8
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    ASR máy chủ (faster-whisper INT8). Giấy phép BSD-3-Clause, không phải Apache-2.0 (D10). LoRA tùy chọn trên audio pilot có đồng thuận.
+
+- name: asr-phowhisper-tiny
+  base: vinai/PhoWhisper-tiny
+  license: BSD-3-Clause
+  license_url: https://huggingface.co/vinai/PhoWhisper-tiny
+  adapter_path: null
+  quantization: int8
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    ASR cho profile cpu và PWA offline.
+
+- name: embed-bge-m3
+  base: BAAI/bge-m3
+  license: MIT
+  license_url: https://huggingface.co/BAAI/bge-m3
+  adapter_path: null
+  quantization: none
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    Embedding dense cho RAG (E03), hybrid với BM25 trong Qdrant.
+
+- name: rerank-bge-reranker-v2-m3
+  base: BAAI/bge-reranker-v2-m3
+  license: MIT
+  license_url: https://huggingface.co/BAAI/bge-reranker-v2-m3
+  adapter_path: null
+  quantization: none
+  eval_report: null
+  served_at: null
+  card: null
+  notes: >-
+    Xếp hạng lại top-20 chunk trước khi trích dẫn.
+
+- name: ui-detector-yolox-tiny
+  base: yolox-tiny
+  license: Apache-2.0
+  license_url: https://github.com/Megvii-BaseDetection/YOLOX/blob/main/LICENSE
+  adapter_path: null
+  quantization: onnx
+  eval_report: null
+  served_at: null
+  card: null
+  trained_on: [ui-screens-v1]
+  notes: >-
+    Huấn luyện toàn bộ trên ảnh sandbox tự render (E08, 50 epoch, ONNX). YOLOX Apache-2.0 thay Ultralytics AGPL (D7).

@@ -1,0 +1,9 @@
+- name: yolo-agpl
+  base: ultralytics/yolov8n
+  license: AGPL-3.0
+  license_url: https://github.com/ultralytics/ultralytics
+  adapter_path: null
+  quantization: fp8
+  eval_report: null
+  served_at: ftp://nope
+  card: null

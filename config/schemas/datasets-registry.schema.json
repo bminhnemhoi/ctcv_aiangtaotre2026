@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/datasets-registry.schema.json",
+  "title": "CTCV dataset registry (data/registry/datasets.yaml) — a list of datasets (brief §9, §17.4; owned by WP H, validated by `python -m ctcv_data.pipeline registry`)",
+  "type": "array",
+  "items": { "$ref": "#/$defs/dataset" },
+  "$defs": {
+    "sha256": {
+      "description": "Hex SHA-256 of the artefact at `path`, or 'pending' before it is built.",
+      "anyOf": [
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        { "type": "string", "const": "pending" }
+      ]
+    },
+    "used_for": {
+      "type": "string",
+      "enum": ["rag", "sft", "dpo", "ui", "drill", "eval"]
+    },
+    "nullable_date": { "type": ["string", "null"], "format": "date" },
+    "nullable_url": { "type": ["string", "null"], "pattern": "^https?://" },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "source",
+        "source_type",
+        "license",
+        "redistribute",
+        "derived_from",
+        "tos_checked_on",
+        "collected_at",
+        "size",
+        "sha256",
+        "used_for",
+        "pii"
+      ],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$" },
+        "source": {
+          "description": "Origin URL, or 'synthetic' for data generated (or hand-written) by the team.",
+          "anyOf": [
+            { "type": "string", "pattern": "^https?://" },
+            { "type": "string", "const": "synthetic" }
+          ]
+        },
+        "source_type": {
+          "description": "qppl = văn bản quy phạm pháp luật; co_quan_nha_nuoc = trang hướng dẫn cơ quan nhà nước; ngan_hang = trung tâm trợ giúp ngân hàng; synthetic = đội sinh/soạn (generator_model 'human' khi soạn tay); open_dataset = bộ dữ liệu mở đã công bố.",
+          "type": "string",
+          "enum": ["qppl", "co_quan_nha_nuoc", "ngan_hang", "synthetic", "open_dataset"]
+        },
+        "license": {
+          "description": "SPDX id when one exists (CC-BY-4.0, CC0-1.0, CC-BY-NC-SA-4.0); otherwise a short rights statement.",
+          "type": "string",
+          "minLength": 2
+        },
+        "redistribute": {
+          "description": "May the team redistribute this data (Drive/ZIP/repo)? False for NC or ToS-restricted sources.",
+          "type": "boolean"
+        },
+        "derived_from": {
+          "description": "Names of registry datasets this one was built from (empty list for primary sources).",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" }
+        },
+        "tos_url": { "$ref": "#/$defs/nullable_url" },
+        "tos_checked_on": {
+          "description": "Date the terms of service / license were read by a team member; null = not yet checked (must be set before crawling or downloading).",
+          "$ref": "#/$defs/nullable_date"
+        },
+        "generator_model": {
+          "description": "Model or provider that generated synthetic records ('human' for hand-written); declared in the dossier.",
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "generator_license": { "type": ["string", "null"], "minLength": 2 },
+        "collected_at": { "type": "string", "format": "date" },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["records", "mb"],
+          "properties": {
+            "records": { "type": "integer", "minimum": 0 },
+            "mb": { "type": "number", "minimum": 0 }
+          }
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "path": {
+          "description": "Repo-relative file or directory the sha256 refers to; null when the artefact lives outside the repo (e.g. a public dataset downloaded at eval time).",
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "used_for": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/used_for" }
+        },
+        "pii": { "type": "string", "enum": ["none", "anonymized"] },
+        "eval_only": {
+          "description": "True for licenses that forbid training released models (e.g. CC BY-NC-SA).",
+          "type": "boolean"
+        },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "source": { "const": "synthetic" } } },
+          "then": {
+            "required": ["generator_model", "generator_license", "tos_url"],
+            "properties": {
+              "source_type": { "const": "synthetic" },
+              "generator_model": { "type": "string" },
+              "generator_license": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "source_type": { "const": "synthetic" } } },
+          "then": { "properties": { "source": { "const": "synthetic" } } }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_type": { "enum": ["qppl", "co_quan_nha_nuoc", "ngan_hang", "open_dataset"] }
+            }
+          },
+          "then": { "required": ["tos_url"], "properties": { "tos_url": { "type": "string" } } }
+        },
+        {
+          "if": { "properties": { "license": { "pattern": "BY-NC|NonCommercial|Non-Commercial" } } },
+          "then": {
+            "required": ["eval_only"],
+            "properties": {
+              "eval_only": { "const": true },
+              "redistribute": { "const": false },
+              "used_for": { "const": ["eval"] }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

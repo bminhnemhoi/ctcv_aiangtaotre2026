@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Cầm Tay Chỉ Việc</title>
+  <rect width="512" height="512" fill="#1E40AF"/>
+  <rect x="211" y="136" width="90" height="162" rx="45" fill="#FFFFFF"/>
+  <path d="M166 256a90 90 0 0 0 180 0" fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linecap="round"/>
+  <path d="M256 346v40M206 386h100" fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linecap="round"/>
+</svg>

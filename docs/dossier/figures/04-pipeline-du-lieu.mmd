@@ -1,0 +1,15 @@
+flowchart TD
+  subgraph S1[Thu thập và tổ chức]
+    direction LR
+    A[1. Crawl nguồn chính thống] --> B[2. Chuẩn hóa + metadata] --> C[3. Chunk + embed vào Qdrant]
+  end
+  subgraph S2[Sinh và kiểm định kịch bản]
+    direction LR
+    D[4. Sinh kịch bản JSON] --> E[5. Validator máy trạng thái] --> F[6. Render ảnh + nhãn DOM]
+    E --> J[Báo cáo 30 mẫu cần người duyệt]
+  end
+  subgraph S3[Hội thoại, tập đánh giá, registry]
+    direction LR
+    G[7. Sinh hội thoại persona] --> H[8. Lọc ràng buộc + LLM-judge] --> I[9. Tập đánh giá + registry]
+  end
+  S1 --> S2 --> S3

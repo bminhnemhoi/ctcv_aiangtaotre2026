@@ -1,0 +1,61 @@
+# Prometheus for the prod overlay (plan §8): scrape /metrics of api, agent, speech, vision
+# (brief §3: every service exposes /metrics in Prometheus text format), the vLLM server
+# (`models`, gpu profile) and the DCGM GPU exporter. Alert rules: alert-rules.yml →
+# Alertmanager → Telegram. Targets are compose service names on the ctcv network.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    project: ctcv
+
+rule_files:
+  - /etc/prometheus/alert-rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["api:8000"]
+        labels: { service: api }
+
+  - job_name: agent
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["agent:8010"]
+        labels: { service: agent }
+
+  - job_name: speech
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["speech:8020"]
+        labels: { service: speech }
+
+  - job_name: vision
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["vision:8030"]
+        labels: { service: vision }
+
+  # vLLM exposes vllm:* metrics (queue depth, KV-cache usage, TTFT) — gpu profile only.
+  - job_name: models
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["models:8040"]
+        labels: { service: models }
+
+  # NVIDIA DCGM exporter (gpu profile): DCGM_FI_DEV_GPU_UTIL, DCGM_FI_DEV_FB_USED/FREE.
+  - job_name: gpu
+    static_configs:
+      - targets: ["dcgm-exporter:9400"]
+        labels: { service: gpu }
+
+  # Web (caddy) has no /metrics by default; Uptime Kuma covers the public URL.

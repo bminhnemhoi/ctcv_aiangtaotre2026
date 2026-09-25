@@ -1,0 +1,476 @@
+{
+  "uid": "ctcv-overview",
+  "title": "CTCV overview",
+  "description": "Độ trễ p50/p95 theo endpoint, lỗi 5xx, tỷ lệ escalate, GPU (plan §8). Provisioned từ deploy/monitoring/grafana/dashboards.",
+  "tags": [
+    "ctcv",
+    "plan-s8"
+  ],
+  "timezone": "Asia/Ho_Chi_Minh",
+  "editable": false,
+  "graphTooltip": 1,
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "p50 / p95 theo endpoint (s)",
+      "description": "Cảnh báo khi p95 > 3 s trong 5 phút (plan §8). Mục tiêu: sandbox < 1 s, hỏi đáp < 4 s.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "histogram_quantile(0.50, sum by (le, service, handler) (rate(http_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "p50 {{service}} {{handler}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "histogram_quantile(0.95, sum by (le, service, handler) (rate(http_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "p95 {{service}} {{handler}}",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "p95 hiện tại (s)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "max(histogram_quantile(0.95, sum by (le, service) (rate(http_request_duration_seconds_bucket[5m]))))",
+          "legendFormat": "p95",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Lỗi 5xx (%) theo dịch vụ",
+      "description": "Ngưỡng cảnh báo 2 % (plan §8).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "100 * sum by (service) (rate(http_requests_total{status=~\"5..\"}[5m])) / clamp_min(sum by (service) (rate(http_requests_total[5m])), 0.001)",
+          "legendFormat": "{{service}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Tỷ lệ escalate sang tình nguyện viên (%)",
+      "description": "Tăng > 2× trung bình ngày ⇒ ASR hoặc RAG có vấn đề (RUNBOOK §4).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "100 * sum(rate(ctcv_coach_escalations_total[15m])) / clamp_min(sum(rate(ctcv_coach_answers_total[15m])), 0.001)",
+          "legendFormat": "escalate 15m",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "100 * sum(rate(ctcv_coach_escalations_total[1d])) / clamp_min(sum(rate(ctcv_coach_answers_total[1d])), 0.001)",
+          "legendFormat": "trung bình ngày",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "GPU util (%) — placeholder DCGM (profile gpu)",
+      "description": "Trống khi chạy profile cpu (không có dcgm-exporter). Cảnh báo VRAM > 92 %.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "DCGM_FI_DEV_GPU_UTIL",
+          "legendFormat": "GPU {{gpu}} util",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "100 * DCGM_FI_DEV_FB_USED / clamp_min(DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE, 1)",
+          "legendFormat": "GPU {{gpu}} VRAM",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 92
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "vLLM: hàng đợi và KV cache",
+      "description": "Từ /metrics của vLLM (profile gpu).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "vllm:num_requests_running",
+          "legendFormat": "đang chạy",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "vllm:num_requests_waiting",
+          "legendFormat": "đang chờ",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "100 * vllm:gpu_cache_usage_perc",
+          "legendFormat": "KV cache %",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Yêu cầu/giây theo dịch vụ",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "sum by (service) (rate(http_requests_total[5m]))",
+          "legendFormat": "{{service}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "Dịch vụ lên/xuống (up)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ctcv-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ctcv-prometheus"
+          },
+          "expr": "up{job=~\"api|agent|speech|vision|models\"}",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      }
+    }
+  ]
+}

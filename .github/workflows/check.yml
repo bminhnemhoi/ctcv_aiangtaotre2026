@@ -1,0 +1,179 @@
+# CTCV — deterministic quality gate (brief D13 v2). Runs `make check` in its parts on
+# GitHub-hosted runners: lint, unit (coverage >= 80 %), integration, contract tests, config
+# schemas, invariants, guardrail-only red-team, audit, docs-check, Playwright e2e and the
+# Docker build. It NEVER calls a model: no API key, no LLM-judge — the GPU-bound gate lives
+# in gate.yml on the self-hosted runner. release.yml reuses this workflow via workflow_call.
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUTF8: "1"
+  # `uv sync` fails instead of silently re-resolving when uv.lock is stale.
+  UV_LOCKED: "1"
+  FORCE_COLOR: "1"
+  GITLEAKS_VERSION: "8.24.3"
+
+jobs:
+  check:
+    name: make check QUICK=1
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@v4 # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install gitleaks (make audit)
+        run: |
+          curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C "${RUNNER_TEMP}" gitleaks
+          mkdir -p "${HOME}/.local/bin"
+          install -m 755 "${RUNNER_TEMP}/gitleaks" "${HOME}/.local/bin/gitleaks"
+          echo "${HOME}/.local/bin" >> "$GITHUB_PATH"
+      - name: make install
+        run: make install
+      - name: make check QUICK=1
+        run: make check QUICK=1
+      - name: Deploy/CI contract tests (deploy/tests sits outside pytest testpaths)
+        run: uv run pytest deploy/tests -q -p no:cacheprovider
+      - name: Upload eval/reports + last_check.json
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-reports
+          path: |
+            eval/reports
+            docs/status/last_check.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  e2e:
+    name: make e2e E2E=1 (Playwright, 3 viewports)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: "true"
+      # Deterministic browser runs: network fixtures are replayed from apps/web/e2e (recorded
+      # on a developer machine, never in CI) and the coach agent is a stub — no model call.
+      CTCV_E2E_MODE: replay
+      CTCV_AGENT_STUB: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Playwright version (cache key)
+        id: pw
+        run: echo "version=$(node -p "require('./apps/web/package.json').devDependencies['@playwright/test']")" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: make install E2E=1 (uv, pnpm, chromium)
+        run: make install E2E=1
+      - name: Chromium system dependencies
+        run: pnpm -C apps/web exec playwright install-deps chromium
+      - name: make e2e E2E=1
+        run: make e2e E2E=1
+      - name: Upload playwright-report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+  build:
+    name: docker compose --profile cpu build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      # Exposes ACTIONS_RUNTIME_TOKEN/ACTIONS_CACHE_URL so `type=gha` cache exporters work
+      # from `docker compose build` (deploy/docker-compose.ci.yml).
+      - uses: crazy-max/ghaction-github-runtime@v3
+      - name: Validate compose files (base, dev and prod overlays, both profiles)
+        run: |
+          for profile in cpu gpu; do
+            docker compose -f deploy/docker-compose.yml --profile "$profile" config -q
+            docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.prod.yml --profile "$profile" config -q
+          done
+          docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --profile cpu config -q
+      - name: Build images (BuildKit + GitHub Actions cache)
+        env:
+          COMPOSE_BAKE: "true"
+        run: docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.ci.yml --profile cpu build
+      - name: Image sizes (plan §3 — total < 8 GB without models)
+        run: |
+          total=0
+          for img in $(docker image ls --format '{{.Repository}}:{{.Tag}}' | grep '/ctcv-'); do
+            size=$(docker image inspect --format '{{.Size}}' "$img")
+            total=$((total + size))
+            printf '%-48s %6d MB\n' "$img" $((size / 1048576))
+          done
+          printf 'TOTAL %d MB\n' $((total / 1048576))
+          if [ "$total" -ge $((8 * 1024 * 1024 * 1024)) ]; then
+            echo "::error::images exceed the 8 GB budget (plan §3)"; exit 1
+          fi
+
+  audit:
+    name: gitleaks + make audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks scans the whole history of the push/PR
+      - name: gitleaks (history, .gitleaks.toml rules incl. D25 phone/e-mail in docs)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }} # only needed for organization repos
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: make install
+        run: make install
+      - name: make audit (allowed-deps + licences D26, pip-audit, pnpm audit)
+        run: make audit

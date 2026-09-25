@@ -1,0 +1,6 @@
+# Local-only files inside deploy/ (root .gitignore covers .env, *.gguf, models/cache).
+models/vllm.env
+models/cache/
+backups/
+tests/tmp-backups/
+caddy/data/

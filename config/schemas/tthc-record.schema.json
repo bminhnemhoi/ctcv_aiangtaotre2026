@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/tthc-record.schema.json",
+  "title": "CTCV administrative procedure record v1 (ADR-007 C2, data/clean/tthc/records/<procedure_id>.json)",
+  "description": "One administrative procedure (thủ tục hành chính) parsed from an official portal page. Mirrors ctcv_agent.rag.types.ProcedureRecord. sha256_content = sha256(utf-8(json.dumps(record without 'meta', ensure_ascii=False, sort_keys=True, separators=(',', ':')))).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "procedure_id",
+    "ma_thu_tuc",
+    "ten",
+    "linh_vuc",
+    "co_quan_thuc_hien",
+    "cap_thuc_hien",
+    "muc_do_dvc",
+    "doi_tuong",
+    "cach_thuc",
+    "trinh_tu",
+    "thanh_phan_ho_so",
+    "yeu_cau_dieu_kien",
+    "can_cu_phap_ly",
+    "bieu_mau",
+    "ket_qua",
+    "sections_raw",
+    "meta"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "procedure_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$" },
+    "ma_thu_tuc": { "$ref": "#/$defs/nullable_text" },
+    "ten": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "linh_vuc": { "$ref": "#/$defs/nullable_text" },
+    "co_quan_thuc_hien": { "$ref": "#/$defs/nullable_text" },
+    "cap_thuc_hien": { "enum": ["bo", "tinh", "xa", null] },
+    "muc_do_dvc": { "$ref": "#/$defs/nullable_text" },
+    "doi_tuong": { "$ref": "#/$defs/nullable_text" },
+    "cach_thuc": { "type": "array", "items": { "$ref": "#/$defs/cach_thuc" } },
+    "trinh_tu": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "thanh_phan_ho_so": { "type": "array", "items": { "$ref": "#/$defs/tai_lieu" } },
+    "yeu_cau_dieu_kien": { "$ref": "#/$defs/nullable_text" },
+    "can_cu_phap_ly": { "type": "array", "items": { "$ref": "#/$defs/can_cu" } },
+    "bieu_mau": { "type": "array", "items": { "$ref": "#/$defs/bieu_mau" } },
+    "ket_qua": { "$ref": "#/$defs/nullable_text" },
+    "sections_raw": {
+      "type": "object",
+      "propertyNames": { "minLength": 1, "maxLength": 200 },
+      "additionalProperties": { "type": "string", "maxLength": 8000 }
+    },
+    "meta": { "$ref": "#/$defs/meta" }
+  },
+  "$defs": {
+    "nullable_text": { "type": ["string", "null"], "minLength": 1 },
+    "nullable_count": { "type": ["integer", "null"], "minimum": 0 },
+    "cach_thuc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kenh", "kenh_text", "thoi_han", "phi_le_phi", "phi_vnd", "mo_ta"],
+      "properties": {
+        "kenh": { "enum": ["truc_tiep", "truc_tuyen", "buu_chinh", "khac"] },
+        "kenh_text": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "thoi_han": { "$ref": "#/$defs/nullable_text" },
+        "phi_le_phi": { "$ref": "#/$defs/nullable_text" },
+        "phi_vnd": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+        "mo_ta": { "$ref": "#/$defs/nullable_text" }
+      }
+    },
+    "tai_lieu": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["doc_key", "truong_hop", "ten_giay_to", "ban_chinh", "ban_sao", "mau"],
+      "properties": {
+        "doc_key": { "type": "string", "pattern": "^d\\d{2}$" },
+        "truong_hop": { "$ref": "#/$defs/nullable_text" },
+        "ten_giay_to": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "ban_chinh": { "$ref": "#/$defs/nullable_count" },
+        "ban_sao": { "$ref": "#/$defs/nullable_count" },
+        "mau": { "$ref": "#/$defs/nullable_text" }
+      }
+    },
+    "can_cu": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["so_hieu", "ten"],
+      "properties": {
+        "so_hieu": { "$ref": "#/$defs/nullable_text" },
+        "ten": { "type": "string", "minLength": 1 }
+      }
+    },
+    "bieu_mau": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ten", "url"],
+      "properties": {
+        "ten": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "pattern": "^https://\\S+$" }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_url",
+        "source_portal",
+        "agency",
+        "matt",
+        "linh_vuc_code",
+        "fetched_at",
+        "sha256_raw",
+        "sha256_content",
+        "updated_at",
+        "effective_date",
+        "license_note",
+        "parser_version"
+      ],
+      "properties": {
+        "source_url": { "type": "string", "pattern": "^https://\\S+$" },
+        "source_portal": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "agency": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "matt": { "type": "string", "pattern": "^\\d+$" },
+        "linh_vuc_code": { "$ref": "#/$defs/nullable_text" },
+        "fetched_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"
+        },
+        "sha256_raw": { "$ref": "#/$defs/sha256" },
+        "sha256_content": { "$ref": "#/$defs/sha256" },
+        "updated_at": { "$ref": "#/$defs/nullable_date" },
+        "effective_date": { "$ref": "#/$defs/nullable_date" },
+        "license_note": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "parser_version": { "type": "string", "const": "tthc-bca/1" }
+      }
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "nullable_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}

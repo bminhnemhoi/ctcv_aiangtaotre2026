@@ -1,0 +1,111 @@
+# ---------------------------------------------------------------- python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.log
+
+# ---------------------------------------------------------------- node
+node_modules/
+.pnpm-store/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+*.tsbuildinfo
+.vite/
+
+# ---------------------------------------------------------------- secrets & local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/settings.local.json
+docs/status/prompts.log
+docs/status/last_check.json
+
+# ---------------------------------------------------------------- data (large or regenerable; keep .gitkeep)
+data/raw/*
+!data/raw/.gitkeep
+data/clean/*
+!data/clean/.gitkeep
+data/ui/*
+!data/ui/.gitkeep
+data/sft/*
+!data/sft/.gitkeep
+data/dpo/*
+!data/dpo/.gitkeep
+training/runs/*
+!training/runs/.gitkeep
+eval/sets/**
+!eval/sets/README.md
+!eval/sets/samples/
+!eval/sets/samples/**
+
+# ---------------------------------------------------------------- generated dossier & reports
+docs/dossier/out/
+docs/dossier/build/tmp/
+.pip-audit-requirements.txt
+
+# ---------------------------------------------------------------- team personal data (D25) — never in the repo
+docs/dossier/private/*
+!docs/dossier/private/team.example.yaml
+!docs/dossier/private/README.md
+
+# ---------------------------------------------------------------- models / caches
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.bin
+deploy/models/cache/
+.hf_cache/
+
+# ---------------------------------------------------------------- editors / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.swp
+
+# Prompt log: the public repo carries only the index (INDEX.md with SHA-256 per session) and README.
+# Full transcripts stay on the team's machine and are provided to the organisers on request
+# (owner's decision 2026-09-25, Data for Life public release). Hooks keep writing them locally.
+docs/prompt-log/sessions/
+docs/prompt-log/subagents/
+docs/prompt-log/system/
+
+# Local dev artefacts
+ctcv-dev.db
+*.db-journal
+.playwright-mcp/
+
+# Binary / generated artefacts that must not be published (pre-publish audit 2026-09-25, §6)
+*.db
+*.sqlite
+*.sqlite3
+*.mp4
+*.webm
+*.mp3
+*.wav
+!**/tests/fixtures/**/*.wav
+*.zip
+*.bak
+/tmp/
+/scratch/
+# `build/` above also hides the dossier builder; keep its scripts and tests (audited: clean)
+!docs/dossier/build/

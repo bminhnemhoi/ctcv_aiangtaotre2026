@@ -1,0 +1,43 @@
+# ASR LoRA — TÙY CHỌN (plan §7 dòng 5; idea §6): PhoWhisper-small trên 5–10 giờ audio pilot
+# CÓ ĐỒNG THUẬN riêng (ô "ghi âm" trên phiếu, docs/pilot/README.md §3). Chỉ chạy khi có dữ liệu;
+# không bao giờ dùng audio chưa đồng thuận. Điều kiện dừng: WER giọng địa phương giảm ≥ 3 điểm.
+version: 1
+kind: asr_lora
+name: asr-phowhisper-lora
+epic: E07
+optional: true
+model_key: asr # vinai/PhoWhisper-small (BSD-3-Clause — D10)
+dataset: null # đặt tên bộ audio pilot (đăng ký trong data/registry) khi có; null = chưa có dữ liệu
+eval_dataset: null # tập WER theo giọng (Common Voice vi CC0; VIVOS chỉ đánh giá — brief §9)
+
+audio:
+  min_hours: 5
+  max_hours: 10
+  consent_required: true
+  regions: [bac, trung, nam]
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, v_proj]
+
+train:
+  learning_rate: 1.0e-4
+  epochs: 3
+  precision: fp16
+  per_device_batch_size: 8
+  gradient_accumulation_steps: 2
+  seed: 42
+
+stop: # "WER giọng địa phương giảm ≥ 3 điểm"
+  metric: wer_regional_drop_points
+  mode: max
+  threshold: 3
+
+budget:
+  estimated_gpu_hours: 1
+  estimated_api_vnd: 0
+
+output:
+  run_name: asr-phowhisper-lora

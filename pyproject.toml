@@ -1,0 +1,166 @@
+# Root of the CTCV uv workspace. This project is virtual (not built); it pins the
+# dev toolchain and aggregates every workspace member so `uv sync` gives one env.
+[project]
+name = "ctcv"
+version = "0.1.0"
+description = "Cầm Tay Chỉ Việc — trợ lý AI đồng hành Bình dân học vụ số (AI 2026, Bảng C)"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "ctcv-core",
+  "ctcv-api",
+  "ctcv-agent",
+  "ctcv-speech",
+  "ctcv-vision",
+  "ctcv-sandbox",
+  "ctcv-drills",
+  "ctcv-data",
+  "ctcv-training",
+  "ctcv-eval",
+]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.14",
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "pytest-asyncio>=0.26",
+  "httpx>=0.28",
+  "pyyaml>=6.0",
+  "jsonschema>=4.23",
+  "pip-audit>=2.9",
+  "pre-commit>=4.0",
+  "python-docx>=1.1",
+  "types-pyyaml",
+  "types-jsonschema",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dev"]
+
+[tool.uv.workspace]
+members = [
+  "libs/core",
+  "services/api",
+  "services/agent",
+  "services/speech",
+  "services/vision",
+  "sandbox",
+  "drills",
+  "data",
+  "training",
+  "eval",
+]
+
+[tool.uv.sources]
+ctcv-core = { workspace = true }
+ctcv-api = { workspace = true }
+ctcv-agent = { workspace = true }
+ctcv-speech = { workspace = true }
+ctcv-vision = { workspace = true }
+ctcv-sandbox = { workspace = true }
+ctcv-drills = { workspace = true }
+ctcv-data = { workspace = true }
+ctcv-training = { workspace = true }
+ctcv-eval = { workspace = true }
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [
+  "docs",
+  "data/raw",
+  "data/clean",
+  "data/ui",
+  "data/sft",
+  "data/dpo",
+  "training/runs",
+  "eval/sets",
+  "plugins",
+  "node_modules",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "D"]
+ignore = [
+  "D203", # one-blank-line-before-class (conflicts with D211)
+  "D213", # multi-line-summary-second-line (conflicts with D212)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["D1"]
+"**/conftest.py" = ["D1"]
+"scripts/tests/**" = ["D1"]
+# Exception class names (NotFound, Forbidden, ...) are fixed by the E01 brief / task spec.
+"libs/core/src/ctcv_core/errors.py" = ["N818"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+  "ctcv_core",
+  "ctcv_api",
+  "ctcv_agent",
+  "ctcv_speech",
+  "ctcv_vision",
+  "ctcv_sandbox",
+  "ctcv_drills",
+  "ctcv_data",
+  "ctcv_training",
+  "ctcv_eval",
+]
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+  "libs",
+  "services",
+  "sandbox",
+  "drills",
+  "data",
+  "training",
+  "eval",
+  "scripts",
+]
+asyncio_mode = "auto"
+addopts = "-q --import-mode=importlib --strict-markers"
+markers = [
+  "integration: needs external services (PostgreSQL, Redis, Qdrant, vLLM); run via `make integration`",
+  "e2e: browser end-to-end tests; run via `make e2e` with E2E=1",
+]
+norecursedirs = [
+  ".venv",
+  "node_modules",
+  "docs",
+  "data/raw",
+  "data/clean",
+  "data/ui",
+  "training/runs",
+  "eval/sets",
+  "plugins",
+  "deploy",
+]
+filterwarnings = ["error::DeprecationWarning:ctcv_.*"]
+
+# ---------------------------------------------------------------- coverage
+# The 80% floor is enforced ONLY by `make unit` (--cov-fail-under=80); a bare
+# `pytest`/`uv run pytest` never fails on coverage.
+[tool.coverage.run]
+source = ["ctcv_core", "ctcv_agent", "ctcv_sandbox", "ctcv_api"]
+branch = true
+omit = ["*/tests/*", "*/conftest.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+precision = 1
+exclude_also = [
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+]

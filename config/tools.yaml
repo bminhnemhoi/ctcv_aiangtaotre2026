@@ -1,0 +1,46 @@
+# Closed whitelist of agent tools (brief §7). The router only calls a tool present here
+# AND in ctcv_agent.tools.TOOL_REGISTRY; anything else raises ToolNotAllowed.
+# Invariant (tests/invariants): no tool may have a side effect outside none|sandbox|log.
+# Adding a tool is a mandatory stop point (plan §6) — ask the user first.
+version: 1
+
+tools:
+  - name: get_session_state
+    description: Read the current sandbox screen, remaining steps and counters of a session.
+    side_effect: none
+    args: [session_id]
+
+  - name: next_step
+    description: Return the next valid action (element id, colour, label) for a session.
+    side_effect: none
+    args: [session_id]
+
+  - name: search_guides
+    description: Hybrid search over the official guide corpus; returns chunks with doc ids.
+    side_effect: none
+    args: [query, skill]
+
+  - name: verify_citation
+    description: Check that a claim is supported by the cited document chunk.
+    side_effect: none
+    args: [claim, doc_id]
+
+  - name: start_drill
+    description: Start a scam-vaccine drill from drills/scenarios in the sandbox.
+    side_effect: sandbox
+    args: [key]
+
+  - name: grade_drill
+    description: Grade the option chosen in a drill; returns score, red flags and debrief.
+    side_effect: sandbox
+    args: [drill_id, option_id]
+
+  - name: log_progress
+    description: Append a learning-progress record (skill, level) for the dashboard.
+    side_effect: log
+    args: [user_id, skill, level]
+
+  - name: escalate_to_volunteer
+    description: Flag the session for a human volunteer with a short reason (no PII).
+    side_effect: log
+    args: [reason]

@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ctcv.local/schemas/rag.schema.json",
+  "title": "CTCV retrieval-augmented TTHC answering config (config/rag.yaml, ADR-007 C5)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "compose_mode",
+    "kb",
+    "serving",
+    "embed",
+    "compose",
+    "serving_aliases",
+    "retrieval",
+    "gate",
+    "intents",
+    "intent_sections",
+    "demo"
+  ],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "compose_mode": { "type": "string", "enum": ["llm_verified", "template_only"] },
+    "kb": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["records_dir", "index_dir", "skill", "source_portal"],
+      "properties": {
+        "records_dir": { "$ref": "#/$defs/relpath" },
+        "index_dir": { "$ref": "#/$defs/relpath" },
+        "skill": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "source_portal": { "$ref": "#/$defs/text" }
+      }
+    },
+    "serving": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpoint", "endpoint_env", "timeout_s"],
+      "properties": {
+        "endpoint": { "type": "string", "pattern": "^https?://[^/\\s]+(/\\S*)?$" },
+        "endpoint_env": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "timeout_s": { "type": "number", "exclusiveMinimum": 0, "maximum": 600 },
+        "num_gpu_env": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "ollama_options": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "num_gpu": { "type": "integer", "minimum": 0, "maximum": 999 }
+          }
+        }
+      }
+    },
+    "embed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_ref", "serving_name", "batch_size"],
+      "properties": {
+        "model_ref": { "$ref": "#/$defs/key" },
+        "serving_name": { "$ref": "#/$defs/serving_name" },
+        "batch_size": { "$ref": "#/$defs/count" }
+      }
+    },
+    "compose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_ref",
+        "serving_name",
+        "api",
+        "max_output_tokens",
+        "temperature",
+        "think",
+        "keep_alive",
+        "prompt"
+      ],
+      "properties": {
+        "model_ref": { "$ref": "#/$defs/key" },
+        "serving_name": { "$ref": "#/$defs/serving_name" },
+        "api": { "type": "string", "enum": ["ollama_chat", "openai_chat"] },
+        "max_output_tokens": { "$ref": "#/$defs/count" },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+        "think": { "type": "boolean" },
+        "keep_alive": { "type": "string", "pattern": "^-?\\d+[smh]?$" },
+        "prompt": { "type": "string", "pattern": "^[a-z_]+\\.v\\d+$" }
+      }
+    },
+    "serving_aliases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["model_id", "names"],
+        "properties": {
+          "model_id": { "$ref": "#/$defs/text" },
+          "names": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/serving_name" }
+          }
+        }
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "top_k",
+        "context_chunks",
+        "context_chars_per_chunk",
+        "chunk_max_chars",
+        "rrf_k",
+        "bm25_k1",
+        "bm25_b",
+        "accent_fold",
+        "synonyms",
+        "dialect_phrases"
+      ],
+      "properties": {
+        "top_k": { "$ref": "#/$defs/count" },
+        "context_chunks": { "$ref": "#/$defs/count" },
+        "context_chars_per_chunk": { "$ref": "#/$defs/count" },
+        "chunk_max_chars": { "$ref": "#/$defs/count" },
+        "rrf_k": { "$ref": "#/$defs/count" },
+        "bm25_k1": { "type": "number", "exclusiveMinimum": 0, "maximum": 10 },
+        "bm25_b": { "$ref": "#/$defs/unit" },
+        "accent_fold": { "type": "boolean" },
+        "synonyms": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/phrase" }
+          }
+        },
+        "dialect_phrases": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [{ "$ref": "#/$defs/phrase" }, { "$ref": "#/$defs/phrase" }],
+            "minItems": 2,
+            "maxItems": 2,
+            "items": false
+          }
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min_dense_score",
+        "high_dense_score",
+        "title_overlap_min",
+        "lexical_min_support",
+        "confidence_weight_dense",
+        "generic_words"
+      ],
+      "properties": {
+        "min_dense_score": { "$ref": "#/$defs/unit" },
+        "high_dense_score": { "$ref": "#/$defs/unit" },
+        "title_overlap_min": { "$ref": "#/$defs/unit" },
+        "lexical_min_support": { "$ref": "#/$defs/unit" },
+        "confidence_weight_dense": { "$ref": "#/$defs/unit" },
+        "generic_words": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/phrase" }
+        },
+        "out_of_scope_phrases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/phrase" }
+        },
+        "document_markers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[^\\s]+$", "minLength": 1, "maxLength": 20 }
+        }
+      }
+    },
+    "intents": { "$ref": "#/$defs/phrase_lists" },
+    "intent_sections": { "$ref": "#/$defs/phrase_lists" },
+    "demo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["staff_username"],
+      "properties": {
+        "staff_username": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,31}$" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "phrase": { "type": "string", "minLength": 1, "maxLength": 60 },
+    "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "serving_name": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]*$", "maxLength": 100 },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_./-]*$",
+      "not": { "pattern": "(^|/)\\.\\.(/|$)" }
+    },
+    "count": { "type": "integer", "minimum": 1 },
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "phrase_lists": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z_]+$": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/phrase" }
+        }
+      }
+    }
+  }
+}

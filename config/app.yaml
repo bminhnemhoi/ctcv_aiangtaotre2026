@@ -1,0 +1,51 @@
+# Application-wide settings (brief §2, §8). Validated by config/schemas/app.schema.json.
+# Override a top-level scalar with CTCV_APP_<KEY>, e.g. CTCV_APP_SCREEN_TTL_SECONDS=30.
+version: 1
+env: dev
+
+ports:
+  api: 8000
+  agent: 8010
+  speech: 8020
+  vision: 8030
+  models: 8040
+  web: 5173
+  caddy_http: 80
+  caddy_https: 443
+  postgres: 5432
+  redis: 6379
+  qdrant: 6333
+  minio: 9000
+  minio_console: 9001
+  uptime_kuma: 3001
+  prometheus: 9090
+  grafana: 3000
+
+# Data policy (idea §9, brief D5/ADR-005): screenshots live in MinIO for 60 s only.
+screen_ttl_seconds: 60
+log_retention_days: 30
+
+# Load protection (plan §15).
+rate_limit_per_min: 60
+max_concurrent_sessions: 200
+jwt_ttl_minutes: 120
+
+ui:
+  min_font_pt: 20
+  min_tap_px: 56
+  viewports:
+    - 360x800
+    - 390x844
+    - 412x915
+
+roles:
+  - citizen
+  - volunteer
+  - officer
+
+skill_groups:
+  - thiet-bi-co-ban
+  - dinh-danh-vneid
+  - dich-vu-cong
+  - thanh-toan-thue-so
+  - an-toan-so

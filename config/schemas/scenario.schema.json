@@ -1,0 +1,406 @@
+{
+  "$defs": {
+    "Colour": {
+      "description": "Colours the coach can name out loud (\"bấm nút màu xanh\").",
+      "enum": [
+        "xanh",
+        "do",
+        "vang",
+        "xam",
+        "trang"
+      ],
+      "title": "Colour",
+      "type": "string"
+    },
+    "Element": {
+      "additionalProperties": false,
+      "description": "One visible element on a screen (button, input box, text or banner).",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Colour"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Named colour, if any."
+        },
+        "id": {
+          "description": "Unique within the screen; referenced by actions.",
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ElementKind"
+        },
+        "label": {
+          "description": "Text shown on the element (Vietnamese).",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "placeholder": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Placeholder for inputs.",
+          "title": "Placeholder"
+        },
+        "sensitive": {
+          "default": false,
+          "description": "True when the value must never be stored (OTP, password...).",
+          "title": "Sensitive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "label"
+      ],
+      "title": "Element",
+      "type": "object"
+    },
+    "ElementKind": {
+      "description": "What a screen element renders as.",
+      "enum": [
+        "button",
+        "input",
+        "text",
+        "banner"
+      ],
+      "title": "ElementKind",
+      "type": "string"
+    },
+    "InputAction": {
+      "additionalProperties": false,
+      "description": "Typing a value matching ``value_pattern`` into ``input`` moves to ``next``.",
+      "properties": {
+        "input": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Input",
+          "type": "string"
+        },
+        "next": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Next",
+          "type": "string"
+        },
+        "value_pattern": {
+          "default": "^.+$",
+          "description": "Python regex.",
+          "minLength": 1,
+          "title": "Value Pattern",
+          "type": "string"
+        }
+      },
+      "required": [
+        "input",
+        "next"
+      ],
+      "title": "InputAction",
+      "type": "object"
+    },
+    "Mistake": {
+      "additionalProperties": false,
+      "description": "A common wrong tap and the pre-written hint the coach says in response.",
+      "properties": {
+        "hint": {
+          "description": "At most two plain sentences, no jargon.",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Hint",
+          "type": "string"
+        },
+        "tap": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Tap",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tap",
+        "hint"
+      ],
+      "title": "Mistake",
+      "type": "object"
+    },
+    "Screen": {
+      "additionalProperties": false,
+      "description": "One screen of the simulated app.",
+      "properties": {
+        "coach_line": {
+          "description": "What the coach says on arrival (at most 2 sentences).",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Coach Line",
+          "type": "string"
+        },
+        "common_mistakes": {
+          "items": {
+            "$ref": "#/$defs/Mistake"
+          },
+          "title": "Common Mistakes",
+          "type": "array"
+        },
+        "elements": {
+          "items": {
+            "$ref": "#/$defs/Element"
+          },
+          "title": "Elements",
+          "type": "array"
+        },
+        "id": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "terminal": {
+          "default": false,
+          "description": "True ends the session on arrival.",
+          "title": "Terminal",
+          "type": "boolean"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "valid_actions": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/TapAction"
+              },
+              {
+                "$ref": "#/$defs/InputAction"
+              }
+            ]
+          },
+          "title": "Valid Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "coach_line"
+      ],
+      "title": "Screen",
+      "type": "object"
+    },
+    "SkillGroup": {
+      "description": "The five skill groups of the digital-literacy roadmap (idea §4, app.yaml).",
+      "enum": [
+        "thiet-bi-co-ban",
+        "dinh-danh-vneid",
+        "dich-vu-cong",
+        "thanh-toan-thue-so",
+        "an-toan-so"
+      ],
+      "title": "SkillGroup",
+      "type": "string"
+    },
+    "Success": {
+      "additionalProperties": false,
+      "description": "Session succeeds on reaching ``screen`` with every condition matching a value.",
+      "properties": {
+        "conditions": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "description": "Expected values keyed by input element id.",
+          "title": "Conditions",
+          "type": "object"
+        },
+        "screen": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Screen",
+          "type": "string"
+        }
+      },
+      "required": [
+        "screen"
+      ],
+      "title": "Success",
+      "type": "object"
+    },
+    "TapAction": {
+      "additionalProperties": false,
+      "description": "Tapping ``tap`` moves to screen ``next``.",
+      "properties": {
+        "next": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Next",
+          "type": "string"
+        },
+        "tap": {
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Tap",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tap",
+        "next"
+      ],
+      "title": "TapAction",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A complete sandbox scenario (JSON state machine).",
+  "properties": {
+    "app_label": {
+      "description": "Must contain \"mô phỏng\" (simulated app label).",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "App Label",
+      "type": "string"
+    },
+    "fake_data": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Fake Data",
+      "type": "object"
+    },
+    "goal": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Goal",
+      "type": "string"
+    },
+    "id": {
+      "description": "Slug, unique across sandbox/scenarios; equals the file stem.",
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "intent_confirmation": {
+      "description": "First-turn question confirming intent.",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Intent Confirmation",
+      "type": "string"
+    },
+    "level": {
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Level",
+      "type": "integer"
+    },
+    "never_ask": {
+      "description": "Must include \"otp\" and \"mat_khau\".",
+      "items": {
+        "maxLength": 40,
+        "minLength": 1,
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Never Ask",
+      "type": "array"
+    },
+    "screens": {
+      "items": {
+        "$ref": "#/$defs/Screen"
+      },
+      "minItems": 1,
+      "title": "Screens",
+      "type": "array"
+    },
+    "skill_group": {
+      "$ref": "#/$defs/SkillGroup"
+    },
+    "start_screen": {
+      "maxLength": 40,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Start Screen",
+      "type": "string"
+    },
+    "success": {
+      "$ref": "#/$defs/Success"
+    },
+    "version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "skill_group",
+    "level",
+    "version",
+    "app_label",
+    "goal",
+    "intent_confirmation",
+    "start_screen",
+    "screens",
+    "success",
+    "never_ask"
+  ],
+  "title": "Scenario",
+  "type": "object"
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hình – Ablation lớp kiểm chứng</title>
+    <link rel="stylesheet" href="../../video/slides/style.css" />
+  </head>
+  <body class="figure">
+    <h1>Ablation: có và không có lớp kiểm chứng, trên cùng một lượt gọi mô hình (%)</h1>
+    <div class="bars grow">
+      <h2>Câu lệch nguồn (hallucination) – càng thấp càng tốt</h2>
+      <div class="bar-row">
+        <span>Chỉ câu mẫu</span>
+        <div class="bar-track"><div class="bar-fill m-template" data-bar="ablation.modes.template_only.hallucination"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.template_only.hallucination">chưa đo</span>
+      </div>
+      <div class="bar-row">
+        <span>Mô hình, không kiểm</span>
+        <div class="bar-track"><div class="bar-fill m-unverified" data-bar="ablation.modes.llm_unverified.hallucination"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.llm_unverified.hallucination">chưa đo</span>
+      </div>
+      <div class="bar-row">
+        <span>Có kiểm chứng</span>
+        <div class="bar-track"><div class="bar-fill m-verified" data-bar="ablation.modes.llm_verified.hallucination"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.llm_verified.hallucination">chưa đo</span>
+      </div>
+      <h2>Mọi số đều có trong nguồn (numeric_fidelity)</h2>
+      <div class="bar-row">
+        <span>Chỉ câu mẫu</span>
+        <div class="bar-track"><div class="bar-fill m-template" data-bar="ablation.modes.template_only.numeric_fidelity"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.template_only.numeric_fidelity">chưa đo</span>
+      </div>
+      <div class="bar-row">
+        <span>Mô hình, không kiểm</span>
+        <div class="bar-track"><div class="bar-fill m-unverified" data-bar="ablation.modes.llm_unverified.numeric_fidelity"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.llm_unverified.numeric_fidelity">chưa đo</span>
+      </div>
+      <div class="bar-row">
+        <span>Có kiểm chứng</span>
+        <div class="bar-track"><div class="bar-fill m-verified" data-bar="ablation.modes.llm_verified.numeric_fidelity"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.llm_verified.numeric_fidelity">chưa đo</span>
+      </div>
+      <h2>Đúng thủ tục, đủ giá trị kỳ vọng (answer_accuracy)</h2>
+      <div class="bar-row">
+        <span>Chỉ câu mẫu</span>
+        <div class="bar-track"><div class="bar-fill m-template" data-bar="ablation.modes.template_only.answer_accuracy"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.template_only.answer_accuracy">chưa đo</span>
+      </div>
+      <div class="bar-row">
+        <span>Mô hình, không kiểm</span>
+        <div class="bar-track"><div class="bar-fill m-unverified" data-bar="ablation.modes.llm_unverified.answer_accuracy"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.llm_unverified.answer_accuracy">chưa đo</span>
+      </div>
+      <div class="bar-row">
+        <span>Có kiểm chứng</span>
+        <div class="bar-track"><div class="bar-fill m-verified" data-bar="ablation.modes.llm_verified.answer_accuracy"></div></div>
+        <span class="bar-value" data-metric="ablation.modes.llm_verified.answer_accuracy">chưa đo</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>“Có kiểm chứng” thay câu không qua bằng câu mẫu, nên tỷ lệ lệch nguồn thấp một phần do thiết kế</span>
+      <span>Nguồn: ablation-tthc.json</span>
+    </div>
+  </body>
+</html>

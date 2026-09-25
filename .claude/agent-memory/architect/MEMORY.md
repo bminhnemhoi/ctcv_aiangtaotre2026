@@ -1,0 +1,2 @@
+- [DFL pivot 25/9](project_dfl_pivot.md) — switched to Data for Life DA940-01; ADR-007 decisions + rejected options (robots, no Qdrant, aliases not models.yaml)
+- [Parallel plan without git](project_parallel_plan_without_git.md) — contract-first package, disjoint files_owned, test traps (test_cli stubs, 16-route contract, PII scan of eval samples)

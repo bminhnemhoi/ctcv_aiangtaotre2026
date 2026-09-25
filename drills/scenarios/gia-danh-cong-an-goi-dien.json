@@ -1,0 +1,23 @@
+{
+  "key": "gia-danh-cong-an-goi-dien",
+  "channel": "call",
+  "impersonates": "cong-an",
+  "variant": 1,
+  "severity": 3,
+  "label": "Đây là mô phỏng",
+  "pretext": "Người lạ gọi điện xưng là cán bộ điều tra, nói bác liên quan một vụ án và phải chuyển tiền để chứng minh trong sạch.",
+  "utterance": "[Mô phỏng] Tôi là cán bộ điều tra, bác đang liên quan một vụ án rửa tiền, phải chuyển ngay tiền vào tài khoản tạm giữ và không được kể với ai.",
+  "red_flags": ["xung-co-quan", "giuc-chuyen-tien", "doa-dam", "giu-bi-mat", "tai-khoan-la"],
+  "options": [
+    { "id": "chuyen-tien", "text": "Chuyển tiền ngay để được xác minh và không bị bắt", "correct": false },
+    { "id": "doc-thong-tin", "text": "Đọc số tài khoản và mã OTP để họ kiểm tra giúp", "correct": false },
+    { "id": "cup-may", "text": "Cúp máy, gọi lại số công an phường và kể cho người thân", "correct": true },
+    { "id": "hoi-them", "text": "Hỏi thêm chi tiết vụ án và xin thời gian suy nghĩ", "correct": false }
+  ],
+  "debrief": "Công an không bao giờ làm việc qua điện thoại hay yêu cầu chuyển tiền để chứng minh trong sạch. Ai giục chuyển tiền gấp và bắt giữ bí mật là dấu hiệu lừa đảo.",
+  "three_things": [
+    "Cúp máy ngay, không làm theo",
+    "Gọi lại số công an phường hoặc tổng đài chính thức",
+    "Kể cho người thân trước khi làm bất cứ điều gì"
+  ]
+}

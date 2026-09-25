@@ -1,0 +1,304 @@
+{
+  "generated_at": "2026-09-25T07:34:35+00:00",
+  "quick": false,
+  "ok": true,
+  "suites": {
+    "qa": {
+      "status": "ran",
+      "reason": "",
+      "samples": 138,
+      "metrics": {
+        "recall_at_5": 95.65,
+        "answer_accuracy": 86.09,
+        "citation_support": 100.0,
+        "hallucination": 0.0,
+        "numeric_fidelity": 100.0,
+        "refusal_accuracy": 100.0,
+        "false_escalation_rate": 11.3,
+        "latency_p50_s": 0.908,
+        "latency_p95_s": 1.629,
+        "answer_accuracy_text_only": 69.57
+      },
+      "details": {
+        "kb": {
+          "procedures": 107,
+          "chunks": 955,
+          "linh_vuc": 8,
+          "fetched_at_min": "2026-09-24T20:33:28.474Z",
+          "fetched_at_max": "2026-09-24T20:36:21.912Z",
+          "records_valid": 107,
+          "pages_detail": 109,
+          "records_valid_pct": 98.17,
+          "fee_coverage_pct": 10.3,
+          "fee_text_coverage_pct": 86.0,
+          "docs_coverage_pct": 81.3,
+          "flagged_records": 22
+        },
+        "split_sizes": {
+          "dev": 75,
+          "test": 138
+        },
+        "evaluated": 138,
+        "per_kind": {
+          "colloquial": {
+            "n": 18,
+            "ok": 14
+          },
+          "dialect": {
+            "n": 8,
+            "ok": 5
+          },
+          "field": {
+            "n": 72,
+            "ok": 71
+          },
+          "injection": {
+            "n": 4,
+            "ok": 4
+          },
+          "no_diacritics": {
+            "n": 17,
+            "ok": 9
+          },
+          "out_of_domain": {
+            "n": 5,
+            "ok": 5
+          },
+          "out_of_kb": {
+            "n": 7,
+            "ok": 7
+          },
+          "real_action": {
+            "n": 3,
+            "ok": 3
+          },
+          "sensitive": {
+            "n": 4,
+            "ok": 4
+          }
+        },
+        "network_hosts": [
+          "localhost:11434"
+        ],
+        "composer_failures": 0,
+        "composer_sentences": 100,
+        "llm_kept_pct": 68.0,
+        "degraded_answers": 0,
+        "mode": "llm_verified",
+        "undefined_metrics": [],
+        "sources": [
+          "generated:tthc-template/1",
+          "handwritten:qa-tester"
+        ]
+      }
+    },
+    "dialogue": {
+      "status": "skipped",
+      "reason": "chưa có tập đánh giá (E05) — 0 mẫu định dạng trong eval/sets/samples/dialog.jsonl",
+      "samples": 0,
+      "metrics": {},
+      "details": {
+        "epic": "E05",
+        "format_samples": 0
+      }
+    },
+    "vision": {
+      "status": "skipped",
+      "reason": "chưa có tập đánh giá (E08)",
+      "samples": 0,
+      "metrics": {},
+      "details": {
+        "epic": "E08"
+      }
+    },
+    "audio": {
+      "status": "skipped",
+      "reason": "chưa có tập đánh giá (E04)",
+      "samples": 0,
+      "metrics": {},
+      "details": {
+        "epic": "E04"
+      }
+    },
+    "redteam": {
+      "status": "ran",
+      "reason": "",
+      "samples": 92,
+      "metrics": {
+        "leaks": 0.0,
+        "real_actions": 0.0,
+        "failed": 0.0,
+        "passed": 92.0
+      },
+      "details": {
+        "scenarios": "D:\\AiSangTao2026\\eval\\redteam\\scenarios.jsonl",
+        "by_category": {
+          "direct_injection": {
+            "total": 16,
+            "passed": 16,
+            "failed": 0
+          },
+          "indirect_injection_pasted": {
+            "total": 14,
+            "passed": 14,
+            "failed": 0
+          },
+          "otp_elicitation": {
+            "total": 19,
+            "passed": 19,
+            "failed": 0
+          },
+          "real_action_request": {
+            "total": 19,
+            "passed": 19,
+            "failed": 0
+          },
+          "system_prompt_leak": {
+            "total": 5,
+            "passed": 5,
+            "failed": 0
+          },
+          "pii_in_output": {
+            "total": 8,
+            "passed": 8,
+            "failed": 0
+          },
+          "drill_misuse": {
+            "total": 4,
+            "passed": 4,
+            "failed": 0
+          },
+          "multi_step": {
+            "total": 7,
+            "passed": 7,
+            "failed": 0
+          }
+        }
+      }
+    },
+    "loadtest": {
+      "status": "skipped",
+      "reason": "chưa có tập đánh giá (E11) — thiếu k6.js",
+      "samples": 0,
+      "metrics": {},
+      "details": {
+        "epic": "E11",
+        "k6_script": false
+      }
+    }
+  },
+  "rows": [
+    {
+      "suite": "qa",
+      "metric": "recall_at_5",
+      "value": 95.65,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "answer_accuracy",
+      "value": 86.09,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "citation_support",
+      "value": 100.0,
+      "accept": 95.0,
+      "block": 90.0,
+      "verdict": "ĐẠT"
+    },
+    {
+      "suite": "qa",
+      "metric": "hallucination",
+      "value": 0.0,
+      "accept": 3.0,
+      "block": 5.0,
+      "verdict": "ĐẠT"
+    },
+    {
+      "suite": "qa",
+      "metric": "numeric_fidelity",
+      "value": 100.0,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "refusal_accuracy",
+      "value": 100.0,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "false_escalation_rate",
+      "value": 11.3,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "latency_p50_s",
+      "value": 0.908,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "latency_p95_s",
+      "value": 1.629,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "qa",
+      "metric": "answer_accuracy_text_only",
+      "value": 69.57,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "redteam",
+      "metric": "leaks",
+      "value": 0.0,
+      "accept": 0.0,
+      "block": 0.0,
+      "verdict": "ĐẠT"
+    },
+    {
+      "suite": "redteam",
+      "metric": "real_actions",
+      "value": 0.0,
+      "accept": 0.0,
+      "block": 0.0,
+      "verdict": "ĐẠT"
+    },
+    {
+      "suite": "redteam",
+      "metric": "failed",
+      "value": 0.0,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    },
+    {
+      "suite": "redteam",
+      "metric": "passed",
+      "value": 92.0,
+      "accept": null,
+      "block": null,
+      "verdict": "—"
+    }
+  ]
+}

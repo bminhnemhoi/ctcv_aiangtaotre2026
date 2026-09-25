@@ -1,0 +1,57 @@
+# Caddyfile baked into the web image (deploy/docker/web.Dockerfile): static PWA + API proxy.
+# Plain HTTP on :80 — TLS terminates at the edge caddy (deploy/caddy/Caddyfile) in prod, or
+# at the Vite dev server in dev. Never exposes /metrics of the API to the public.
+
+{
+	admin off
+	auto_https off
+}
+
+:80 {
+	root * /srv
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(self), microphone=(self), geolocation=()"
+		-Server
+	}
+
+	# Container health probe (compose + Dockerfile HEALTHCHECK).
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	# API (brief §3): /v1/* and the bare health endpoint. SSE streams must not be buffered.
+	@sse path /v1/sessions/*/events
+	handle @sse {
+		reverse_proxy api:8000 {
+			flush_interval -1
+			transport http {
+				read_timeout 10m
+			}
+		}
+	}
+	handle /v1/* {
+		reverse_proxy api:8000 {
+			header_up X-Request-Id {http.request.uuid}
+		}
+	}
+	handle /health {
+		reverse_proxy api:8000
+	}
+
+	# PWA assets: long cache for hashed files, no cache for the shell/manifest/service worker.
+	@immutable path /assets/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+	@shell path / /index.html /manifest.webmanifest /sw.js /registerSW.js
+	header @shell Cache-Control "no-cache"
+
+	# SPA fallback: unknown paths render index.html (client-side router).
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}

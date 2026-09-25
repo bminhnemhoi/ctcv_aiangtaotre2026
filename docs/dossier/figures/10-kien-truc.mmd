@@ -1,0 +1,17 @@
+flowchart TD
+  U["PWA cho người dân, tình nguyện viên, cán bộ Đoàn<br/>giọng nói · thao tác · ảnh sandbox · chữ ≥ 20 pt"]
+  subgraph APP["Tầng ứng dụng"]
+    direction LR
+    G["api · FastAPI<br/>JWT 3 vai · rate limit · SSE"] ~~~ S["sandbox engine<br/>máy trạng thái JSON"] ~~~ D["drills<br/>kịch bản lừa đảo + chấm điểm"]
+  end
+  subgraph AG["Tầng agent: tách luồng điều khiển khỏi dữ liệu không tin cậy"]
+    direction LR
+    Q["LLM cách ly<br/>schema kín · không tool"] --> A["planner + guardrails<br/>+ kiểm chứng trích dẫn"] --> T["tool router<br/>8 tool trong whitelist"]
+  end
+  subgraph AI["Tầng mô hình và dữ liệu: tự host, thay được qua cấu hình"]
+    direction LR
+    M["models · vLLM Qwen3.5-9B<br/>LoRA coach + base đọc ảnh"] ~~~ SP["speech<br/>PhoWhisper + Piper TTS"] ~~~ R["RAG · Qdrant hybrid<br/>bge-m3 + reranker"] ~~~ DB[("PostgreSQL · Redis")]
+  end
+  U <-->|"yêu cầu ↓ · phản hồi ≤ 2 câu + TTS + highlight ↑"| APP
+  APP <--> AG
+  AG <--> AI

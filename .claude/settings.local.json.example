@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh gpu-box *)",
+      "Bash(nvidia-smi *)"
+    ]
+  },
+  "env": {
+    "CTCV_ALLOW_EVAL_THRESHOLD": "0",
+    "VLLM_BASE_URL": "http://localhost:8040/v1"
+  }
+}

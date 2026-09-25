@@ -1,0 +1,109 @@
+# Lời thoại và phụ đề video Data for Life 2026 (đề DA940-01), hợp đồng C9 của ADR-007.
+# Người đọc: docs/dossier/dfl/video/make_video.py (ghép video), slide HTML trong video/slides/,
+# kịch bản chi tiết cho người quay: docs/dossier/dfl/kich-ban-video.md.
+#
+# Luật:
+# - Chỉ quay tính năng chạy thật (Thể lệ, Điều 7): mọi đoạn demo đều có assert Playwright trên stack
+#   thật (API + Ollama cục bộ, không mock). Không giọng nói nhân tạo, không nhạc.
+# - kind: slide → có slide (tên file HTML) và seconds; demo_step = null.
+#   kind: demo  → có demo_step (id bước trong record-demo.demo.ts); slide = null; KHÔNG có seconds,
+#   thời lượng lấy đúng mốc thật trong timeline.json. est_seconds chỉ là ngân sách ước tính để lập
+#   kế hoạch (tổng slide + ước tính demo = target_seconds ≤ 180); công cụ ghép có thể bỏ qua khóa này.
+# - subtitle: tiếng Việt, tối đa 2 dòng, mỗi dòng ≤ 42 ký tự (xuống dòng bằng \n).
+# - Phụ đề không chứa con số đo; số đo chỉ hiện trên slide 04/05, đọc từ eval/reports/*.json.
+# - Trích đề DA940-01 đúng nguyên văn, dùng … khi lược bớt. Không trích câu "hàng chục triệu
+#   người dân cần được hướng": trên trang gốc câu này bị cắt dở.
+# - Không dùng ảnh trong docs/screens/ (chụp với API giả lập, có chữ "dữ liệu thử").
+version: 1
+target_seconds: 175
+segments:
+  - id: s01-van-de
+    kind: slide
+    slide: 01-van-de.html
+    demo_step: null
+    seconds: 16
+    subtitle: "DA940-01: “độ chính xác kiểm chứng được…\nhạ tỷ lệ ảo giác dưới ngưỡng cho phép”"
+  - id: s02-giai-phap
+    kind: slide
+    slide: 02-giai-phap.html
+    demo_step: null
+    seconds: 12
+    subtitle: "CTCV: trợ lý thủ tục có kiểm chứng,\nchạy trên máy cục bộ, không gọi API ngoài"
+  - id: d01-hoi-phi
+    kind: demo
+    slide: null
+    demo_step: hoi-phi
+    est_seconds: 22
+    subtitle: "Hỏi mức phí đăng ký thường trú,\nchạy thật trên laptop cá nhân, không mock"
+  - id: d02-mo-nguon
+    kind: demo
+    slide: null
+    demo_step: mo-nguon
+    est_seconds: 10
+    subtitle: "Nút Nguồn: cổng nguồn, ngày lấy dữ liệu,\nđoạn trích và đường dẫn trang gốc"
+  - id: d03-hoi-giay-to
+    kind: demo
+    slide: null
+    demo_step: hoi-giay-to
+    est_seconds: 16
+    subtitle: "Thẻ “Giấy tờ cần chuẩn bị”: đánh dấu\ntừng tờ, ghi rõ bản chính, bản sao"
+  - id: d04-hoi-ngoai-kho
+    kind: demo
+    slide: null
+    demo_step: hoi-ngoai-kho
+    est_seconds: 12
+    subtitle: "Thủ tục chưa có trong kho: không bịa,\nnói chưa chắc và chuyển người thật"
+  - id: d05-hoi-otp
+    kind: demo
+    slide: null
+    demo_step: hoi-otp
+    est_seconds: 9
+    subtitle: "Hỏi về mã OTP: trả câu an toàn cố định,\nnhắc không đọc mã cho bất kỳ ai"
+  - id: d06-can-bo-dang-nhap
+    kind: demo
+    slide: null
+    demo_step: can-bo-dang-nhap
+    est_seconds: 6
+    subtitle: "Màn cán bộ một cửa, đăng nhập\nbằng tài khoản demo"
+  - id: d07-can-bo-tim
+    kind: demo
+    slide: null
+    demo_step: can-bo-tim
+    est_seconds: 8
+    subtitle: "Tìm “đăng ký tạm trú”: hiện danh mục\nthành phần hồ sơ theo trường hợp"
+  - id: d08-can-bo-danh-dau
+    kind: demo
+    slide: null
+    demo_step: can-bo-danh-dau
+    est_seconds: 7
+    subtitle: "Cán bộ đánh dấu các giấy tờ\nngười dân đã nộp"
+  - id: d09-can-bo-ket-qua
+    kind: demo
+    slide: null
+    demo_step: can-bo-ket-qua
+    est_seconds: 7
+    subtitle: "Giấy tờ còn thiếu, tin nhắn soạn sẵn để\ncán bộ sao chép; không dùng mô hình AI"
+  - id: s03-kien-truc
+    kind: slide
+    slide: 03-kien-truc.html
+    demo_step: null
+    seconds: 10
+    subtitle: "Guardrail, truy xuất lai, cổng tin cậy,\nkiểm chứng số, không chắc thì chuyển"
+  - id: s04-du-lieu
+    kind: slide
+    slide: 04-du-lieu.html
+    demo_step: null
+    seconds: 14
+    subtitle: "Dữ liệu là lõi: tôn trọng robots, mã băm\nsha256, bản ghi có schema, bộ kiểm thử"
+  - id: s05-so-lieu
+    kind: slide
+    slide: 05-so-lieu.html
+    demo_step: null
+    seconds: 16
+    subtitle: "Số đo trên laptop có GPU, đọc từ báo cáo;\nchưa có số thì ghi “chưa đo”"
+  - id: s06-lo-trinh
+    kind: slide
+    slide: 06-lo-trinh.html
+    demo_step: null
+    seconds: 10
+    subtitle: "Kế hoạch vòng 2: thêm dữ liệu, hiệu lực,\nmô hình tiếng Việt, thử tại một xã"

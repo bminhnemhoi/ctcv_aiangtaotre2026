@@ -1,0 +1,72 @@
+# CTCV — GPU/staging gate (brief D13 v2): `make gate` = eval QUICK=1 with the LLM-judge +
+# red-team with the model + k6 load test. It needs the served model, so it runs ONLY on the
+# self-hosted runner registered on the rented GPU box (labels: self-hosted, gpu) — never on
+# GitHub-hosted runners. Schedule 02:00 Asia/Ho_Chi_Minh = 19:00 UTC (GitHub cron is UTC);
+# also on demand and on pull requests labelled `needs-gpu`. Commits nothing: the report is
+# uploaded as an artifact (eval/reports on the runner's checkout only).
+# Runner registration: deploy/README.md § "Runner GPU tự host" (.github/workflows/README.md).
+name: gate
+
+on:
+  schedule:
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+    inputs:
+      full_eval:
+        description: "Chạy thêm `make eval` đầy đủ sau `make gate` (mặc định chỉ QUICK=1)"
+        type: boolean
+        default: false
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: gate # one GPU — never two gates at once
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: make gate (self-hosted GPU runner)
+    if: github.event_name != 'pull_request' || github.event.label.name == 'needs-gpu'
+    runs-on: [self-hosted, gpu]
+    timeout-minutes: 240
+    env:
+      PYTHONUTF8: "1"
+      UV_LOCKED: "1"
+      COMPOSE_PROFILES: gpu
+    steps:
+      - uses: actions/checkout@v4
+      - name: GPU and toolchain sanity (tools come from the box, not from actions)
+        run: |
+          nvidia-smi --query-gpu=name,memory.total,memory.used --format=csv
+          uv --version && pnpm --version && make --version | head -n1
+      - name: make install
+        run: make install
+      - name: make doctor
+        run: make doctor
+      - name: make gate
+        run: make gate
+      - name: make eval (full suite, manual runs only)
+        if: github.event_name == 'workflow_dispatch' && inputs.full_eval
+        run: make eval
+      - name: Upload eval/reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-report-${{ github.run_id }}
+          path: eval/reports
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Telegram on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ] || exit 0
+          curl -fsS --max-time 15 -o /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=❌ CTCV gate ĐỎ (${GITHUB_REF_NAME}) — ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"

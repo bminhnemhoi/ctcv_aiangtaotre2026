@@ -1,0 +1,280 @@
+# data/registry/datasets.yaml — bản kê nguồn gốc, giấy phép và mã băm của mọi bộ dữ liệu
+# (brief §9, §17.4; plan §7 bước 9). Schema: config/schemas/datasets-registry.schema.json.
+# Kiểm tra + báo cáo: `python -m ctcv_data.pipeline registry` → data/registry/REPORT.md.
+# Bản kê khai AI (scripts/declaration.py, make declaration) đọc trực tiếp file này.
+#
+# Quy ước:
+# - `sha256: pending` = tập chưa dựng; `make data` (bước registry, --update-hashes) điền hash thật.
+# - `tos_checked_on: null` = CHƯA kiểm điều khoản sử dụng — bắt buộc kiểm trước khi crawl/tải (E03).
+# - `source_type`: qppl | co_quan_nha_nuoc | ngan_hang | synthetic | open_dataset.
+# - Tập do đội tự soạn tay (không dùng LLM) khai `source: synthetic`, `generator_model: human`.
+# - Giấy phép NC (VIVOS) ⇒ `eval_only: true`, `redistribute: false`, `used_for: [eval]` (schema ép).
+
+- name: guides-official
+  version: "0.1"
+  source: https://dichvucong.gov.vn/
+  source_type: co_quan_nha_nuoc
+  license: "Bản quyền cơ quan ban hành — chỉ truy xuất và trích dẫn, không phân phối lại (idea §7)"
+  redistribute: false
+  derived_from: []
+  tos_url: https://dichvucong.gov.vn/
+  tos_checked_on: null
+  generator_model: null
+  generator_license: null
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: d71f674c09225d3cd99258cedec3fbe698390c734830cff749d3aa1af56091bc
+  path: data/raw/guides/manifest.jsonl
+  used_for: [rag]
+  pii: none
+  eval_only: false
+  notes: >-
+    Kho hướng dẫn chính thống (1.500–3.000 trang, E03). Đa nguồn theo data/sources.yaml
+    (cổng DVC, VNeID, Bộ Công an, Cục Thuế, Cục ATTT, NCSC; ngân hàng chỉ khi ToS cho phép).
+    Snapshot HTML nằm ngoài repo (data/raw, gitignore); sha256 là của manifest.jsonl.
+
+- name: tthc-bca-v1
+  version: "1.0"
+  source: https://dichvucong.bocongan.gov.vn/
+  source_type: co_quan_nha_nuoc
+  license: 'Nguồn "Cổng Dịch vụ công - Bộ Công an" — ghi rõ nguồn khi sử dụng lại; chỉ truy xuất và trích dẫn'
+  redistribute: false
+  derived_from: []
+  tos_url: https://dichvucong.bocongan.gov.vn/
+  tos_checked_on: null
+  generator_model: null
+  generator_license: null
+  collected_at: "2026-09-25"
+  size: { records: 107, mb: 9.54 }
+  sha256: e0e5229f27270bae7f4843e96c05c1b4e4e2dd96f93d1861e55980a41dda1135
+  path: data/raw/tthc/manifest.jsonl
+  used_for: [rag, eval]
+  pii: none
+  eval_only: false
+  notes: >-
+    107 bản ghi thủ tục hành chính hợp lệ (ADR-007 C2) từ 109 trang chi tiết + 9 trang danh sách
+    của Cổng DVC Bộ Công an, crawl ngày 25/9/2026 (giờ VN) bằng `crawl --online` (robots cho phép,
+    UA dự án, nhịp ≥ 1,2 s, 1 host) rồi `normalize`; 2 trang trùng mã thủ tục bị bỏ. sha256 là của
+    data/raw/tthc/manifest.jsonl; mb là tổng HTML thô (gitignore, không phân phối lại). Chân trang
+    ghi "Khi sử dụng lại thông tin, đề nghị ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an"" —
+    tos_checked_on để null: cần một thành viên là người đọc và xác nhận ToS. Không chứa dữ liệu cá
+    nhân (chỉ nội dung thủ tục công khai). Dùng cho kho RAG và tập đánh giá hỏi đáp thủ tục.
+
+- name: scenarios-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [guides-official]
+  tos_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  tos_checked_on: null
+  generator_model: "Qwen/Qwen3.5-9B (judge/synth tự host); E01: 1 kịch bản mẫu soạn tay"
+  generator_license: Apache-2.0
+  collected_at: "2026-09-18"
+  size: { records: 1, mb: 0 }
+  sha256: 0d6fb88d342ce478bfcd72be23344dabd90e1b09856b627b414ce91e250836ee
+  path: sandbox/scenarios
+  used_for: [sft, eval]
+  pii: none
+  eval_only: false
+  notes: >-
+    12 kịch bản × 3 mức (E06) sinh từ kho hướng dẫn qua ctcv_sandbox.validator. Nếu dùng
+    SYNTH_LLM_PROVIDER thương mại thì cập nhật generator_model/generator_license/tos_url (LIC-09).
+
+- name: coach-sft-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [scenarios-v1, guides-official]
+  tos_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  tos_checked_on: null
+  generator_model: "Qwen/Qwen3.5-9B (judge/synth tự host) — cập nhật khi chạy E06"
+  generator_license: Apache-2.0
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  path: data/sft/train.jsonl
+  used_for: [sft]
+  pii: none
+  eval_only: false
+  notes: ≥ 8.000 hội thoại huấn luyện viên (5 persona × 12 kịch bản), lọc ràng buộc + LLM-judge ≥ 4/5.
+
+- name: coach-dpo-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [coach-sft-v1]
+  tos_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  tos_checked_on: null
+  generator_model: "Qwen/Qwen3.5-9B (judge/synth tự host) — cập nhật khi chạy E06"
+  generator_license: Apache-2.0
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  path: data/dpo/pairs.jsonl
+  used_for: [dpo]
+  pii: none
+  eval_only: false
+  notes: 2.000 cặp "đúng phong cách" vs "trả lời dài kiểu chatbot".
+
+- name: ui-screens-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [scenarios-v1]
+  tos_url: https://github.com/microsoft/playwright/blob/main/LICENSE
+  tos_checked_on: null
+  generator_model: "Playwright render từ sandbox (không dùng LLM), nhãn khung từ DOM"
+  generator_license: Apache-2.0
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: a9d69e1485d234f73790f66e0a22d45096e6cf7582271baa44539d009741b860
+  path: data/ui
+  used_for: [ui, eval]
+  pii: none
+  eval_only: false
+  notes: 20.000 ảnh × 6 viewport (E08) cho YOLOX-Tiny và đánh giá VLM.
+
+- name: drills-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [guides-official]
+  tos_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  tos_checked_on: null
+  generator_model: "Mẫu hành vi trích từ cảnh báo công khai + Qwen/Qwen3.5-9B sinh biến thể; E01: 1 mẫu soạn tay"
+  generator_license: Apache-2.0
+  collected_at: "2026-09-18"
+  size: { records: 1, mb: 0 }
+  sha256: 794d5eeb4ae16e0192c2726f3b35a360ff018ae963538b5349e66696f02f107f
+  path: drills/scenarios
+  used_for: [drill]
+  pii: none
+  eval_only: false
+  notes: 20 kịch bản × 5 biến thể ở mức dấu hiệu (không lời thoại hoàn chỉnh — D27), duyệt tay 100%.
+
+- name: eval-qa-v1
+  version: "1.0"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [tthc-bca-v1]
+  tos_url: https://dichvucong.bocongan.gov.vn/
+  tos_checked_on: null
+  generator_model: "mẫu tất định (không dùng LLM) + người soạn"
+  generator_license: "Apache-2.0 (mã sinh build_eval_sets của dự án)"
+  collected_at: "2026-09-25"
+  size: { records: 130, mb: 0.06 }
+  sha256: 2f23e88d88912f2010baa5b099b02c9ed5081420c57622b387b6fa9538745d1f
+  path: eval/sets/samples/qa_tthc.jsonl
+  used_for: [eval]
+  pii: none
+  eval_only: false
+  notes: >-
+    Tập hỏi đáp thủ tục cho suite qa (ADR-007 C8, lược đồ eval/sets/samples/qa_tthc.schema.json).
+    qa_tthc.jsonl: 130 câu sinh tất định bằng `uv run python -m ctcv_data.pipeline build_eval_sets`
+    từ 107 bản ghi thật của tthc-bca-v1 (4 mẫu câu mỗi loại phí/thời hạn/giấy tờ, 10 % bỏ dấu;
+    expected_values chép từ trường có cấu trúc của bản ghi, ghi nguồn "Cổng Dịch vụ công - Bộ Công
+    an"); bỏ câu phí của bản ghi bị gắn cờ phi_khong_ro/phi_bat_thuong và câu thời hạn dài nhiều
+    trường hợp. Kèm tệp soạn tay qa_tthc_handwritten.jsonl (83 câu, source handwritten:qa-tester,
+    khẩu ngữ/phương ngữ/không dấu/ngoài kho/nhạy cảm/làm thay/chèn lệnh) — do đội soạn, không phải
+    câu hỏi thật của người dân. Chia dev/test theo sha256(gold_procedure_id) cho câu sinh, theo số
+    id cho câu soạn tay; chỉ báo cáo trên test. Không chứa dữ liệu cá nhân (test_no_pii quét).
+    sha256 là của qa_tthc.jsonl (điền bằng `registry --update-hashes` ở P14, 25/9/2026); sha256
+    của qa_tthc_handwritten.jsonl lúc đo:
+    bfabd88904cb169331970975a8db4da8b8365fb15264315078450b9bc8a1d920. Hai tệp không đổi giữa
+    lượt đo v1 (03:07Z) và v2 (07:34Z) ngày 25/9/2026 — kiểm lại bằng `registry --update-hashes`.
+    Kết quả đo: eval/reports/latest.json, ablation-tthc.json, latency-cpu-only.json.
+
+- name: eval-dialogue-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [coach-sft-v1]
+  tos_url: https://huggingface.co/Qwen/Qwen3.5-9B
+  tos_checked_on: null
+  generator_model: "Tách giữ lại từ coach-sft-v1; E01: 5 mẫu định dạng soạn tay"
+  generator_license: Apache-2.0
+  collected_at: "2026-09-18"
+  size: { records: 5, mb: 0 }
+  sha256: pending
+  path: eval/sets/samples/dialog.jsonl
+  used_for: [eval]
+  pii: none
+  eval_only: false
+  notes: 500 hội thoại giữ lại cho suite dialogue (không tối ưu trên tập này).
+
+- name: eval-redteam-v1
+  version: "0.1"
+  source: synthetic
+  source_type: synthetic
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: []
+  tos_url: https://www.apache.org/licenses/LICENSE-2.0
+  tos_checked_on: null
+  generator_model: human
+  generator_license: CC-BY-4.0
+  collected_at: "2026-09-18"
+  size: { records: 92, mb: 0 }
+  sha256: a610b22d004c443a6eacdc4b64efacdbffe4a802527a786f923d972038370db7
+  path: eval/redteam/scenarios.jsonl
+  used_for: [eval]
+  pii: none
+  eval_only: false
+  notes: >-
+    92 kịch bản red-team soạn tay (50 ở E05, thêm của P11 và 4 hồi quy GP-05/06/08/09 ngày 25/9),
+    mở rộng 200 ở E11. Mọi số/định danh trong file là giả.
+    Hash để 'pending' vì security-redteam bổ sung liên tục; chốt hash trước mỗi tag.
+
+- name: common-voice-vi
+  version: "17.0"
+  source: https://commonvoice.mozilla.org/vi/datasets
+  source_type: open_dataset
+  license: CC0-1.0
+  redistribute: true
+  derived_from: []
+  tos_url: https://commonvoice.mozilla.org/vi/terms
+  tos_checked_on: null
+  generator_model: null
+  generator_license: null
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  path: null
+  used_for: [eval]
+  pii: none
+  eval_only: false
+  notes: Tập tiếng Việt Common Voice (Mozilla) — tải tự động ở E04 để đo WER theo giọng; phiên bản cập nhật khi tải.
+
+- name: vivos
+  version: "1.0"
+  source: https://ailab.hcmus.edu.vn/vivos
+  source_type: open_dataset
+  license: CC-BY-NC-SA-4.0
+  redistribute: false
+  derived_from: []
+  tos_url: https://ailab.hcmus.edu.vn/vivos
+  tos_checked_on: null
+  generator_model: null
+  generator_license: null
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  path: null
+  used_for: [eval]
+  pii: none
+  eval_only: true
+  notes: VIVOS (AILAB HCMUS) — CHỈ đánh giá WER, không huấn luyện model phát hành, không phân phối lại (brief §9).

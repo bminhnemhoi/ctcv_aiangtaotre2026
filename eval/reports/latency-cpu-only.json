@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-09-25T07:55:41Z",
+  "purpose": "Độ trễ chỉ-CPU trung thực của cùng mã, cùng tập test; KHÔNG thay latest.json (số đo GPU).",
+  "command": "CTCV_OLLAMA_NUM_GPU=0 uv run python -m ctcv_eval.harness --suite qa --report-dir <thư mục tạm>",
+  "env": {
+    "CTCV_OLLAMA_NUM_GPU": "0"
+  },
+  "started_at": "2026-09-25T07:35:04Z",
+  "finished_at": "2026-09-25T07:53:09Z",
+  "split": "test",
+  "n": 138,
+  "device_evidence": {
+    "ollama_ps_end": [
+      {
+        "tag": "qwen3.5:2b",
+        "size": "2.4 GB",
+        "processor": "100% CPU",
+        "context_length": 4096
+      },
+      {
+        "tag": "bge-m3:latest",
+        "size": "1.2 GB",
+        "processor": "100% CPU",
+        "context_length": 4096
+      }
+    ],
+    "ollama_ps_poll": {
+      "poll_interval_s": 5,
+      "samples": 212,
+      "placements": {
+        "bge-m3:latest 100% GPU (Stopping...)": 1,
+        "bge-m3:latest 100% CPU": 210,
+        "qwen3.5:2b 100% CPU": 208
+      },
+      "note": "Mẫu '100% GPU (Stopping...)' duy nhất là bge-m3 của lượt GPU trước đang được dỡ (ollama stop) ngay trước khi bắt đầu; mọi mẫu trong lượt đo đều 100% CPU."
+    }
+  },
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12450HX",
+    "physical_cores": 8,
+    "logical_cores": 12,
+    "ram_gb": 15.7,
+    "os": "Windows 11 (10.0.22631)"
+  },
+  "models": [
+    {
+      "tag": "bge-m3:latest",
+      "digest": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+      "quantization": "F16"
+    },
+    {
+      "tag": "qwen3.5:2b",
+      "digest": "324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df",
+      "quantization": "Q8_0"
+    }
+  ],
+  "latency_s": {
+    "gpu": {
+      "p50": 0.908,
+      "p95": 1.629,
+      "source": "eval/reports/latest.json"
+    },
+    "cpu_only": {
+      "p50": 6.155,
+      "p95": 14.305
+    }
+  },
+  "ablation_latency_s": {
+    "template_only": {
+      "gpu": {
+        "p50": 0.047,
+        "p95": 0.057
+      },
+      "cpu_only": {
+        "p50": 2.164,
+        "p95": 2.231
+      }
+    },
+    "llm_unverified": {
+      "gpu": {
+        "p50": 0.907,
+        "p95": 1.626
+      },
+      "cpu_only": {
+        "p50": 6.153,
+        "p95": 14.302
+      }
+    },
+    "llm_verified": {
+      "gpu": {
+        "p50": 0.908,
+        "p95": 1.629
+      },
+      "cpu_only": {
+        "p50": 6.155,
+        "p95": 14.305
+      }
+    }
+  },
+  "cpu_only_quality_metrics": {
+    "recall_at_5": 95.65,
+    "answer_accuracy": 86.09,
+    "citation_support": 100.0,
+    "hallucination": 0.0,
+    "numeric_fidelity": 100.0,
+    "refusal_accuracy": 100.0,
+    "false_escalation_rate": 11.3,
+    "latency_p50_s": 6.155,
+    "latency_p95_s": 14.305,
+    "answer_accuracy_text_only": 68.7
+  },
+  "cpu_only_details": {
+    "network_hosts": [
+      "localhost:11434"
+    ],
+    "composer_failures": 0,
+    "composer_sentences": 100,
+    "llm_kept_pct": 66.0,
+    "degraded_answers": 0,
+    "per_kind": {
+      "colloquial": {
+        "n": 18,
+        "ok": 14
+      },
+      "dialect": {
+        "n": 8,
+        "ok": 5
+      },
+      "field": {
+        "n": 72,
+        "ok": 71
+      },
+      "injection": {
+        "n": 4,
+        "ok": 4
+      },
+      "no_diacritics": {
+        "n": 17,
+        "ok": 9
+      },
+      "out_of_domain": {
+        "n": 5,
+        "ok": 5
+      },
+      "out_of_kb": {
+        "n": 7,
+        "ok": 7
+      },
+      "real_action": {
+        "n": 3,
+        "ok": 3
+      },
+      "sensitive": {
+        "n": 4,
+        "ok": 4
+      }
+    }
+  },
+  "cpu_only_ablation": {
+    "template_only": {
+      "hallucination": 0.0,
+      "numeric_fidelity": 100.0,
+      "answer_accuracy": 85.22,
+      "latency_p50_s": 2.164,
+      "latency_p95_s": 2.231,
+      "answered": 101
+    },
+    "llm_unverified": {
+      "hallucination": 15.0,
+      "numeric_fidelity": 97.67,
+      "answer_accuracy": 84.35,
+      "latency_p50_s": 6.153,
+      "latency_p95_s": 14.302,
+      "answered": 100
+    },
+    "llm_verified": {
+      "hallucination": 0.0,
+      "numeric_fidelity": 100.0,
+      "answer_accuracy": 86.09,
+      "latency_p50_s": 6.155,
+      "latency_p95_s": 14.305,
+      "answered": 102
+    }
+  },
+  "notes": "Chỉ số của câu trả lời cuối (llm_verified) trong lượt chỉ-CPU trùng lượt GPU; khác ở answer_accuracy_text_only (69,57 GPU / 68,7 CPU), tỷ lệ câu mô hình được giữ (68 % / 66 %) và chế độ llm_unverified (ảo giác 14 % / 15 %; số đúng nguồn 98,82 % / 97,67 %): phép tính số thực khác nhau giữa GPU và CPU nên câu chữ mô hình sinh ra lệch đôi chút dù temperature 0. Đo tuần tự từng câu; không chạy e2e, quay video hay make check song song; stack dùng thử của người dùng (cổng 8100/5273) vẫn bật nhưng không có lượt dùng được điều phối trong lúc đo. Độ trễ gồm cả embed truy vấn (bge-m3) trên CPU — vì vậy template_only cũng tăng lên ~2,2 s."
+}

@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global rules only — components use utility classes generated from src/theme/tokens.ts. */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply m-0 bg-trang text-base text-den;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 4px solid theme('colors.xanh');
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .voice-wave-bar {
+    animation: voice-wave 0.9s ease-in-out infinite;
+  }
+
+  @keyframes voice-wave {
+    0%,
+    100% {
+      transform: scaleY(0.3);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .voice-wave-bar {
+      animation: none;
+      transform: scaleY(0.6);
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "dang-nhap-vneid",
+  "skill_group": "dinh-danh-vneid",
+  "level": 2,
+  "version": "1.0.0",
+  "app_label": "Ứng dụng mô phỏng VNeID",
+  "goal": "Đăng nhập ứng dụng định danh bằng mật khẩu đã có",
+  "intent_confirmation": "Bác muốn đăng nhập VNeID phải không?",
+  "start_screen": "login",
+  "screens": [],
+  "success": {"screen": "home", "conditions": {}},
+  "never_ask": ["otp", "mat_khau"],
+  "fake_data": {}
+}

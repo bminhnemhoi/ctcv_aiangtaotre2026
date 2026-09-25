@@ -1,0 +1,47 @@
+# Invalid fixture: every entry breaks at least one rule (see test_registry.py for the list).
+- name: Bad Name
+  version: "0.1"
+  source: synthetic
+  source_type: co_quan_nha_nuoc
+  license: CC-BY-4.0
+  redistribute: true
+  derived_from: [does-not-exist]
+  tos_url: null
+  tos_checked_on: null
+  collected_at: "2026-09-18"
+  size: { records: -1, mb: 0 }
+  sha256: not-a-hash
+  used_for: [training]
+  pii: full
+
+- name: nc-but-redistributed
+  version: "1"
+  source: https://ailab.hcmus.edu.vn/vivos
+  source_type: open_dataset
+  license: CC-BY-NC-SA-4.0
+  redistribute: true
+  derived_from: []
+  tos_url: https://ailab.hcmus.edu.vn/vivos
+  tos_checked_on: null
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  used_for: [sft]
+  pii: none
+  eval_only: false
+
+- name: nc-but-redistributed
+  version: "1.0"
+  source: https://example.org/
+  source_type: open_dataset
+  license: MIT
+  redistribute: true
+  derived_from: []
+  tos_url: https://example.org/
+  tos_checked_on: null
+  collected_at: "2026-09-18"
+  size: { records: 0, mb: 0 }
+  sha256: pending
+  used_for: [eval]
+  pii: none
+  extra_field: nope

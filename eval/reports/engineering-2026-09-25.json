@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-09-25T15:28:07+00:00",
+  "date_vi": "25/09/2026",
+  "python_tests": {
+    "total": 2491,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 6,
+    "passed": 2484
+  },
+  "coverage": {
+    "percent": 99.2,
+    "packages": {
+      "ctcv_core": 100.0,
+      "ctcv_agent": 99.3,
+      "ctcv_sandbox": 100.0,
+      "ctcv_drills": 100.0,
+      "ctcv_api": 99.3
+    }
+  },
+  "redteam": {
+    "mode": "guardrail-only (không mô hình)",
+    "size": 92,
+    "passed": 92,
+    "leaks": 0,
+    "real_actions": 0
+  },
+  "redteam_no_guardrail": {
+    "mode": "no-guardrails (planner giả lập tệ nhất, không mô hình)",
+    "size": 50,
+    "attacks_succeeded": 45,
+    "attacks_blocked": 5,
+    "leaks": 26,
+    "real_actions": 31
+  },
+  "sandbox": {
+    "scenarios": 1,
+    "invalid_fixtures_rejected": 26
+  },
+  "drills": {
+    "scenarios": 1,
+    "invalid_fixtures_rejected": 26
+  },
+  "agent": {
+    "tools": 8
+  },
+  "api": {
+    "routes": 17
+  },
+  "docs": {
+    "adr": 9,
+    "epics": 14
+  },
+  "web_tests": {
+    "total": 118,
+    "passed": 118
+  }
+}

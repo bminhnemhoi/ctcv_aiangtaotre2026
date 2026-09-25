@@ -1,0 +1,257 @@
+# data/sources.yaml — nguồn crawl chính thống cho kho hướng dẫn (plan §7 bước 1, idea §7).
+# Quy tắc: chỉ crawl tên miền trong `allowlist`; 1 yêu cầu/giây; tôn trọng robots.txt; chỉ trang
+# hướng dẫn công khai; nội dung chỉ để truy xuất/trích dẫn, KHÔNG phân phối lại (registry
+# `redistribute: false`). `status: can_xac_nhan` = đội phải kiểm tra ToS/robots trước khi crawl (E03).
+# `tos_checked_on: null` = chưa kiểm. Kiểm tra file: `python -m ctcv_data.pipeline crawl` (offline).
+version: 1
+
+crawl_rules:
+  rate_limit_rps: 1 # tối đa 1 yêu cầu/giây trên toàn bộ crawler (plan §7)
+  min_interval_s: 1.2 # khoảng cách tối thiểu giữa 2 yêu cầu bất kỳ (≥ 1/rate_limit_rps; ADR-007)
+  respect_robots: true
+  only_guide_pages: true
+  user_agent: "CTCV-crawler/0.1 (Binh dan hoc vu so; muc dich hoc tap; 1 req/s)"
+  timeout_s: 20
+  max_pages_per_domain: 500
+  guide_path_hints: # đường dẫn/tiêu đề gợi ý trang hướng dẫn; trang khác bị bỏ qua
+    - huong-dan
+    - hướng dẫn
+    - cau-hoi-thuong-gap
+    - câu hỏi thường gặp
+    - faq
+    - tro-giup
+    - canh-bao
+    - cảnh báo
+    - lua-dao
+    - lừa đảo
+    - bothutuc # trang thủ tục hành chính của Cổng DVC Bộ Công an (ADR-007)
+
+allowlist:
+  - domain: dichvucong.gov.vn
+    agency: Cổng Dịch vụ công quốc gia
+    source_type: co_quan_nha_nuoc
+    purpose: Hướng dẫn nộp hồ sơ trực tuyến, tra cứu thủ tục hành chính, câu hỏi thường gặp
+    status: da_xac_nhan
+    tos_url: https://dichvucong.gov.vn/
+  - domain: vneid.gov.vn
+    agency: Cục C06 — Bộ Công an (VNeID)
+    source_type: co_quan_nha_nuoc
+    purpose: Hướng dẫn cài đặt, đăng ký, kích hoạt tài khoản định danh điện tử
+    status: da_xac_nhan
+    tos_url: https://vneid.gov.vn/
+  - domain: bocongan.gov.vn
+    agency: Bộ Công an
+    source_type: co_quan_nha_nuoc
+    purpose: Cảnh báo lừa đảo, hướng dẫn thủ tục căn cước, cư trú
+    status: da_xac_nhan
+    tos_url: https://bocongan.gov.vn/
+  - domain: gdt.gov.vn
+    agency: Cục Thuế (Bộ Tài chính)
+    source_type: co_quan_nha_nuoc
+    purpose: Hướng dẫn kê khai, nộp thuế hộ kinh doanh, eTax Mobile
+    status: da_xac_nhan
+    tos_url: https://www.gdt.gov.vn/
+  - domain: thuedientu.gdt.gov.vn
+    agency: Cục Thuế — Thuế điện tử
+    source_type: co_quan_nha_nuoc
+    purpose: Hướng dẫn sử dụng cổng thuế điện tử và eTax Mobile
+    status: da_xac_nhan
+    tos_url: https://thuedientu.gdt.gov.vn/
+  - domain: ais.gov.vn
+    agency: Cục An toàn thông tin (Bộ Khoa học và Công nghệ)
+    source_type: co_quan_nha_nuoc
+    purpose: Cảnh báo lừa đảo trực tuyến, cẩm nang an toàn số
+    status: da_xac_nhan
+    tos_url: https://ais.gov.vn/
+  - domain: khonggianmang.vn
+    agency: Trung tâm Giám sát an toàn không gian mạng quốc gia (NCSC)
+    source_type: co_quan_nha_nuoc
+    purpose: Cảnh báo lừa đảo, kiểm tra website lừa đảo, cẩm nang
+    status: can_xac_nhan
+    tos_url: https://khonggianmang.vn/
+    notes: Xác nhận tên miền còn hoạt động sau sắp xếp bộ ngành 2025; kiểm ToS trước E03.
+  - domain: chongluadao.vn
+    agency: Dự án Chống lừa đảo (phi lợi nhuận, phối hợp NCSC)
+    source_type: to_chuc_xa_hoi
+    purpose: Danh sách website lừa đảo, hướng dẫn nhận diện
+    status: can_xac_nhan
+    tos_url: https://chongluadao.vn/
+    notes: Không phải cơ quan nhà nước — chỉ dùng cảnh báo công khai, kiểm ToS trước E03.
+  - domain: vbpl.vn
+    agency: Cơ sở dữ liệu quốc gia về văn bản pháp luật (Bộ Tư pháp)
+    source_type: qppl
+    purpose: Toàn văn văn bản QPPL để xác minh số hiệu/ngày hiệu lực (docs/legal/refs.yaml)
+    status: can_xac_nhan
+    tos_url: https://vbpl.vn/
+    notes: Chỉ tra cứu để xác minh trích dẫn (LEG-11); không crawl hàng loạt.
+  # ---- Trung tâm trợ giúp ngân hàng: VÍ DỤ, cần xác nhận ToS cho phép trích dẫn (E03 câu hỏi mở 1)
+  - domain: vietcombank.com.vn
+    agency: Vietcombank — trung tâm trợ giúp
+    source_type: ngan_hang
+    purpose: Hướng dẫn an toàn khi dùng ngân hàng số, nhận diện lừa đảo
+    status: can_xac_nhan
+    tos_url: https://www.vietcombank.com.vn/
+    notes: cần xác nhận — chỉ trang hướng dẫn an toàn công khai; không dùng nội dung quảng cáo.
+  - domain: bidv.com.vn
+    agency: BIDV — trung tâm trợ giúp
+    source_type: ngan_hang
+    purpose: Hướng dẫn an toàn giao dịch, cảnh báo lừa đảo
+    status: can_xac_nhan
+    tos_url: https://www.bidv.com.vn/
+    notes: cần xác nhận ToS trước khi crawl.
+  - domain: agribank.com.vn
+    agency: Agribank — trung tâm trợ giúp
+    source_type: ngan_hang
+    purpose: Hướng dẫn an toàn giao dịch cho khách hàng nông thôn
+    status: can_xac_nhan
+    tos_url: https://www.agribank.com.vn/
+    notes: cần xác nhận ToS trước khi crawl.
+
+# URL gốc (seed). E01 chỉ ghi manifest skeleton; E03 mở rộng thành 50–150 URL sau khi đội duyệt.
+sources:
+  - url: https://dichvucong.gov.vn/
+    agency: Cổng Dịch vụ công quốc gia
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai của cơ quan nhà nước — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: URL gốc; trang hướng dẫn cụ thể chọn ở E03 sau khi kiểm robots/ToS.
+  - url: https://vneid.gov.vn/
+    agency: Cục C06 — Bộ Công an (VNeID)
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai của cơ quan nhà nước — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: SPA — cần Playwright render (E03).
+  - url: https://bocongan.gov.vn/
+    agency: Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai của cơ quan nhà nước — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: Chỉ mục cảnh báo lừa đảo và hướng dẫn thủ tục.
+  - url: https://www.gdt.gov.vn/
+    agency: Cục Thuế
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai của cơ quan nhà nước — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: Hướng dẫn hộ kinh doanh, eTax Mobile.
+  - url: https://thuedientu.gdt.gov.vn/
+    agency: Cục Thuế — Thuế điện tử
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai của cơ quan nhà nước — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: Chỉ trang hướng dẫn sử dụng, không đăng nhập.
+  - url: https://ais.gov.vn/
+    agency: Cục An toàn thông tin
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai của cơ quan nhà nước — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: Cẩm nang, cảnh báo lừa đảo.
+  - url: https://khonggianmang.vn/
+    agency: NCSC
+    source_type: co_quan_nha_nuoc
+    license_note: Nội dung công khai — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: cần xác nhận tên miền/ToS.
+  - url: https://chongluadao.vn/
+    agency: Dự án Chống lừa đảo
+    source_type: to_chuc_xa_hoi
+    license_note: Nội dung công khai — chỉ truy xuất/trích dẫn, không phân phối lại
+    tos_checked_on: null
+    robots_ok: null
+    notes: cần xác nhận ToS.
+  - url: https://www.vietcombank.com.vn/
+    agency: Vietcombank
+    source_type: ngan_hang
+    license_note: Bản quyền ngân hàng — chỉ trích dẫn hướng dẫn an toàn công khai nếu ToS cho phép
+    tos_checked_on: null
+    robots_ok: null
+    notes: cần xác nhận (ví dụ).
+  - url: https://www.bidv.com.vn/
+    agency: BIDV
+    source_type: ngan_hang
+    license_note: Bản quyền ngân hàng — chỉ trích dẫn hướng dẫn an toàn công khai nếu ToS cho phép
+    tos_checked_on: null
+    robots_ok: null
+    notes: cần xác nhận (ví dụ).
+  - url: https://www.agribank.com.vn/
+    agency: Agribank
+    source_type: ngan_hang
+    license_note: Bản quyền ngân hàng — chỉ trích dẫn hướng dẫn an toàn công khai nếu ToS cho phép
+    tos_checked_on: null
+    robots_ok: null
+    notes: cần xác nhận (ví dụ).
+
+  # ---- Thủ tục hành chính — Cổng Dịch vụ công Bộ Công an (ADR-007). ĐỀ XUẤT, CHỜ NGƯỜI DÙNG DUYỆT.
+  # robots.txt (25/9/2026) chỉ chặn /tttl/ với Googlebot/AdsBot; trang render phía máy chủ.
+  # Chân trang (nguyên văn): "Khi sử dụng lại thông tin, đề nghị ghi rõ nguồn "Cổng Dịch vụ công
+  # - Bộ Công an"". tos_checked_on: null — cần một thành viên là người đọc và xác nhận ToS.
+  # Crawler (`crawl --online`) mở trang danh sách rồi các trang tthc?matt= tìm thấy trên đó.
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=QL_CU_TRU&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=CAP_CCCD&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=G01-CA27&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=G01-CA28&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=PT_GIAO_THONG&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=QL_XUAT_NHAP_CANH&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=G01-CA13&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=NP_GIAO_THONG&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy
+  - url: https://dichvucong.bocongan.gov.vn/bocongan/bothutuc?linh_vuc=G01-CA26&per_page=50
+    agency: Cổng Dịch vụ công - Bộ Công an
+    source_type: co_quan_nha_nuoc
+    license_note: 'Ghi rõ nguồn "Cổng Dịch vụ công - Bộ Công an" khi sử dụng lại; chỉ truy xuất và trích dẫn, không phân phối lại bản chụp'
+    tos_checked_on: null # chờ thành viên xác nhận
+    robots_ok: true
+    notes: Trang danh sách — crawler mở các trang tthc?matt= tìm thấy

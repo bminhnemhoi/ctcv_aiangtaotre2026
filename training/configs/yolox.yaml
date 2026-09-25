@@ -1,0 +1,36 @@
+# Bộ phát hiện phần tử giao diện YOLOX-Tiny (plan §7 dòng 4; epic E08; brief D7 — Apache-2.0,
+# không dùng Ultralytics AGPL). 20.000 ảnh sandbox tự render với nhãn từ DOM, 50 epoch, xuất ONNX.
+version: 1
+kind: detector
+name: ui-detector-yolox-tiny
+epic: E08
+model_key: ui_detector # config/models.yaml: yolox-tiny
+dataset: ui-screens-v1 # data/ui (ảnh + nhãn khung DOM, 6 viewport)
+
+detector:
+  arch: yolox-tiny
+  epochs: 50
+  images: 20000
+  input_size: [416, 416]
+  batch_size: 32
+  learning_rate: 0.01
+  num_classes: 4 # button, input, text, banner (schema kịch bản brief §5)
+  augmentation: { mosaic: true, hsv: true, flip: false } # không lật: chữ trên nút phải đọc được
+  seed: 42
+
+export:
+  format: onnx
+  opset: 17
+  dynamic_batch: false
+
+stop: # "mAP50 ≥ 0,85"
+  metric: map50
+  mode: max
+  threshold: 0.85
+
+budget:
+  estimated_gpu_hours: 2
+  estimated_api_vnd: 0
+
+output:
+  run_name: ui-detector-yolox-tiny

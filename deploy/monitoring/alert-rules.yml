@@ -1,0 +1,91 @@
+# Alert rules — plan §8 thresholds, verbatim:
+#   p95 > 3 s for 5 min · 5xx > 2 % · VRAM > 92 % · service down 2 checks in a row.
+# Metric names follow the prometheus-fastapi-instrumentator convention the services use:
+#   http_request_duration_seconds_bucket{handler,method,status}, http_requests_total{...}.
+# Escalate rate uses the CTCV counters ctcv_coach_answers_total / ctcv_coach_escalations_total
+# (services/agent, E05). Annotations are Vietnamese: they land in Telegram for the on-call shift.
+groups:
+  - name: ctcv-latency
+    rules:
+      - alert: HighP95Latency
+        expr: >-
+          histogram_quantile(0.95,
+            sum by (le, service, handler) (rate(http_request_duration_seconds_bucket[5m]))
+          ) > 3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "p95 {{ $labels.service }} {{ $labels.handler }} > 3 s trong 5 phút"
+          description: "p95 = {{ $value | printf \"%.2f\" }} s. Xem Grafana → CTCV overview; nếu vLLM treo: watchdog restart (RUNBOOK §6)."
+
+  - name: ctcv-errors
+    rules:
+      - alert: HighErrorRate
+        expr: >-
+          (
+            sum by (service) (rate(http_requests_total{status=~"5.."}[5m]))
+            /
+            clamp_min(sum by (service) (rate(http_requests_total[5m])), 0.001)
+          ) > 0.02
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Lỗi 5xx {{ $labels.service }} > 2 %"
+          description: "Tỷ lệ 5xx = {{ $value | humanizePercentage }} trong 5 phút. Kiểm tra log JSON (request_id) và Alembic."
+
+      - alert: EscalateRateSpike
+        expr: >-
+          (
+            sum(rate(ctcv_coach_escalations_total[15m]))
+            /
+            clamp_min(sum(rate(ctcv_coach_answers_total[15m])), 0.001)
+          )
+          >
+          2 * (
+            sum(rate(ctcv_coach_escalations_total[1d]))
+            /
+            clamp_min(sum(rate(ctcv_coach_answers_total[1d])), 0.001)
+          )
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Tỷ lệ escalate tăng > 2× trung bình ngày"
+          description: "Thường do ASR lỗi hoặc RAG lỗi thời (RUNBOOK §4/§6): kiểm tra speech và nguồn hướng dẫn."
+
+  - name: ctcv-gpu
+    rules:
+      - alert: GpuMemoryHigh
+        expr: >-
+          (
+            DCGM_FI_DEV_FB_USED / clamp_min(DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE, 1)
+          ) > 0.92
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "VRAM GPU {{ $labels.gpu }} > 92 %"
+          description: "VRAM = {{ $value | humanizePercentage }}. Nếu lặp 3 lần: giảm VLLM_MAX_NUM_SEQS / VLLM_GPU_MEMORY_UTILIZATION (deploy/models/vllm.env) — RUNBOOK §6."
+
+      - alert: VllmKvCacheSaturated
+        expr: avg_over_time(vllm:gpu_cache_usage_perc[5m]) > 0.92
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "KV cache vLLM > 92 % trong 5 phút"
+          description: "Hàng đợi vLLM đầy; p95 sẽ tăng. Cân nhắc giảm max-model-len hoặc bật fallback CPU."
+
+  - name: ctcv-availability
+    rules:
+      # `up` is sampled every 15 s; two consecutive failed scrapes ⇒ 30 s (plan §8 "down 2 lần").
+      - alert: ServiceDown
+        expr: up{job=~"api|agent|speech|vision|models"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Dịch vụ {{ $labels.job }} không phản hồi 2 lần liên tiếp"
+          description: "Health đỏ. Nếu là GPU máy chính: `make failover` (≤ 5 phút) — RUNBOOK §3/§6."

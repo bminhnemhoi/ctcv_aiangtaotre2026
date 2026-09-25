@@ -1,0 +1,42 @@
+# SFT LoRA của huấn luyện viên (plan §7 bảng `make train`, dòng 1; idea §6 bước 3; epic E07).
+# Mặc định: Qwen3.5-9B, r=16, alpha=32, lr 1e-4, 3 epoch, seq 4k, bf16, gradient checkpointing.
+# Model và bộ dữ liệu tham chiếu theo khóa: model_key → config/models.yaml, dataset → data/registry.
+version: 1
+kind: sft
+name: planner-sft
+epic: E07
+model_key: planner # Qwen/Qwen3.5-9B (config/models.yaml: planner)
+dataset: coach-sft-v1 # data/sft/train.jsonl (≥ 8.000 hội thoại đã lọc + LLM-judge ≥ 4/5)
+eval_dataset: eval-dialogue-v1 # 500 hội thoại giữ lại — không tối ưu trên tập này
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  learning_rate: 1.0e-4
+  epochs: 3
+  max_seq_len: 4096
+  precision: bf16
+  gradient_checkpointing: true
+  per_device_batch_size: 4
+  gradient_accumulation_steps: 4
+  warmup_ratio: 0.03
+  lr_scheduler: cosine
+  seed: 42
+  packing: true
+
+stop: # "Loss eval không giảm 2 lần liên tiếp"
+  metric: eval_loss
+  mode: min
+  patience: 2
+
+budget: # ~3 giờ trên 1 GPU 24 GB; hook budget.py chặn khi > 20 giờ/job
+  estimated_gpu_hours: 3
+  estimated_api_vnd: 0
+
+output:
+  run_name: planner-sft
+  save_adapter_only: true # merge vào bf16 chỉ trước khi lượng tử hóa (quantize.yaml)

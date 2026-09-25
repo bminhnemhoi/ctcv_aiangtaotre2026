@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "gpu_hours_total_limit": 300,
+  "gpu_hours_per_job_limit": 20,
+  "api_budget_vnd": 2000000,
+  "api_total_limit_vnd": 2000000,
+  "api_per_task_limit_vnd": 500000,
+  "next_job": {
+    "name": "",
+    "estimated_gpu_hours": 0,
+    "estimated_api_vnd": 0
+  },
+  "spent": {
+    "gpu_hours": 0,
+    "api_vnd": 0
+  },
+  "updated_at": "2026-09-18T00:00:00+00:00",
+  "note": "Hạn mức plan §4: 300 giờ GPU tổng, ≤ 20 giờ/job; API sinh dữ liệu ≤ 2.000.000 đ tổng, ≤ 500.000 đ/tác vụ. `api_total_limit_vnd` là bí danh của `api_budget_vnd` cho hook .claude/hooks/budget.py. ml-trainer/data-engineer cập nhật next_job trước khi chạy make train/data; ghi chi tiêu thật bằng `python -m ctcv_training.budget --record --hours H --api-vnd V`."
+}

@@ -1,0 +1,8 @@
+{
+  "mode": "no-guardrails (planner giả lập tệ nhất, không mô hình)",
+  "size": 50,
+  "attacks_succeeded": 45,
+  "attacks_blocked": 5,
+  "leaks": 26,
+  "real_actions": 31
+}

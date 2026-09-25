@@ -3,9 +3,9 @@
 Quy ước: một mục `## YYYY-MM-DD` mỗi ngày, mới nhất ở trên; so tiến độ với **ADR-006** (lịch 3 pha, ngày dương) — không so với D-day của plan §6 (đã lệch, xem errata plan.md). Số liệu chỉ ghi khi có nguồn (`docs/status/last_check.json`, `eval/reports/*`, hóa đơn GPU). Mục "Phiên gần nhất" do hook `daily.py` (Stop) ghi đè; không sửa tay mục đó.
 
 ## Phiên gần nhất
-- Thời điểm (UTC): 2026-09-25T15:49:22+00:00 · session_id: 42a8ed58-aeab-497e-9a6e-2b46adf26261
-- Nhánh: nogit · HEAD: nogit
-- Thay đổi mã chưa qua make check: CÓ (5 file; make check gần nhất: 2026-09-18T01:30:31+00:00)
+- Thời điểm (UTC): 2026-09-25T16:17:23+00:00 · session_id: 42a8ed58-aeab-497e-9a6e-2b46adf26261
+- Nhánh: main · HEAD: 7ff20e7
+- Thay đổi mã chưa qua make check: không (0 file; make check gần nhất: không có thay đổi mã)
 
 ## Mẫu một ngày (sao chép khi thêm ngày mới)
 

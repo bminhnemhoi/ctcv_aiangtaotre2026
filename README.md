@@ -5,7 +5,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)](.python-version)
 [![Node ≥ 20](https://img.shields.io/badge/node-%E2%89%A520-339933?logo=node.js&logoColor=white)](package.json)
-[![tests: 2.484 passed](https://img.shields.io/badge/tests%20Python-2.484%20passed-brightgreen)](#kiểm-thử-và-chất-lượng-mã)
+[![tests: 2.508 passed](https://img.shields.io/badge/tests%20Python-2.508%20passed-brightgreen)](#kiểm-thử-và-chất-lượng-mã)
 [![red-team: 92/92](https://img.shields.io/badge/red--team-92%2F92-brightgreen)](eval/reports/latest.json)
 [![Data for Life 2026 · DA940-01](https://img.shields.io/badge/Data%20for%20Life%202026-DA940--01-8A2BE2)](docs/competition/DFL-2026-yeu-cau.md)
 
@@ -270,7 +270,7 @@ Báo cáo lỗ hổng: xem [SECURITY.md](SECURITY.md) (GitHub Security Advisorie
 - **Độ phủ hẹp:** chỉ 107 thủ tục của Bộ Công an; hộ tịch, đất đai, thuế, bảo hiểm xã hội sẽ nhận "chưa chắc". Chưa có hiệu lực văn bản, chưa dẫn tới điều/khoản; chưa có biến thể theo địa phương.
 - **Mô hình:** Qwen3.5-2B là lựa chọn tạm thời, chưa tinh chỉnh, chưa phải mô hình tiếng Việt trong nước.
 - **Chưa có:** giọng nói, sandbox luyện thao tác, "vắc-xin" lừa đảo, dashboard tình nguyện viên, ảnh màn hình, điền tờ khai, thử nghiệm với người dân và cán bộ thật. Các route API tương ứng trả `501 Chưa hiện thực`; thư mục `services/speech`, `services/vision`, `sandbox/`, `drills/`, `training/` là khung cho các epic sau.
-- **Kiểm thử:** 1 test Python đang đỏ — `scripts/tests/test_check_deps.py::test_real_repo_lockfile_is_fully_allowed` (allow-list thư viện `config/allowed-deps.yaml` chờ chủ repo duyệt); CI GitHub Actions chưa bật.
+- **Kiểm thử:** CI GitHub Actions chưa bật (workflow `gate` cần runner GPU riêng); cổng kiểm thử chạy tay bằng `make check QUICK=1`. `make audit` còn 2 cảnh báo nền chờ chủ repo quyết (khóa giả trong test hook, GHSA vite 5 chỉ ảnh hưởng dev server) — xem [ADR-008](docs/decisions/ADR-008-vong-2-dfl-va-cong-audit.md).
 
 ## Lộ trình vòng 2
 
@@ -319,7 +319,7 @@ Danh sách đầy đủ target `make` (dữ liệu, huấn luyện, triển khai
 
 ### Kiểm thử và chất lượng mã
 
-- **Python:** 2.491 test — 2.484 đạt, 1 đỏ (test allow-list thư viện nêu ở trên), 6 bỏ qua vì máy đo không có Docker daemon (`deploy/tests/test_deploy.py`); độ phủ mã các gói lõi 99,2 % (`ctcv_core`, `ctcv_agent`, `ctcv_api`, `ctcv_sandbox`, `ctcv_drills`). Nguồn: [eval/reports/engineering-2026-09-25.json](eval/reports/engineering-2026-09-25.json), sinh bởi `uv run python scripts/collect_engineering_metrics.py`.
+- **Python:** 2.514 test — 2.508 đạt, 0 đỏ, 6 bỏ qua vì máy đo không có Docker daemon (`deploy/tests/test_deploy.py`); độ phủ mã các gói lõi 99,2 % (`ctcv_core`, `ctcv_agent`, `ctcv_api`, `ctcv_sandbox`, `ctcv_drills`). Nguồn: [eval/reports/engineering-2026-09-25.json](eval/reports/engineering-2026-09-25.json), sinh bởi `uv run python scripts/collect_engineering_metrics.py`.
 - **Web:** 118/118 test đơn vị vitest (cùng file nguồn); 39 lượt e2e Playwright = 13 ca × 3 cỡ màn hình điện thoại trong `config/app.yaml` (`apps/web/e2e/`).
 - **Red-team:** 92/92 kịch bản đạt, 0 rò rỉ, 0 hành động thật (`eval/reports/latest.json`).
 

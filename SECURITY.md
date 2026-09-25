@@ -35,7 +35,7 @@ Kiến trúc hỗ trợ: planner tách khỏi **LLM cách ly** (ADR-004) — n�
 
 ## Prompt log và dữ liệu xuất bản
 
-Prompt log là minh chứng bắt buộc của BTC và **không được sửa tay**; trước khi lên Google Drive/ZIP, `make promptlog-export` kiểm tra hash khớp `docs/prompt-log/INDEX.md`, quét secret (gitleaks) và PII (regex), tự động thay bằng `[REDACTED-SECRET sha256:<8>]` / `[REDACTED-PII sha256:<8>]` và ghi `REDACTIONS.md` — đây là chính sách công bố, không phải chỉnh sửa nội dung. Dữ liệu pilot thô không bao giờ vào repo hay Drive.
+Prompt log **không được sửa tay**. Repo công khai chỉ mang `docs/prompt-log/INDEX.md` (mỗi phiên một mã SHA-256) và `README.md`; bản ghi đầy đủ do đội lưu giữ và chỉ cung cấp cho Ban Tổ chức khi được yêu cầu (ADR-008). Trước khi gửi, `make promptlog-export` kiểm tra hash khớp INDEX, quét secret (gitleaks) và PII (regex), thay bằng `[REDACTED-SECRET sha256:<8>]` / `[REDACTED-PII sha256:<8>]` và ghi `REDACTIONS.md`; bộ che này đang được bổ sung các mẫu còn sót (`docs/security/2026-09-25-pre-publish.md`, V3), nên bản xuất phải được rà tay trước khi gửi. Dữ liệu pilot thô không bao giờ vào repo hay Drive.
 
 ## Phiên bản được hỗ trợ
 

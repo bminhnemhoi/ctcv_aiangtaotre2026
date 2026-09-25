@@ -11,6 +11,8 @@
 
 <p align="center">
   <img src="docs/media/demo-preview.gif" alt="Quay màn hình thật: hỏi phí đăng ký thường trú, bấm nút Nguồn, thẻ giấy tờ cần chuẩn bị, màn đối chiếu hồ sơ của cán bộ" width="820">
+  <br>
+  <sub>Ảnh động cắt từ bản quay màn hình thật, <b>tua nhanh 1,5×</b> để xem gọn. Độ trễ thật: p50 0,908 s, p95 1,629 s trên laptop có GPU (<code>eval/reports/latest.json</code>).</sub>
 </p>
 
 <!-- VIDEO_URL -->
@@ -332,7 +334,7 @@ Mọi đóng góp đều được chào đón. Đọc [CONTRIBUTING.md](CONTRIBU
 Kê khai ba phần:
 
 - **Đội tự xây:** đặc tả sản phẩm; chọn nguồn và phân tích điều kiện dùng lại dữ liệu; schema dữ liệu; thiết kế cổng tin cậy, lớp kiểm chứng, bộ kiểm thử; duyệt kiến trúc, dữ liệu và số đo.
-- **AI hỗ trợ:** mã phần lớn do **Claude Code** (Anthropic) sinh theo đặc tả của đội, được kiểm bằng bộ test tự động và đội duyệt. Toàn bộ lịch sử làm việc với trợ lý lập trình nằm trong [docs/prompt-log/](docs/prompt-log/) (mỗi phiên có SHA-256 trong `INDEX.md`, không sửa tay). Không có dữ liệu công dân nào được gửi cho trợ lý lập trình.
+- **AI hỗ trợ:** mã phần lớn do **Claude Code** (Anthropic) sinh theo đặc tả của đội, được kiểm bằng bộ test tự động và đội duyệt. Lịch sử làm việc với trợ lý lập trình được lập chỉ mục trong [docs/prompt-log/INDEX.md](docs/prompt-log/INDEX.md) (mỗi phiên một mã SHA-256, không sửa tay); bản ghi đầy đủ do đội lưu giữ và cung cấp cho Ban Tổ chức khi được yêu cầu. Không có dữ liệu công dân nào được gửi cho trợ lý lập trình.
 - **Kế thừa:** mô hình trọng số mở tự host (Qwen3.5-2B, BAAI/bge-m3) qua Ollama; thư viện mã nguồn mở (FastAPI, React…); dữ liệu công khai của Cổng Dịch vụ công Bộ Công an, có ghi nguồn. Sản phẩm **không gọi API mô hình thương mại nào** khi chạy.
 
 ## Tài liệu liên quan

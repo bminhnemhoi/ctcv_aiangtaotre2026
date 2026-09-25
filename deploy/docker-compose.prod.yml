@@ -148,7 +148,7 @@ services:
 
   grafana:
     <<: *prod_service
-    image: ${GRAFANA_IMAGE:-grafana/grafana:12.1.0}
+    image: ${GRAFANA_IMAGE:-grafana/grafana:13.2.2}
     env_file:
       - path: ../.env
         required: false

@@ -38,16 +38,16 @@ jobs:
       matrix:
         svc: [api, agent, speech, vision, web]
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Image metadata (lower-cased owner, :<tag> and :latest for final releases)
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository_owner }}/ctcv-${{ matrix.svc }}
           tags: |
@@ -58,7 +58,7 @@ jobs:
             org.opencontainers.image.description=Cầm Tay Chỉ Việc — ${{ matrix.svc }} service
             org.opencontainers.image.licenses=Apache-2.0
       - name: Build and push (context = repo root, brief D14; cache shared with check.yml)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: deploy/docker/${{ matrix.svc }}.Dockerfile
@@ -76,7 +76,7 @@ jobs:
     timeout-minutes: 30
     environment: ${{ contains(github.ref_name, '-') && 'staging' || 'production' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Secrets present? (DEPLOY_HOST + SSH_KEY gate every step below)
         id: gate
         env:
@@ -129,7 +129,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Create release with generated notes (pre-release when the tag has a '-')
         env:
           GH_TOKEN: ${{ github.token }}

@@ -38,7 +38,7 @@ jobs:
       UV_LOCKED: "1"
       COMPOSE_PROFILES: gpu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: GPU and toolchain sanity (tools come from the box, not from actions)
         run: |
           nvidia-smi --query-gpu=name,memory.total,memory.used --format=csv
@@ -53,7 +53,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.full_eval
         run: make eval
       - name: Upload eval/reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: gate-report-${{ github.run_id }}
